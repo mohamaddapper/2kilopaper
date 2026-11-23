@@ -17,6 +17,7 @@
   @if(!empty($dashboardNav))
     <div style="display:flex;align-items:center;gap:18px">
       <a href="{{ route('directory') }}" style="color:var(--muted);font-size:14px;text-decoration:none">دایرکتوری</a>
+      <a href="{{ route('jobs.index') }}" style="color:var(--muted);font-size:14px;text-decoration:none">فرصت‌های شغلی</a>
       <form method="post" action="{{ route('logout') }}" style="display:inline;margin:0">
         @csrf
         <button type="submit" style="background:none;border:none;color:var(--text);font-size:14.5px;font-family:inherit;cursor:pointer;padding:0;font-weight:500">خروج</button>
@@ -25,6 +26,7 @@
   @else
     <ul>
       <li><a href="{{ route('directory') }}">دایرکتوری</a></li>
+      <li><a href="{{ route('jobs.index') }}">فرصت‌های شغلی</a></li>
       @auth
         <li><a href="{{ route('dashboard') }}">پنل من</a></li>
         <li><form method="post" action="{{ route('logout') }}">@csrf<button class="btn ghost small">خروج</button></form></li>

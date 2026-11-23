@@ -59,6 +59,7 @@ class Company extends Model
     public function categories() { return $this->belongsToMany(Category::class, 'company_categories')->withPivot('is_primary'); }
     public function province() { return $this->belongsTo(Province::class); }
     public function city() { return $this->belongsTo(City::class); }
+    public function jobPostings() { return $this->hasMany(JobPosting::class); }
     public function getRouteKeyName() { return 'slug'; }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)

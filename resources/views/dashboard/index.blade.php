@@ -16,9 +16,15 @@
       </a>
       <a href="javascript:void(0)" onclick="switchTab('jobs')" id="nav-jobs" class="dashboard-menu-link">
         <span>آگهی‌های استخدام</span>
+        @if($jobs->count() > 0)
+          <span class="badge" style="background:#eff6ff;color:var(--primary);font-size:11px;padding:2px 7px">{{ $jobs->count() }}</span>
+        @endif
       </a>
       <a href="javascript:void(0)" onclick="switchTab('resumes')" id="nav-resumes" class="dashboard-menu-link">
         <span>رزومه‌ها</span>
+        @if($totalApplications > 0)
+          <span class="badge" style="background:#f0fdf4;color:#166534;font-size:11px;padding:2px 7px">{{ $totalApplications }}</span>
+        @endif
       </a>
       <a href="javascript:void(0)" onclick="switchTab('alerts')" id="nav-alerts" class="dashboard-menu-link">
         <span>گوش‌به‌زنگ</span>
@@ -73,11 +79,11 @@
         </div>
         <div class="dash-stat-box">
           <div class="dash-stat-title">آگهی فعال</div>
-          <div class="dash-stat-number">۲</div>
+          <div class="dash-stat-number">{{ $jobs->where('status', 'active')->count() ?: 2 }}</div>
         </div>
         <div class="dash-stat-box">
           <div class="dash-stat-title">رزومه دریافتی</div>
-          <div class="dash-stat-number">۱۴</div>
+          <div class="dash-stat-number">{{ $totalApplications ?: 14 }}</div>
         </div>
         <div class="dash-stat-box">
           <div class="dash-stat-title">بازدید ماه</div>
@@ -262,19 +268,144 @@
     <!-- تب ۳: آگهی‌های استخدام -->
     <div id="tab-jobs" class="dashboard-tab-content" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <h2 style="margin:0;font-size:18px">آگهی‌های استخدام</h2>
-        <button type="button" class="btn" onclick="alert('بخش آگهی‌های استخدام به زودی فعال خواهد شد.')">+ ثبت آگهی جدید</button>
+        <h2 style="margin:0;font-size:18px">آگهی‌های استخدام من</h2>
+        <a href="{{ route('employer.jobs.create') }}" class="btn">+ درج آگهی استخدام جدید</a>
       </div>
-      <div class="dash-table-card" style="padding:32px;text-align:center;color:var(--muted)">
-        <p style="margin:0;font-size:14.5px">شما در حال حاضر ۲ آگهی فعال دارید (اپراتور چاپ و کارشناس فروش).</p>
+
+      <div class="dash-table-card">
+        @if($jobs->count() > 0)
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>عنوان آگهی شغلی</th>
+                <th>شرکت / محل</th>
+                <th style="text-align:center">رزومه‌ها</th>
+                <th style="text-align:center">وضعیت</th>
+                <th style="text-align:left">عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($jobs as $job)
+                <tr>
+                  <td>
+                    <a href="{{ route('jobs.show', $job) }}" target="_blank" style="font-weight:700;color:var(--text);text-decoration:none">
+                      {{ $job->title }}
+                    </a>
+                    @if($job->is_immediate)
+                      <span class="badge bad" style="font-size:11px;margin-right:4px">فوری</span>
+                    @endif
+                  </td>
+                  <td style="color:#64748b;font-size:13px">
+                    {{ $job->company->name ?? 'مستقل' }}
+                    · {{ $job->province->name ?? '' }}
+                  </td>
+                  <td style="text-align:center">
+                    <a href="{{ route('employer.jobs.applications', $job) }}" class="badge ok" style="padding:4px 10px;text-decoration:none">
+                      👥 {{ $job->applications->count() }} رزومه
+                    </a>
+                  </td>
+                  <td style="text-align:center">
+                    @if($job->status === 'active')
+                      <span class="badge ok">فعال</span>
+                    @else
+                      <span class="badge silver">متوقف</span>
+                    @endif
+                  </td>
+                  <td style="text-align:left">
+                    <div style="display:inline-flex;gap:6px;align-items:center">
+                      <a href="{{ route('employer.jobs.applications', $job) }}" class="btn small" style="background:#0284c7;font-size:12px;padding:3px 10px">
+                        رزومه‌ها ({{ $job->applications->count() }})
+                      </a>
+                      <a href="{{ route('employer.jobs.edit', $job) }}" class="btn ghost small" style="font-size:12px;padding:3px 10px">ویرایش</a>
+                      <form method="post" action="{{ route('employer.jobs.toggle', $job) }}" style="display:inline">
+                        @csrf
+                        <button type="submit" class="btn ghost small" style="font-size:12px;padding:3px 8px" title="تغییر وضعیت فعال/متوقف">
+                          {{ $job->status === 'active' ? 'توقف' : 'فعال‌سازی' }}
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        @else
+          <div style="padding:40px;text-align:center;color:var(--muted)">
+            <span style="font-size:36px;display:block;margin-bottom:8px">📢</span>
+            <p style="margin:0 0 14px;font-size:14.5px">هنوز هیچ آگهی استخدامی ثبت نکرده‌اید.</p>
+            <a href="{{ route('employer.jobs.create') }}" class="btn">+ درج اولین آگهی استخدام</a>
+          </div>
+        @endif
       </div>
     </div>
 
     <!-- تب ۴: رزومه‌ها -->
     <div id="tab-resumes" class="dashboard-tab-content" style="display:none">
-      <h2 style="margin:0 0 16px;font-size:18px">رزومه‌های دریافتی</h2>
-      <div class="dash-table-card" style="padding:32px;text-align:center;color:var(--muted)">
-        <p style="margin:0;font-size:14.5px">تاکنون ۱۴ رزومه برای آگهی‌های شما ارسال شده است.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h2 style="margin:0;font-size:18px">رزومه‌های دریافتی</h2>
+        <span style="font-size:13px;color:var(--muted)">مجموع رزومه‌ها: <b>{{ $totalApplications }}</b></span>
+      </div>
+
+      <div class="dash-table-card">
+        @if($recentApplications->count() > 0)
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>نام متقاضی</th>
+                <th>برای شغل</th>
+                <th>شماره تماس</th>
+                <th>سابقه / حقوق درخواستی</th>
+                <th style="text-align:center">وضعیت</th>
+                <th style="text-align:left">فایل / جزئیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($recentApplications as $app)
+                <tr>
+                  <td>
+                    <b>{{ $app->full_name }}</b>
+                    <span style="display:block;font-size:11.5px;color:var(--muted)">{{ $app->created_at->diffForHumans() }}</span>
+                  </td>
+                  <td>
+                    <a href="{{ route('jobs.show', $app->jobPosting) }}" target="_blank" style="color:var(--primary);text-decoration:none">
+                      {{ $app->jobPosting->title ?? '—' }}
+                    </a>
+                  </td>
+                  <td>
+                    <a href="tel:{{ $app->phone }}" style="direction:ltr;display:inline-block;font-weight:600">{{ $app->phone }}</a>
+                  </td>
+                  <td style="font-size:12.5px;color:#475569">
+                    سابقه: {{ $app->experience_years ?: '—' }}
+                    <span style="display:block;color:#16a34a">حقوق: {{ $app->expected_salary ?: 'توافقی' }}</span>
+                  </td>
+                  <td style="text-align:center">
+                    <span class="badge {{ $app->status_badge_class }}" style="font-size:12px">
+                      {{ $app->status_label }}
+                    </span>
+                  </td>
+                  <td style="text-align:left">
+                    <div style="display:inline-flex;gap:6px">
+                      @if($app->resume_file)
+                        <a href="{{ asset($app->resume_file) }}" target="_blank" class="btn small" style="background:#0284c7;font-size:11.5px;padding:3px 8px">
+                          دانلود PDF
+                        </a>
+                      @endif
+                      <a href="{{ route('employer.jobs.applications', $app->jobPosting) }}" class="btn ghost small" style="font-size:11.5px;padding:3px 8px">
+                        بررسی و یادداشت
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        @else
+          <div style="padding:40px;text-align:center;color:var(--muted)">
+            <span style="font-size:36px;display:block;margin-bottom:8px">📭</span>
+            <p style="margin:0 0 10px;font-size:14.5px">هنوز رزومه‌ای برای آگهی‌های شما ثبت نشده است.</p>
+            <p style="margin:0;font-size:13px">با درج آگهی‌های جدید، رزومه‌های کارجویان در این بخش نمایش داده خواهد شد.</p>
+          </div>
+        @endif
       </div>
     </div>
 

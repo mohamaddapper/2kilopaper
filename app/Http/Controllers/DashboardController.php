@@ -12,7 +12,17 @@ class DashboardController extends Controller
 {
     public function index(Request $r)
     {
-        return view('dashboard.index', ['companies' => $r->user()->companies()->latest()->get()]);
+        $user = $r->user();
+        $companies = $user->companies()->latest()->get();
+        $jobs = $user->jobPostings()->with(['company', 'applications'])->latest()->get();
+        $totalApplications = \App\Models\JobApplication::whereHas('jobPosting', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->count();
+        $recentApplications = \App\Models\JobApplication::whereHas('jobPosting', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->with(['jobPosting.company'])->latest()->take(20)->get();
+
+        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications'));
     }
 
     public function create()

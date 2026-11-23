@@ -129,6 +129,47 @@
         <div style="line-height:2;color:#334155;font-size:15px;white-space:pre-line">{!! e($company->description) !!}</div>
       </div>
 
+      <!-- فرصت‌های شغلی فعال شرکت -->
+      @php
+        $activeJobs = $company->jobPostings()->active()->latest()->get();
+      @endphp
+      @if($activeJobs->count() > 0)
+        <div class="card" style="margin-bottom:20px;border:1px solid #bae6fd;background:#f0f9ff">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e0f2fe;padding-bottom:10px;margin-bottom:12px">
+            <h3 style="margin:0;font-size:17px;color:#0369a1;display:flex;align-items:center;gap:6px">
+              <span>💼 فرصت‌های شغلی و استخدام فعال</span>
+              <span class="badge" style="background:#0284c7;color:#fff;font-size:11.5px">{{ $activeJobs->count() }} آگهی</span>
+            </h3>
+            <a href="{{ route('jobs.index', ['q' => $company->name]) }}" style="font-size:12.5px;color:#0284c7;font-weight:600;text-decoration:none">مشاهده در کاریابی ←</a>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            @foreach($activeJobs as $aJob)
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff;border-radius:8px;border:1px solid #e2e8f0;flex-wrap:wrap;gap:8px">
+                <div>
+                  <a href="{{ route('jobs.show', $aJob) }}" style="font-size:15px;font-weight:700;color:var(--text);text-decoration:none">
+                    {{ $aJob->title }}
+                  </a>
+                  <div style="font-size:12.5px;color:var(--muted);margin-top:4px;display:flex;gap:8px;align-items:center">
+                    <span>{{ $aJob->job_type_label }}</span>
+                    <span>•</span>
+                    <span style="color:#16a34a">{{ $aJob->salary_label }}</span>
+                    @if(!empty($aJob->benefits['has_service']))
+                      <span>•</span>
+                      <span style="color:#0284c7">🚌 سرویس دارد</span>
+                    @endif
+                  </div>
+                </div>
+
+                <a href="{{ route('jobs.show', $aJob) }}" class="btn small" style="padding:6px 14px;font-size:12.5px">
+                  مشاهده و ارسال رزومه
+                </a>
+              </div>
+            @endforeach
+          </div>
+        </div>
+      @endif
+
       <!-- موقعیت‌های مکانی و دفاتر شرکت -->
       @php
         $locations = (array)($company->locations ?? []);
