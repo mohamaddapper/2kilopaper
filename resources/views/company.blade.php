@@ -58,11 +58,27 @@
         <p style="margin:6px 0;font-size:15px;color:var(--primary);font-weight:600">{{ $company->slogan }}</p>
       @endif
 
-      <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:6px;flex-wrap:wrap">
-        <span>📂 <b>دسته‌بندی:</b> {{ $company->category->name }}</span>
+      <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:6px;flex-wrap:wrap;align-items:center">
         <span>📍 <b>شهر:</b> {{ $company->city->name }}</span>
         @if(data_get($company->tech_specs, 'established_year'))
           <span>📅 <b>سال تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
+        @endif
+      </div>
+
+      <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت -->
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;font-weight:700;color:var(--text)">📂 دسته‌بندی‌ها:</span>
+        <a href="{{ route('directory', ['cat' => $company->category_id]) }}" class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd;text-decoration:none">
+          🌟 {{ $company->category->name }} (اصلی)
+        </a>
+        @if($company->relationLoaded('categories'))
+          @foreach($company->categories as $secCat)
+            @if($secCat->id !== $company->category_id)
+              <a href="{{ route('directory', ['cat' => $secCat->id]) }}" class="badge" style="background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;text-decoration:none">
+                {{ $secCat->name }}
+              </a>
+            @endif
+          @endforeach
         @endif
       </div>
     </div>

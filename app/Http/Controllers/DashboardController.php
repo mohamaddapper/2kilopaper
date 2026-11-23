@@ -50,11 +50,20 @@ class DashboardController extends Controller
         $c->status = config('gap.auto_approve') ? 'approved' : 'pending';
         $c->save();
 
-        if (!empty($data['category_ids'])) {
-            $c->categories()->sync($data['category_ids']);
-        } elseif ($c->category_id) {
-            $c->categories()->sync([$c->category_id => ['is_primary' => true]]);
+        $syncData = [];
+        if (!empty($data['category_id'])) {
+            $syncData[$data['category_id']] = ['is_primary' => true];
         }
+        $secondary = $r->input('secondary_category_ids', []);
+        if (is_array($secondary)) {
+            foreach ($secondary as $secId) {
+                $secId = (int) $secId;
+                if ($secId && $secId != ($data['category_id'] ?? 0) && !isset($syncData[$secId])) {
+                    $syncData[$secId] = ['is_primary' => false];
+                }
+            }
+        }
+        $c->categories()->sync($syncData);
 
         return redirect()->route('dashboard')->with('ok', 'شرکت با موفقیت ثبت شد.');
     }
@@ -91,11 +100,21 @@ class DashboardController extends Controller
         }
 
         $company->update($data);
-        if (!empty($data['category_ids'])) {
-            $company->categories()->sync($data['category_ids']);
-        } elseif ($company->category_id) {
-            $company->categories()->sync([$company->category_id => ['is_primary' => true]]);
+
+        $syncData = [];
+        if (!empty($data['category_id'])) {
+            $syncData[$data['category_id']] = ['is_primary' => true];
         }
+        $secondary = $r->input('secondary_category_ids', []);
+        if (is_array($secondary)) {
+            foreach ($secondary as $secId) {
+                $secId = (int) $secId;
+                if ($secId && $secId != ($data['category_id'] ?? 0) && !isset($syncData[$secId])) {
+                    $syncData[$secId] = ['is_primary' => false];
+                }
+            }
+        }
+        $company->categories()->sync($syncData);
 
         return redirect()->route('dashboard')->with('ok', 'تغییرات با موفقیت ذخیره شد.');
     }
@@ -238,6 +257,41 @@ class DashboardController extends Controller
             }
         }
 
+        // Categories flat for quick search and secondary additions
+        $allCategories = Category::with('parent.parent')->orderBy('name')->get();
+        $categoriesFlat = $allCategories->filter(fn($c) => $c->parent_id !== null)->map(function($c) {
+            $curr = $c;
+            $path = [$c->name];
+            while ($curr->parent) {
+                $curr = $curr->parent;
+                array_unshift($path, $curr->name);
+            }
+            return [
+                'id' => $c->id,
+                'name' => $c->name,
+                'slug' => $c->slug,
+                'pillar_id' => $curr->id,
+                'pillar_name' => $curr->name,
+                'pillar_icon' => $curr->icon,
+                'pillar_slug' => $curr->slug,
+                'parent_id' => $c->parent_id,
+                'full_path' => implode(' › ', $path),
+            ];
+        })->values();
+
+        // Existing secondary categories
+        $existingSecondaryCategories = [];
+        $oldSecIds = old('secondary_category_ids');
+        if (is_array($oldSecIds)) {
+            $existingSecondaryCategories = $categoriesFlat->whereIn('id', array_map('intval', $oldSecIds))->values();
+        } elseif ($company->exists) {
+            $secIds = $company->categories()
+                ->where('categories.id', '!=', $company->category_id)
+                ->pluck('categories.id')
+                ->toArray();
+            $existingSecondaryCategories = $categoriesFlat->whereIn('id', $secIds)->values();
+        }
+
         return [
             'company' => $company,
             'provinces' => $provinces,
@@ -245,6 +299,8 @@ class DashboardController extends Controller
             'locationTypes' => Company::locationTypes(),
             'categories' => $pillars,
             'categoriesTree' => $categoriesTree,
+            'categoriesFlat' => $categoriesFlat,
+            'existingSecondaryCategories' => $existingSecondaryCategories,
             'initialPillarId' => $initialPillarId,
         ];
     }
@@ -267,6 +323,8 @@ class DashboardController extends Controller
             'category_id' => 'required|exists:categories,id',
             'category_ids' => 'nullable|array',
             'category_ids.*' => 'exists:categories,id',
+            'secondary_category_ids' => 'nullable|array',
+            'secondary_category_ids.*' => 'exists:categories,id',
             'locations' => 'required|array|min:1',
             'locations.*.type' => 'required|string|max:50',
             'locations.*.title' => 'nullable|string|max:100',

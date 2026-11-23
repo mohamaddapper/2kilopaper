@@ -37,6 +37,100 @@
 .btn-remove-loc:hover {
   background: #fca5a5;
 }
+.cat-search-box {
+  position: relative;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.cat-search-box:focus-within {
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.cat-search-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  background: #fff;
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 200;
+  margin-top: 6px;
+}
+.cat-search-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.15s;
+  cursor: pointer;
+  gap: 10px;
+}
+.cat-search-item:hover, .cat-search-item.highlighted {
+  background: #f0f7ff;
+}
+.cat-search-item:last-child {
+  border-bottom: none;
+}
+.cat-badge-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.cat-badge-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.btn-cat-action {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-cat-action:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.btn-cat-action.primary-btn {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+  font-weight: 700;
+}
+.btn-cat-action.primary-btn:hover {
+  background: #1d4ed8;
+  color: #fff;
+}
 </style>
 
 <div style="max-width:920px;margin:20px auto">
@@ -129,26 +223,96 @@
         </div>
       </div>
 
-      <div class="form-row">
-        <!-- گام ۱: انتخاب ستون / نقش اصلی -->
-        <div class="field" style="flex:1">
-          <label>نقش یا شاخه اصلی فعالیت <span style="color:red">*</span></label>
-          <select id="main_pillar_select" required>
-            <option value="">-- انتخاب کنید: تولیدکننده، چاپخانه، فروشنده و... --</option>
-            @foreach($categories as $pillar)
-              <option value="{{ $pillar->id }}" data-slug="{{ $pillar->slug }}" @selected($initialPillarId == $pillar->id)>
-                {{ $pillar->icon }} {{ $pillar->name }}
-              </option>
-            @endforeach
-          </select>
+      <!-- کادر جستجوی سریع هوشمند دسته‌بندی -->
+      <div class="cat-search-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <label for="cat_search_input" style="font-weight:700;color:var(--primary);margin:0;font-size:13.5px;cursor:pointer">
+            🔍 جستجوی سریع زمینه فعالیت یا محصول (انتخاب مستقیم با تایپ):
+          </label>
+          <span style="font-size:12px;color:var(--muted)">نام کالا یا خدمت خود را بنویسید</span>
+        </div>
+        <div style="position:relative">
+          <input type="text" id="cat_search_input" placeholder="مثال: کارتن، لاینر، گلاسه، سلفون، افست، طلاکوب، جعبه، چسب، ماشین‌آلات، هلیوگراور..." autocomplete="off" style="padding-right:36px;padding-left:70px;background:#fff">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:15px;pointer-events:none">🔍</span>
+          <button type="button" id="cat_search_clear" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;display:none;color:#ef4444;font-size:12px;font-weight:700;font-family:inherit">✕ پاک کردن</button>
+        </div>
+        <!-- نتایج شناور جستجو -->
+        <div id="cat_search_results" class="cat-search-dropdown" style="display:none"></div>
+      </div>
+
+      <!-- بلوک دسته‌بندی اصلی -->
+      <div style="background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:700;font-size:12.5px">🌟 دسته‌بندی و نقش اصلی شرکت</span>
+          <span style="font-size:12px;color:var(--muted)">(هویت اصلی شما در دایرکتوری - می‌توانید از کادر جستجوی بالا یا منوهای زیر انتخاب کنید)</span>
+        </div>
+        <div class="form-row">
+          <div class="field" style="flex:1">
+            <label>شاخه اصلی فعالیت <span style="color:red">*</span></label>
+            <select id="main_pillar_select" required>
+              <option value="">-- انتخاب کنید: تولیدکننده، چاپخانه، فروشنده و... --</option>
+              @foreach($categories as $pillar)
+                <option value="{{ $pillar->id }}" data-slug="{{ $pillar->slug }}" @selected($initialPillarId == $pillar->id)>
+                  {{ $pillar->icon }} {{ $pillar->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="field fade-in" id="sub_category_wrapper" style="flex:1;display:none">
+            <label>دسته‌بندی تخصصی دایرکتوری <span style="color:red">*</span></label>
+            <select name="category_id" id="sub_category_select" required>
+              <option value="">-- انتخاب دسته‌بندی تخصصی --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- بلوک نقش‌ها و دسته‌بندی‌های تکمیلی (چندمنظوره) -->
+      <div style="border:1px dashed #cbd5e1;border-radius:10px;padding:14px;background:#fcfcfd;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div>
+            <span style="font-weight:700;color:var(--text);font-size:13.5px">✨ زمینه‌ها و نقش‌های تکمیلی (ویژه شرکت‌های چندمنظوره):</span>
+            <span style="font-size:12px;color:var(--muted);display:block;margin-top:2px">اگر علاوه بر فعالیت اصلی، در شاخه‌های دیگر هم فعالیت دارید (مثلاً هم تولیدکننده هستید و هم واردکننده یا فروشنده)، اینجا اضافه کنید.</span>
+          </div>
+          <button type="button" class="btn ghost btn-sm" id="btn_toggle_add_sec" style="font-size:12.5px;padding:5px 12px">
+            ➕ افزودن شاخه تکمیلی
+          </button>
         </div>
 
-        <!-- گام ۲: انتخاب دسته‌بندی تخصصی متناسب با شاخه بالا -->
-        <div class="field fade-in" id="sub_category_wrapper" style="flex:1;display:none">
-          <label>دسته‌بندی تخصصی در دایرکتوری <span style="color:red">*</span></label>
-          <select name="category_id" id="sub_category_select" required>
-            <option value="">-- انتخاب دسته‌بندی تخصصی --</option>
-          </select>
+        <!-- فرم بازشونده انتخاب دستی دسته ثانویه -->
+        <div id="sec_cat_picker_box" class="fade-in" style="display:none;background:#fff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;margin-bottom:12px">
+          <div class="form-row">
+            <div class="field" style="flex:1">
+              <label style="font-size:12.5px">نقش تکمیلی (مثلاً واردکننده، فروشنده، خدمات):</label>
+              <select id="sec_pillar_select">
+                <option value="">-- انتخاب نقش تکمیلی --</option>
+                @foreach($categories as $pillar)
+                  <option value="{{ $pillar->id }}" data-slug="{{ $pillar->slug }}">
+                    {{ $pillar->icon }} {{ $pillar->name }}
+                  </option>
+                @endforeach
+              </select>
+            </div>
+            <div class="field" id="sec_sub_wrapper" style="flex:1;display:none">
+              <label style="font-size:12.5px">دسته‌بندی تخصصی تکمیلی:</label>
+              <select id="sec_sub_select">
+                <option value="">-- انتخاب دسته تخصصی --</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button type="button" class="btn btn-sm" id="btn_confirm_add_sec" style="font-size:12.5px">✓ افزودن به لیست تکمیلی</button>
+            <button type="button" class="btn ghost btn-sm" id="btn_cancel_add_sec" style="font-size:12.5px">انصراف</button>
+          </div>
+        </div>
+
+        <!-- لیست تگ‌های انتخاب‌شده ثانویه -->
+        <div id="secondary_badges_list" style="display:flex;gap:8px;flex-wrap:wrap">
+          <!-- توسط جاوااسکریپت پر می‌شود -->
+        </div>
+        <div id="no_secondary_msg" style="font-size:12.5px;color:#94a3b8;font-style:italic;margin-top:4px">
+          هیچ دسته ثانویه‌ای اضافه نشده است (برای شرکت‌های تک‌منظوره نیازی به ثبت این بخش نیست).
         </div>
       </div>
 
@@ -624,9 +788,27 @@
 const locationsTree = @json($locationsTree);
 const locationTypesData = @json($locationTypes);
 const categoriesTree = @json($categoriesTree);
+const categoriesFlat = @json($categoriesFlat);
+let secondaryCategories = @json($existingSecondaryCategories);
 const initialPillarId = '{{ $initialPillarId ?? "" }}';
 const initialCategoryId = '{{ old("category_id", $company->category_id) }}';
 let nextLocIndex = {{ count($locList) }};
+
+function autoCheckActivityPill(slug) {
+  if (slug === 'factories') {
+    const act = document.getElementById('act_carton');
+    if (act && !act.checked) { act.checked = true; toggleServices(); }
+  } else if (slug === 'printing-services') {
+    const act = document.getElementById('act_print');
+    if (act && !act.checked) { act.checked = true; toggleServices(); }
+  } else if (slug === 'service-providers') {
+    const act = document.getElementById('act_post_press');
+    if (act && !act.checked) { act.checked = true; toggleServices(); }
+  } else if (slug === 'stores' || slug === 'importers') {
+    const act = document.getElementById('act_raw');
+    if (act && !act.checked) { act.checked = true; toggleServices(); }
+  }
+}
 
 function initCategoryCascade() {
   const pillarSelect = document.getElementById('main_pillar_select');
@@ -635,7 +817,7 @@ function initCategoryCascade() {
 
   if (!pillarSelect || !subCatWrapper || !subCatSelect) return;
 
-  function renderSubCategories(pillarId, selectedVal = '') {
+  window.renderMainSubCategories = function(pillarId, selectedVal = '') {
     subCatSelect.innerHTML = '<option value="">-- انتخاب دسته‌بندی تخصصی --</option>';
     if (!pillarId) {
       subCatWrapper.style.display = 'none';
@@ -684,46 +866,262 @@ function initCategoryCascade() {
     });
 
     subCatWrapper.style.display = 'block';
-  }
+  };
 
   pillarSelect.addEventListener('change', function() {
-    renderSubCategories(this.value);
-
-    // Auto-assist Section 1 activity checkboxes based on chosen pillar:
+    window.renderMainSubCategories(this.value);
     const selectedOpt = this.options[this.selectedIndex];
     const slug = selectedOpt ? selectedOpt.dataset.slug : '';
-    if (slug === 'factories') {
-      const actCarton = document.getElementById('act_carton');
-      if (actCarton && !actCarton.checked) {
-        actCarton.checked = true;
-        toggleServices();
-      }
-    } else if (slug === 'printing-services') {
-      const actPrint = document.getElementById('act_print');
-      if (actPrint && !actPrint.checked) {
-        actPrint.checked = true;
-        toggleServices();
-      }
-    } else if (slug === 'service-providers') {
-      const actPost = document.getElementById('act_post_press');
-      if (actPost && !actPost.checked) {
-        actPost.checked = true;
-        toggleServices();
-      }
-    } else if (slug === 'stores' || slug === 'importers') {
-      const actRaw = document.getElementById('act_raw');
-      if (actRaw && !actRaw.checked) {
-        actRaw.checked = true;
-        toggleServices();
-      }
-    }
+    autoCheckActivityPill(slug);
   });
 
   // Initial load
   if (initialPillarId) {
     pillarSelect.value = initialPillarId;
-    renderSubCategories(initialPillarId, initialCategoryId);
+    window.renderMainSubCategories(initialPillarId, initialCategoryId);
   }
+}
+
+function initCategorySearch() {
+  const input = document.getElementById('cat_search_input');
+  const resultsBox = document.getElementById('cat_search_results');
+  const clearBtn = document.getElementById('cat_search_clear');
+
+  if (!input || !resultsBox) return;
+
+  function highlight(text, q) {
+    if (!q) return text;
+    const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return text.replace(re, '<mark style="background:#fef08a;color:#854d0e;padding:0 2px;border-radius:2px">$1</mark>');
+  }
+
+  function doSearch(term) {
+    const q = term.trim().toLowerCase();
+    if (!q) {
+      resultsBox.style.display = 'none';
+      resultsBox.innerHTML = '';
+      if (clearBtn) clearBtn.style.display = 'none';
+      return;
+    }
+    if (clearBtn) clearBtn.style.display = 'block';
+
+    const norm = s => s.replace(/ي/g, 'ی').replace(/ك/g, 'ک');
+    const nq = norm(q);
+
+    const matches = categoriesFlat.filter(item => {
+      const name = norm(item.name.toLowerCase());
+      const path = norm(item.full_path.toLowerCase());
+      return name.includes(nq) || path.includes(nq);
+    }).slice(0, 15);
+
+    if (matches.length === 0) {
+      resultsBox.innerHTML = `
+        <div style="padding:14px;text-align:center;color:var(--muted);font-size:13px">
+          موردی با عنوان «<b>${term}</b>» یافت نشد. می‌توانید از منوهای زیر شاخه مورد نظر را انتخاب نمایید.
+        </div>
+      `;
+      resultsBox.style.display = 'block';
+      return;
+    }
+
+    let html = '';
+    matches.forEach(item => {
+      html += `
+        <div class="cat-search-item" data-id="${item.id}">
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:6px">
+              <span class="cat-badge-primary">${item.pillar_icon} ${item.pillar_name}</span>
+              <span>${highlight(item.name, q)}</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${item.full_path}</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button type="button" class="btn-cat-action primary-btn" onclick="applySearchSelection(${item.id}, true)">
+              🌟 اصلی
+            </button>
+            <button type="button" class="btn-cat-action" onclick="applySearchSelection(${item.id}, false)">
+              ➕ تکمیلی
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    resultsBox.innerHTML = html;
+    resultsBox.style.display = 'block';
+  }
+
+  input.addEventListener('input', function() {
+    doSearch(this.value);
+  });
+
+  input.addEventListener('focus', function() {
+    if (this.value.trim()) doSearch(this.value);
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      input.value = '';
+      doSearch('');
+      input.focus();
+    });
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !resultsBox.contains(e.target)) {
+      resultsBox.style.display = 'none';
+    }
+  });
+}
+
+function applySearchSelection(catId, isPrimary) {
+  const cat = categoriesFlat.find(c => c.id == catId);
+  if (!cat) return;
+
+  if (isPrimary) {
+    const pillarSelect = document.getElementById('main_pillar_select');
+    if (pillarSelect) {
+      pillarSelect.value = cat.pillar_id;
+      if (window.renderMainSubCategories) {
+        window.renderMainSubCategories(cat.pillar_id, cat.id);
+      }
+      autoCheckActivityPill(cat.pillar_slug);
+    }
+  } else {
+    if (window.addSecondaryCategoryById) {
+      window.addSecondaryCategoryById(catId);
+    }
+  }
+
+  const resultsBox = document.getElementById('cat_search_results');
+  if (resultsBox) resultsBox.style.display = 'none';
+}
+
+function initSecondaryCategories() {
+  const container = document.getElementById('secondary_badges_list');
+  const noMsg = document.getElementById('no_secondary_msg');
+  const toggleBtn = document.getElementById('btn_toggle_add_sec');
+  const pickerBox = document.getElementById('sec_cat_picker_box');
+  const secPillar = document.getElementById('sec_pillar_select');
+  const secSubWrap = document.getElementById('sec_sub_wrapper');
+  const secSub = document.getElementById('sec_sub_select');
+  const confirmBtn = document.getElementById('btn_confirm_add_sec');
+  const cancelBtn = document.getElementById('btn_cancel_add_sec');
+
+  function renderBadges() {
+    if (!container) return;
+    container.innerHTML = '';
+    if (!secondaryCategories || secondaryCategories.length === 0) {
+      if (noMsg) noMsg.style.display = 'block';
+      return;
+    }
+    if (noMsg) noMsg.style.display = 'none';
+
+    secondaryCategories.forEach(cat => {
+      const div = document.createElement('div');
+      div.className = 'cat-badge-secondary fade-in';
+      div.id = 'sec_cat_tag_' + cat.id;
+      div.innerHTML = `
+        <span>${cat.pillar_icon || '📁'} <b>${cat.pillar_name || 'تکمیلی'}:</b> ${cat.name}</span>
+        <input type="hidden" name="secondary_category_ids[]" value="${cat.id}">
+        <button type="button" onclick="removeSecondaryCategory(${cat.id})" style="border:none;background:none;color:#ef4444;cursor:pointer;font-weight:700;padding:0 3px;font-size:14px;line-height:1" title="حذف این دسته">✕</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  window.renderSecondaryBadges = renderBadges;
+
+  window.addSecondaryCategoryById = function(catId) {
+    const primaryCatId = document.getElementById('sub_category_select')?.value;
+    if (primaryCatId && primaryCatId == catId) {
+      alert('این دسته هم‌اکنون به عنوان «دسته‌بندی اصلی» شرکت انتخاب شده است.');
+      return;
+    }
+    if (secondaryCategories.some(c => c.id == catId)) {
+      alert('این دسته قبلاً به لیست زمینه‌های تکمیلی اضافه شده است.');
+      return;
+    }
+    const cat = categoriesFlat.find(c => c.id == catId);
+    if (cat) {
+      secondaryCategories.push(cat);
+      renderBadges();
+      autoCheckActivityPill(cat.pillar_slug);
+    }
+  };
+
+  window.removeSecondaryCategory = function(catId) {
+    secondaryCategories = secondaryCategories.filter(c => c.id != catId);
+    renderBadges();
+  };
+
+  if (toggleBtn && pickerBox) {
+    toggleBtn.addEventListener('click', function() {
+      pickerBox.style.display = pickerBox.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  if (cancelBtn && pickerBox) {
+    cancelBtn.addEventListener('click', function() {
+      pickerBox.style.display = 'none';
+    });
+  }
+
+  if (secPillar && secSub && secSubWrap) {
+    secPillar.addEventListener('change', function() {
+      const pId = this.value;
+      secSub.innerHTML = '<option value="">-- انتخاب دسته تخصصی --</option>';
+      if (!pId) {
+        secSubWrap.style.display = 'none';
+        return;
+      }
+      const pillar = categoriesTree.find(p => p.id == pId);
+      if (!pillar || !pillar.children) {
+        secSubWrap.style.display = 'none';
+        return;
+      }
+      pillar.children.forEach(ch => {
+        if (ch.sub_children && ch.sub_children.length > 0) {
+          const grp = document.createElement('optgroup');
+          grp.label = ch.name;
+          const pOpt = document.createElement('option');
+          pOpt.value = ch.id;
+          pOpt.textContent = ch.name + ' (همه موارد / کلی)';
+          grp.appendChild(pOpt);
+          ch.sub_children.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = sub.id;
+            opt.textContent = '— ' + sub.name;
+            grp.appendChild(opt);
+          });
+          secSub.appendChild(grp);
+        } else {
+          const opt = document.createElement('option');
+          opt.value = ch.id;
+          opt.textContent = ch.name;
+          secSub.appendChild(opt);
+        }
+      });
+      secSubWrap.style.display = 'block';
+    });
+  }
+
+  if (confirmBtn && secSub) {
+    confirmBtn.addEventListener('click', function() {
+      const catId = secSub.value;
+      if (!catId) {
+        alert('لطفاً دسته‌بندی تخصصی تکمیلی را انتخاب نمایید.');
+        return;
+      }
+      addSecondaryCategoryById(catId);
+      pickerBox.style.display = 'none';
+      secPillar.value = '';
+      secSub.innerHTML = '<option value="">-- انتخاب دسته تخصصی --</option>';
+      secSubWrap.style.display = 'none';
+    });
+  }
+
+  renderBadges();
 }
 
 function initLocationCascade(idx, initialProvinceVal = '', initialCityVal = '') {
@@ -938,6 +1336,8 @@ function toggleServices() {
 
 document.addEventListener('DOMContentLoaded', function() {
   initCategoryCascade();
+  initCategorySearch();
+  initSecondaryCategories();
   toggleServices();
 
   // Initialize existing location cards

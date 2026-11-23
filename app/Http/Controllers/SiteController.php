@@ -26,8 +26,11 @@ class SiteController extends Controller
         if ($r->filled('city')) $q->where('city_id', (int) $r->query('city'));
         if ($r->filled('cat')) {
             $cat = Category::find((int) $r->query('cat'));
-            $ids = $cat ? $cat->children()->pluck('id')->push($cat->id) : [];
-            $q->whereIn('category_id', $ids);
+            $ids = $cat ? $cat->children()->pluck('id')->push($cat->id) : collect();
+            $q->where(function ($subQ) use ($ids) {
+                $subQ->whereIn('category_id', $ids)
+                     ->orWhereHas('categories', fn($cQ) => $cQ->whereIn('categories.id', $ids));
+            });
         }
         return view('directory', [
             'companies' => $q->ranked()->paginate(12)->withQueryString(),
@@ -39,7 +42,7 @@ class SiteController extends Controller
     public function company(Company $company)
     {
         abort_unless($company->status === 'approved', 404);
-        $company->load(['city', 'category']);
+        $company->load(['city', 'category', 'categories' => fn($q) => $q->with('parent')]);
         return view('company', compact('company'));
     }
 
