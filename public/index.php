@@ -21,12 +21,23 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+// Auto-detect base directory for cPanel (public_html vs laravel-app)
+if (file_exists(__DIR__ . '/../laravel-app/vendor/autoload.php')) {
+    $baseDir = __DIR__ . '/../laravel-app';
+} elseif (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    $baseDir = __DIR__ . '/..';
+} elseif (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    $baseDir = __DIR__;
+} else {
+    die('<h3 style="color:red;font-family:tahoma;direction:rtl">خطا: پوشه vendor یا پروژه لاراول پیدا نشد!</h3>');
+}
+
+if (file_exists($maintenance = $baseDir . '/storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
-require __DIR__.'/../vendor/autoload.php';
+require $baseDir . '/vendor/autoload.php';
 
-(require_once __DIR__.'/../bootstrap/app.php')
+(require_once $baseDir . '/bootstrap/app.php')
     ->handleRequest(Request::capture());
 }
