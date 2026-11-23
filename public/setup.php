@@ -26,6 +26,10 @@ try {
     $kernel->call('migrate', ['--force' => true]);
     echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
 
+    echo '<p><b>در حال به‌روزرسانی دسته‌بندی‌های تخصصی (۵ ستون دایرکتوری از CSV)...</b></p>';
+    $kernel->call('db:seed', ['--class' => 'CategorySeeder', '--force' => true]);
+    echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+
     echo '<p><b>در حال ورود اطلاعات ۳۱ استان و ۳۶۸ شهر از فایل CSV...</b></p>';
     $kernel->call('db:seed', ['--class' => 'LocationSeeder', '--force' => true]);
     echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';

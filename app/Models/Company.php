@@ -55,6 +55,7 @@ class Company extends Model
 
     public function user() { return $this->belongsTo(User::class); }
     public function category() { return $this->belongsTo(Category::class); }
+    public function categories() { return $this->belongsToMany(Category::class, 'company_categories')->withPivot('is_primary'); }
     public function province() { return $this->belongsTo(Province::class); }
     public function city() { return $this->belongsTo(City::class); }
     public function getRouteKeyName() { return 'slug'; }

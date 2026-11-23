@@ -50,6 +50,12 @@ class DashboardController extends Controller
         $c->status = config('gap.auto_approve') ? 'approved' : 'pending';
         $c->save();
 
+        if (!empty($data['category_ids'])) {
+            $c->categories()->sync($data['category_ids']);
+        } elseif ($c->category_id) {
+            $c->categories()->sync([$c->category_id => ['is_primary' => true]]);
+        }
+
         return redirect()->route('dashboard')->with('ok', 'شرکت با موفقیت ثبت شد.');
     }
 
@@ -85,6 +91,12 @@ class DashboardController extends Controller
         }
 
         $company->update($data);
+        if (!empty($data['category_ids'])) {
+            $company->categories()->sync($data['category_ids']);
+        } elseif ($company->category_id) {
+            $company->categories()->sync([$company->category_id => ['is_primary' => true]]);
+        }
+
         return redirect()->route('dashboard')->with('ok', 'تغییرات با موفقیت ذخیره شد.');
     }
 
@@ -214,6 +226,8 @@ class DashboardController extends Controller
             'name' => 'required|string|max:150',
             'slogan' => 'nullable|string|max:200',
             'category_id' => 'required|exists:categories,id',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
             'locations' => 'required|array|min:1',
             'locations.*.type' => 'required|string|max:50',
             'locations.*.title' => 'nullable|string|max:100',
