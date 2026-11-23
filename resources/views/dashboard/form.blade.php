@@ -535,7 +535,7 @@
     <!-- بخش ۴: اطلاعات تماس و افراد کلیدی -->
     <div class="form-card">
       <h3>
-        <span>۴. شماره‌های تماس و افراد کلیدی (B2B)</span>
+        <span>۴. شماره‌های تماس و افراد کلیدی</span>
         <span class="badge" style="background:#f4f6f9">دسترسی خریداران</span>
       </h3>
 
@@ -716,7 +716,8 @@
         </div>
         <div class="field">
           <label>آدرس ایمیل رسمی شرکت (اختیاری)</label>
-          <input type="email" name="email" value="{{ $f('email') }}" placeholder="مثال: info@company.ir">
+          <input type="email" name="email" id="email_input" value="{{ $f('email') }}" placeholder="مثال: info@company.ir" style="transition:all 0.2s ease;">
+          <div id="email_feedback" style="display:none;font-size:12px;margin-top:5px;font-weight:500;"></div>
         </div>
       </div>
 
@@ -1231,6 +1232,57 @@ document.addEventListener('DOMContentLoaded', function() {
   initCategorySearch();
   toggleServices();
 
+  // Real-time email validation
+  const emailInput = document.getElementById('email_input');
+  const emailFeedback = document.getElementById('email_feedback');
+
+  function validateEmailField(showSuccess = true) {
+    if (!emailInput) return true;
+    const val = emailInput.value.trim();
+    if (!val) {
+      emailInput.style.borderColor = '';
+      emailInput.style.boxShadow = '';
+      if (emailFeedback) {
+        emailFeedback.style.display = 'none';
+        emailFeedback.textContent = '';
+      }
+      return true;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (emailRegex.test(val)) {
+      emailInput.style.borderColor = '#16a34a';
+      emailInput.style.boxShadow = '0 0 0 3px rgba(22, 163, 74, 0.12)';
+      if (emailFeedback) {
+        if (showSuccess) {
+          emailFeedback.style.display = 'block';
+          emailFeedback.style.color = '#16a34a';
+          emailFeedback.textContent = '✓ فرمت ایمیل معتبر است';
+        } else {
+          emailFeedback.style.display = 'none';
+        }
+      }
+      return true;
+    } else {
+      emailInput.style.borderColor = '#dc2626';
+      emailInput.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.12)';
+      if (emailFeedback) {
+        emailFeedback.style.display = 'block';
+        emailFeedback.style.color = '#dc2626';
+        emailFeedback.textContent = '⚠️ فرمت ایمیل نامعتبر است (مثال: info@company.ir)';
+      }
+      return false;
+    }
+  }
+
+  if (emailInput) {
+    emailInput.addEventListener('input', () => validateEmailField(true));
+    emailInput.addEventListener('blur', () => validateEmailField(true));
+    if (emailInput.value.trim()) {
+      validateEmailField(false);
+    }
+  }
+
   // Validate at least 1 category on form submission
   const companyForm = document.querySelector('form');
   if (companyForm) {
@@ -1245,6 +1297,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const noAlert = document.getElementById('no_categories_alert');
         if (noAlert) noAlert.style.display = 'block';
+        return false;
+      }
+
+      if (emailInput && !validateEmailField(true)) {
+        e.preventDefault();
+        alert('لطفاً فرمت ایمیل را اصلاح فرمایید یا فیلد را خالی بگذارید.');
+        emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        emailInput.focus();
         return false;
       }
     });
