@@ -131,7 +131,13 @@
 
       <!-- فرصت‌های شغلی فعال شرکت -->
       @php
-        $activeJobs = $company->jobPostings()->active()->latest()->get();
+        try {
+            $activeJobs = \Illuminate\Support\Facades\Schema::hasTable('job_postings')
+                ? $company->jobPostings()->active()->latest()->get()
+                : collect();
+        } catch (\Throwable $e) {
+            $activeJobs = collect();
+        }
       @endphp
       @if($activeJobs->count() > 0)
         <div class="card" style="margin-bottom:20px;border:1px solid #bae6fd;background:#f0f9ff">

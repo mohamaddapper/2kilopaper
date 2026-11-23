@@ -13,14 +13,30 @@ class DashboardController extends Controller
     public function index(Request $r)
     {
         $user = $r->user();
-        $companies = $user->companies()->latest()->get();
-        $jobs = $user->jobPostings()->with(['company', 'applications'])->latest()->get();
-        $totalApplications = \App\Models\JobApplication::whereHas('jobPosting', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->count();
-        $recentApplications = \App\Models\JobApplication::whereHas('jobPosting', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->with(['jobPosting.company'])->latest()->take(20)->get();
+        $companies = $user ? $user->companies()->latest()->get() : collect();
+
+        $hasJobsTable = false;
+        $hasAppsTable = false;
+        try {
+            $hasJobsTable = \Illuminate\Support\Facades\Schema::hasTable('job_postings');
+            $hasAppsTable = \Illuminate\Support\Facades\Schema::hasTable('job_applications');
+        } catch (\Throwable $e) {}
+
+        $jobs = ($hasJobsTable && $user)
+            ? $user->jobPostings()->with(['company', 'applications'])->latest()->get()
+            : collect();
+
+        $totalApplications = ($hasAppsTable && $user)
+            ? \App\Models\JobApplication::whereHas('jobPosting', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->count()
+            : 0;
+
+        $recentApplications = ($hasAppsTable && $user)
+            ? \App\Models\JobApplication::whereHas('jobPosting', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->with(['jobPosting.company'])->latest()->take(20)->get()
+            : collect();
 
         return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications'));
     }
