@@ -38,6 +38,11 @@
     <div style="flex:1;min-width:250px">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
+        @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->is_admin))
+          <a href="{{ route('companies.edit', $company) }}" class="btn small ghost" style="font-size:12px;padding:3px 10px;font-weight:700">
+            ✏️ ویرایش
+          </a>
+        @endif
         @if($company->activeTier() === 'gold')
           <span class="badge gold" style="font-size:13px;padding:3px 12px">★ ویژه طلایی</span>
         @elseif($company->activeTier() === 'silver')
@@ -82,6 +87,11 @@
 
     <!-- دکمه‌های اقدام سریع -->
     <div style="display:flex;gap:8px;flex-direction:column;min-width:180px">
+      @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->is_admin))
+        <a href="{{ route('companies.edit', $company) }}" class="btn" style="background:#0284c7;text-align:center;font-weight:700;font-size:13.5px">
+          ✏️ ویرایش اطلاعات شرکت
+        </a>
+      @endif
       @if($company->phone)
         <a href="tel:{{ $company->phone }}" class="btn" style="text-align:center;font-weight:700">📞 تماس: {{ $company->phone }}</a>
       @endif
@@ -99,8 +109,7 @@
 
   <!-- برچسب‌های خدمات و محصولات تخصصی -->
   @if($company->services && count($company->services) > 0)
-    <div class="card" style="margin-bottom:20px;padding:16px 20px">
-      <h3 style="margin:0 0 12px;font-size:16px;color:var(--primary)">🏷️ محصولات و خدمات قابل ارائه:</h3>
+    <div class="card" style="margin-bottom:20px;padding:14px 18px">
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         @foreach($company->services as $srv)
           <span class="badge" style="background:#eef3f9;color:#1e3a8a;font-size:13px;padding:5px 12px;border:1px solid #dbeafe">{{ $srv }}</span>
@@ -116,13 +125,20 @@
     <div>
       <!-- متن معرفی شرکت -->
       <div class="card" style="margin-bottom:20px">
-        <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">معرفی و شرح کالا و خدمات</h3>
+        <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">شرح کالا و خدمات</h3>
         <div style="line-height:2;color:#334155;font-size:15px;white-space:pre-line">{!! e($company->description) !!}</div>
       </div>
 
       <!-- موقعیت‌های مکانی و دفاتر شرکت -->
       @php
-        $locations = $company->locations;
+        $locations = (array)($company->locations ?? []);
+        if (!empty($locations)) {
+            usort($locations, function($a, $b) {
+                $pA = !empty($a['is_primary']) ? 1 : 0;
+                $pB = !empty($b['is_primary']) ? 1 : 0;
+                return $pB <=> $pA;
+            });
+        }
       @endphp
       @if($locations && count($locations) > 0)
         <div class="card" style="margin-bottom:20px">
@@ -135,6 +151,11 @@
             @foreach($locations as $loc)
               @php
                 $tInfo = \App\Models\Company::getLocationTypeInfo($loc['type'] ?? 'factory');
+                $addrParts = array_filter([
+                    $loc['province_name'] ?? null,
+                    $loc['city_name'] ?? null,
+                    $loc['address'] ?? null,
+                ]);
               @endphp
               <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:14px">
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
@@ -143,9 +164,6 @@
                     <b style="color:var(--primary);font-size:15px">
                       {{ $tInfo['title'] }}
                     </b>
-                    @if(!empty($loc['is_primary']))
-                      <span class="badge ok" style="font-size:11px">آدرس اصلی</span>
-                    @endif
                   </div>
                   <div style="display:flex;gap:6px;flex-wrap:wrap">
                     @if(!empty($loc['phone']))
@@ -162,9 +180,7 @@
                 </div>
 
                 <p style="margin:4px 0 0;color:var(--text);font-size:14px;line-height:1.8">
-                  @if(!empty($loc['province_name']))<b>استان:</b> {{ $loc['province_name'] }} | @endif
-                  @if(!empty($loc['city_name']))<b>شهر:</b> {{ $loc['city_name'] }} | @endif
-                  {{ $loc['address'] }}
+                  {{ implode('، ', $addrParts) }}
                 </p>
               </div>
             @endforeach
@@ -178,9 +194,10 @@
             <div style="margin-bottom:14px">
               <b style="color:var(--primary);font-size:14.5px">🏭 آدرس کارخانه / کارگاه:</b>
               <p style="margin:4px 0 0;color:var(--text)">
-                @if($company->factory_province){{ $company->factory_province }}، @endif
-                @if($company->factory_city){{ $company->factory_city }}، @endif
-                {{ $company->factory_address ?: $company->address }}
+                @php
+                  $fParts = array_filter([$company->factory_province, $company->factory_city, $company->factory_address ?: $company->address]);
+                @endphp
+                {{ implode('، ', $fParts) }}
               </p>
             </div>
           @endif
@@ -189,9 +206,10 @@
             <div>
               <b style="color:var(--primary);font-size:14.5px">🏢 دفتر مرکزی / فروشگاه:</b>
               <p style="margin:4px 0 0;color:var(--text)">
-                @if($company->office_province){{ $company->office_province }}، @endif
-                @if($company->office_city){{ $company->office_city }}، @endif
-                {{ $company->office_address }}
+                @php
+                  $oParts = array_filter([$company->office_province, $company->office_city, $company->office_address]);
+                @endphp
+                {{ implode('، ', $oParts) }}
               </p>
             </div>
           @endif
@@ -201,7 +219,7 @@
       <!-- گالری تصاویر -->
       @if($company->gallery && count($company->gallery) > 0)
         <div class="card" style="margin-bottom:20px">
-          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📸 تصاویر کارخانه و محصولات</h3>
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📸 تصاویر</h3>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px">
             @foreach($company->gallery as $img)
               <a href="{{ asset($img) }}" target="_blank" style="display:block;height:140px;border-radius:8px;overflow:hidden;border:1px solid var(--border)">
@@ -223,14 +241,14 @@
         @endphp
         @if($embedUrl)
           <div class="card" style="margin-bottom:20px">
-            <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیوی معرفی</h3>
+            <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیو</h3>
             <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px">
               <iframe src="{{ $embedUrl }}" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen></iframe>
             </div>
           </div>
         @elseif(str_contains($rawVideo, '<iframe'))
           <div class="card" style="margin-bottom:20px">
-            <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیوی معرفی</h3>
+            <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیو</h3>
             <div style="margin-top:10px;text-align:center">
               {!! $rawVideo !!}
             </div>
@@ -357,5 +375,83 @@
     </div>
   </div>
 
+  <!-- بخش اطلاعات صفحه (دقیقاً مشابه تصویر ارسالی) -->
+  <div style="margin-top:30px">
+    <div style="display:flex;align-items:center;margin-bottom:16px">
+      <div style="flex:1;height:1px;background:#e2e8f0"></div>
+      <span style="padding:0 16px;color:#64748b;font-weight:700;font-size:15px">اطلاعات صفحه</span>
+      <div style="flex:1;height:1px;background:#e2e8f0"></div>
+    </div>
+
+    <div class="card" style="padding:22px;margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#475569">
+          <span>📅 <b>تاریخ ایجاد صفحه:</b></span>
+          <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->created_at) }}</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#475569">
+          <span>⏰ <b>آخرین به‌روزرسانی:</b></span>
+          <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->updated_at) }}</span>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <label for="short_link_input" style="font-size:13.5px;font-weight:700;color:#334155;margin:0">
+            🔗 لینک جهت درج در شبکه‌های اجتماعی:
+          </label>
+          <div style="display:flex;gap:8px;align-items:center;flex:1;max-width:440px;min-width:260px">
+            <input type="text" id="short_link_input" value="{{ url('/?p=' . $company->id) }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:8px 12px;border-radius:6px;font-size:13.5px;flex:1;color:#1e293b;font-family:inherit">
+            <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" style="background:#0284c7;font-size:13px;padding:8px 18px;white-space:nowrap;font-weight:700;cursor:pointer">
+              برای کپی کلیک کنید
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function copyShortLink() {
+    const input = document.getElementById('short_link_input');
+    const btn = document.getElementById('copy_short_link_btn');
+    if (!input) return;
+
+    input.select();
+    input.setSelectionRange(0, 99999);
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(input.value).then(() => {
+        onCopied();
+      }).catch(() => {
+        fallbackCopy();
+      });
+    } else {
+      fallbackCopy();
+    }
+
+    function fallbackCopy() {
+      try {
+        document.execCommand('copy');
+        onCopied();
+      } catch (err) {
+        alert('خطا در کپی خودکار لینک. لطفاً متن داخل کادر را به صورت دستی کپی نمایید.');
+      }
+    }
+
+    function onCopied() {
+      if (btn) {
+        const origText = btn.textContent;
+        btn.textContent = '✓ کپی شد!';
+        btn.style.background = '#16a34a';
+        setTimeout(() => {
+          btn.textContent = origText;
+          btn.style.background = '#0284c7';
+        }, 2000);
+      }
+    }
+  }
+  </script>
 </div>
 @endsection

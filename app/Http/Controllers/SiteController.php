@@ -9,8 +9,15 @@ use Illuminate\Support\Facades\Cache;
 
 class SiteController extends Controller
 {
-    public function home()
+    public function home(Request $r)
     {
+        if ($p = (int) $r->query('p')) {
+            $company = Company::find($p);
+            if ($company && $company->status === 'approved') {
+                return redirect()->route('company', $company);
+            }
+        }
+
         $categories = Cache::remember('home.categories', 600, fn () => Category::whereNull('parent_id')->orderBy('sort')->get());
         $featured = Company::approved()->whereNotNull('tier')->ranked()->with(['city', 'category'])->limit(6)->get();
         return view('home', compact('categories', 'featured'));
