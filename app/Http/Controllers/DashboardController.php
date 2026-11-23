@@ -201,12 +201,51 @@ class DashboardController extends Controller
             ])->values(),
         ])->values();
 
+        $pillars = Category::whereNull('parent_id')
+            ->with(['children' => fn($q) => $q->with('children')->orderBy('name')])
+            ->orderBy('sort')
+            ->get();
+
+        $categoriesTree = $pillars->map(fn($p) => [
+            'id' => $p->id,
+            'name' => $p->name,
+            'slug' => $p->slug,
+            'icon' => $p->icon,
+            'children' => $p->children->map(fn($ch) => [
+                'id' => $ch->id,
+                'name' => $ch->name,
+                'slug' => $ch->slug,
+                'sub_children' => $ch->children->map(fn($sub) => [
+                    'id' => $sub->id,
+                    'name' => $sub->name,
+                    'slug' => $sub->slug,
+                ])->values(),
+            ])->values(),
+        ])->values();
+
+        $initialPillarId = null;
+        $selectedCatId = old('category_id', $company->category_id);
+        if ($selectedCatId) {
+            $cat = Category::with('parent.parent')->find($selectedCatId);
+            if ($cat) {
+                if (!$cat->parent_id) {
+                    $initialPillarId = $cat->id;
+                } elseif (!$cat->parent?->parent_id) {
+                    $initialPillarId = $cat->parent_id;
+                } else {
+                    $initialPillarId = $cat->parent->parent_id;
+                }
+            }
+        }
+
         return [
             'company' => $company,
             'provinces' => $provinces,
             'locationsTree' => $locationsTree,
             'locationTypes' => Company::locationTypes(),
-            'categories' => Category::whereNull('parent_id')->with('children')->orderBy('sort')->get(),
+            'categories' => $pillars,
+            'categoriesTree' => $categoriesTree,
+            'initialPillarId' => $initialPillarId,
         ];
     }
 

@@ -129,18 +129,27 @@
         </div>
       </div>
 
-      <div class="field">
-        <label>دسته‌بندی اصلی در دایرکتوری <span style="color:red">*</span></label>
-        <select name="category_id" required>
-          <option value="">-- انتخاب دسته‌بندی اصلی --</option>
-          @foreach($categories as $pillar)
-            <optgroup label="{{ $pillar->icon }} {{ $pillar->name }}">
-              @foreach($pillar->children as $ch)
-                <option value="{{ $ch->id }}" @selected($f('category_id') == $ch->id)>{{ $ch->name }}</option>
-              @endforeach
-            </optgroup>
-          @endforeach
-        </select>
+      <div class="form-row">
+        <!-- گام ۱: انتخاب ستون / نقش اصلی -->
+        <div class="field" style="flex:1">
+          <label>نقش یا شاخه اصلی فعالیت <span style="color:red">*</span></label>
+          <select id="main_pillar_select" required>
+            <option value="">-- انتخاب کنید: تولیدکننده، چاپخانه، فروشنده و... --</option>
+            @foreach($categories as $pillar)
+              <option value="{{ $pillar->id }}" data-slug="{{ $pillar->slug }}" @selected($initialPillarId == $pillar->id)>
+                {{ $pillar->icon }} {{ $pillar->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <!-- گام ۲: انتخاب دسته‌بندی تخصصی متناسب با شاخه بالا -->
+        <div class="field fade-in" id="sub_category_wrapper" style="flex:1;display:none">
+          <label>دسته‌بندی تخصصی در دایرکتوری <span style="color:red">*</span></label>
+          <select name="category_id" id="sub_category_select" required>
+            <option value="">-- انتخاب دسته‌بندی تخصصی --</option>
+          </select>
+        </div>
       </div>
 
       <div class="field" style="margin-top:12px;margin-bottom:0">
@@ -614,7 +623,108 @@
 <script>
 const locationsTree = @json($locationsTree);
 const locationTypesData = @json($locationTypes);
+const categoriesTree = @json($categoriesTree);
+const initialPillarId = '{{ $initialPillarId ?? "" }}';
+const initialCategoryId = '{{ old("category_id", $company->category_id) }}';
 let nextLocIndex = {{ count($locList) }};
+
+function initCategoryCascade() {
+  const pillarSelect = document.getElementById('main_pillar_select');
+  const subCatWrapper = document.getElementById('sub_category_wrapper');
+  const subCatSelect = document.getElementById('sub_category_select');
+
+  if (!pillarSelect || !subCatWrapper || !subCatSelect) return;
+
+  function renderSubCategories(pillarId, selectedVal = '') {
+    subCatSelect.innerHTML = '<option value="">-- انتخاب دسته‌بندی تخصصی --</option>';
+    if (!pillarId) {
+      subCatWrapper.style.display = 'none';
+      return;
+    }
+
+    const pillar = categoriesTree.find(p => p.id == pillarId);
+    if (!pillar || !pillar.children || pillar.children.length === 0) {
+      subCatWrapper.style.display = 'none';
+      return;
+    }
+
+    pillar.children.forEach(ch => {
+      if (ch.sub_children && ch.sub_children.length > 0) {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = ch.name;
+
+        const parentOpt = document.createElement('option');
+        parentOpt.value = ch.id;
+        parentOpt.textContent = ch.name + ' (همه موارد / شاخه کلی)';
+        if (selectedVal && selectedVal == ch.id) {
+          parentOpt.selected = true;
+        }
+        optgroup.appendChild(parentOpt);
+
+        ch.sub_children.forEach(sub => {
+          const opt = document.createElement('option');
+          opt.value = sub.id;
+          opt.textContent = '— ' + sub.name;
+          if (selectedVal && selectedVal == sub.id) {
+            opt.selected = true;
+          }
+          optgroup.appendChild(opt);
+        });
+
+        subCatSelect.appendChild(optgroup);
+      } else {
+        const opt = document.createElement('option');
+        opt.value = ch.id;
+        opt.textContent = ch.name;
+        if (selectedVal && selectedVal == ch.id) {
+          opt.selected = true;
+        }
+        subCatSelect.appendChild(opt);
+      }
+    });
+
+    subCatWrapper.style.display = 'block';
+  }
+
+  pillarSelect.addEventListener('change', function() {
+    renderSubCategories(this.value);
+
+    // Auto-assist Section 1 activity checkboxes based on chosen pillar:
+    const selectedOpt = this.options[this.selectedIndex];
+    const slug = selectedOpt ? selectedOpt.dataset.slug : '';
+    if (slug === 'factories') {
+      const actCarton = document.getElementById('act_carton');
+      if (actCarton && !actCarton.checked) {
+        actCarton.checked = true;
+        toggleServices();
+      }
+    } else if (slug === 'printing-services') {
+      const actPrint = document.getElementById('act_print');
+      if (actPrint && !actPrint.checked) {
+        actPrint.checked = true;
+        toggleServices();
+      }
+    } else if (slug === 'service-providers') {
+      const actPost = document.getElementById('act_post_press');
+      if (actPost && !actPost.checked) {
+        actPost.checked = true;
+        toggleServices();
+      }
+    } else if (slug === 'stores' || slug === 'importers') {
+      const actRaw = document.getElementById('act_raw');
+      if (actRaw && !actRaw.checked) {
+        actRaw.checked = true;
+        toggleServices();
+      }
+    }
+  });
+
+  // Initial load
+  if (initialPillarId) {
+    pillarSelect.value = initialPillarId;
+    renderSubCategories(initialPillarId, initialCategoryId);
+  }
+}
 
 function initLocationCascade(idx, initialProvinceVal = '', initialCityVal = '') {
   const provEl = document.getElementById('loc_prov_' + idx);
@@ -827,6 +937,7 @@ function toggleServices() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  initCategoryCascade();
   toggleServices();
 
   // Initialize existing location cards
