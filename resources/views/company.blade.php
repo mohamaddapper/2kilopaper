@@ -142,10 +142,7 @@
       @endphp
       @if($locations && count($locations) > 0)
         <div class="card" style="margin-bottom:20px">
-          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">
-            📍 موقعیت‌های مکانی و شعب شرکت
-            <span class="badge" style="background:#eef3f9;color:var(--primary);font-size:12px;margin-right:6px">{{ count($locations) }} موقعیت ثبت‌شده</span>
-          </h3>
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📍 موقعیت‌های مکانی</h3>
           
           <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
             @foreach($locations as $loc)
@@ -188,7 +185,7 @@
         </div>
       @elseif($company->factory_address || $company->address || $company->office_address)
         <div class="card" style="margin-bottom:20px">
-          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📍 آدرس کارخانه و دفاتر</h3>
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📍 موقعیت‌های مکانی</h3>
           
           @if($company->factory_address || $company->address)
             <div style="margin-bottom:14px">
