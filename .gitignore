@@ -5,6 +5,7 @@
 .env.production
 .env.additions
 .env.for-host
+*.zip
 .phpactor.json
 .phpunit.result.cache
 /.fleet
