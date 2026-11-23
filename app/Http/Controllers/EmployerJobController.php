@@ -144,6 +144,10 @@ class EmployerJobController extends Controller
 
         $job->load(['applications.province', 'applications.city', 'company']);
 
+        foreach ($job->applications as $app) {
+            \App\Services\ViewTracker::track($app, 'application', $app->user_id);
+        }
+
         return view('dashboard.jobs.applications', compact('job'));
     }
 
@@ -171,8 +175,27 @@ class EmployerJobController extends Controller
         return back()->with('ok', 'وضعیت متقاضی به‌روزرسانی شد.');
     }
 
+    private function cleanNumericInput($val): ?int
+    {
+        if ($val === null || trim((string)$val) === '') {
+            return null;
+        }
+        $persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        $arabic  = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+        $english = ['0','1','2','3','4','5','6','7','8','9'];
+        $val = str_replace($persian, $english, (string)$val);
+        $val = str_replace($arabic, $english, $val);
+        $val = preg_replace('/[^\d]/', '', $val);
+        return $val !== '' ? (int)$val : null;
+    }
+
     private function validateJob(Request $request): array
     {
+        $request->merge([
+            'salary_min' => $this->cleanNumericInput($request->input('salary_min')),
+            'salary_max' => $this->cleanNumericInput($request->input('salary_max')),
+        ]);
+
         return $request->validate([
             'title' => 'required|string|max:191',
             'company_id' => 'nullable|exists:companies,id',
@@ -183,8 +206,8 @@ class EmployerJobController extends Controller
             'military_service' => 'nullable|string|max:50',
             'experience_years' => 'required|string|max:20',
             'salary_type' => 'required|string|max:50',
-            'salary_min' => 'nullable|numeric',
-            'salary_max' => 'nullable|numeric',
+            'salary_min' => 'nullable|numeric|min:0',
+            'salary_max' => 'nullable|numeric|min:0',
             'province_id' => 'nullable|exists:provinces,id',
             'city_id' => 'nullable|exists:cities,id',
             'workplace_type' => 'required|string|max:50',

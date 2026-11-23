@@ -49,6 +49,7 @@ class SiteController extends Controller
     public function company(Company $company)
     {
         abort_unless($company->status === 'approved', 404);
+        \App\Services\ViewTracker::track($company, 'company', $company->user_id);
         $company->load(['city', 'category', 'categories' => fn($q) => $q->with('parent')]);
         return view('company', compact('company'));
     }

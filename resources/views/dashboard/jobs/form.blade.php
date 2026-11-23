@@ -152,13 +152,23 @@
         </div>
 
         <div id="salary_min_box">
-          <label style="display:block;margin-bottom:6px;font-size:13px">حداقل حقوق (تومان)</label>
-          <input type="number" name="salary_min" value="{{ old('salary_min', $job->salary_min) }}" placeholder="مثال: 15000000" style="width:100%;border:1px solid var(--border)">
+          <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">حداقل حقوق (تومان)</label>
+          <input type="text" inputmode="numeric" name="salary_min" id="salary_min_input" class="salary-number-format"
+                 value="{{ old('salary_min', $job->salary_min ? number_format((int)$job->salary_min) : '') }}"
+                 placeholder="مثال: ۱۵,۰۰۰,۰۰۰"
+                 autocomplete="off"
+                 style="width:100%;border:1px solid var(--border);padding:9px 12px;font-size:14px;border-radius:8px">
+          <span class="salary-helper" id="salary_min_helper" style="font-size:11.5px;color:var(--muted);display:block;margin-top:4px"></span>
         </div>
 
         <div id="salary_max_box">
-          <label style="display:block;margin-bottom:6px;font-size:13px">حداکثر حقوق (تومان)</label>
-          <input type="number" name="salary_max" value="{{ old('salary_max', $job->salary_max) }}" placeholder="مثال: 25000000" style="width:100%;border:1px solid var(--border)">
+          <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">حداکثر حقوق (تومان)</label>
+          <input type="text" inputmode="numeric" name="salary_max" id="salary_max_input" class="salary-number-format"
+                 value="{{ old('salary_max', $job->salary_max ? number_format((int)$job->salary_max) : '') }}"
+                 placeholder="مثال: ۲۵,۰۰۰,۰۰۰"
+                 autocomplete="off"
+                 style="width:100%;border:1px solid var(--border);padding:9px 12px;font-size:14px;border-radius:8px">
+          <span class="salary-helper" id="salary_max_helper" style="font-size:11.5px;color:var(--muted);display:block;margin-top:4px"></span>
         </div>
       </div>
 
@@ -170,35 +180,35 @@
       @php
         $benefits = $job->benefits ?? [];
       @endphp
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="benefits[has_service]" id="chk_service" value="1" @checked(!empty($benefits['has_service']))>
-          <span>🚌 <b>سرویس رفت‌وآمد</b></span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
+          <input type="checkbox" name="benefits[has_service]" id="chk_service" value="1" @checked(!empty($benefits['has_service'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🚌 سرویس رفت‌وآمد</span>
         </label>
 
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="benefits[has_meal]" value="1" @checked(!empty($benefits['has_meal']))>
-          <span>🍽️ <b>وعده غذایی (ناهار / صبحانه)</b></span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
+          <input type="checkbox" name="benefits[has_meal]" value="1" @checked(!empty($benefits['has_meal'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🍽️ وعده غذایی (ناهار / صبحانه)</span>
         </label>
 
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="benefits[has_accommodation]" value="1" @checked(!empty($benefits['has_accommodation']))>
-          <span>🛏️ <b>خوابگاه / اسکان پرسنل</b></span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
+          <input type="checkbox" name="benefits[has_accommodation]" value="1" @checked(!empty($benefits['has_accommodation'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🛏️ خوابگاه / اسکان پرسنل</span>
         </label>
 
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="benefits[has_insurance]" value="1" @checked(!empty($benefits['has_insurance']) || !$job->exists)>
-          <span>🛡️ <b>بیمه تأمین اجتماعی</b></span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
+          <input type="checkbox" name="benefits[has_insurance]" value="1" @checked(!empty($benefits['has_insurance']) || !$job->exists) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🛡️ بیمه تأمین اجتماعی</span>
         </label>
 
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="benefits[has_supplementary_insurance]" value="1" @checked(!empty($benefits['has_supplementary_insurance']))>
-          <span>🏥 <b>بیمه تکمیلی درمان</b></span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
+          <input type="checkbox" name="benefits[has_supplementary_insurance]" value="1" @checked(!empty($benefits['has_supplementary_insurance'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🏥 بیمه تکمیلی درمان</span>
         </label>
 
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="benefits[has_bonus]" value="1" @checked(!empty($benefits['has_bonus']))>
-          <span>💰 <b>پاداش تولید / آکورد / پورسانت</b></span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
+          <input type="checkbox" name="benefits[has_bonus]" value="1" @checked(!empty($benefits['has_bonus'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">💰 پاداش تولید / آکورد / پورسانت</span>
         </label>
       </div>
 
@@ -349,6 +359,59 @@ document.addEventListener('DOMContentLoaded', function() {
       serviceRow.style.display = this.checked ? 'block' : 'none';
     });
   }
+
+  // Salary formatting (thousands separator & Persian/English digits)
+  function cleanToRawDigits(str) {
+    if (!str) return '';
+    var persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    var arabic  = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    for (var i = 0; i < 10; i++) {
+      str = str.split(persian[i]).join(i.toString());
+      str = str.split(arabic[i]).join(i.toString());
+    }
+    return str.replace(/\D/g, '');
+  }
+
+  function formatCommas(str) {
+    var raw = cleanToRawDigits(str);
+    if (!raw) return '';
+    return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function updateSalaryHelper(input, helperId) {
+    var helper = document.getElementById(helperId);
+    if (!helper) return;
+    var raw = cleanToRawDigits(input.value);
+    if (!raw || parseInt(raw, 10) === 0) {
+      helper.textContent = '';
+      return;
+    }
+    var num = parseInt(raw, 10);
+    if (num >= 1000000) {
+      var millions = (num / 1000000).toLocaleString('fa-IR', { maximumFractionDigits: 2 });
+      helper.textContent = 'معادل ' + millions + ' میلیون تومان';
+      helper.style.color = '#0284c7';
+    } else if (num >= 1000) {
+      var thousands = (num / 1000).toLocaleString('fa-IR', { maximumFractionDigits: 1 });
+      helper.textContent = 'معادل ' + thousands + ' هزار تومان';
+      helper.style.color = 'var(--muted)';
+    } else {
+      helper.textContent = num.toLocaleString('fa-IR') + ' تومان';
+      helper.style.color = 'var(--muted)';
+    }
+  }
+
+  document.querySelectorAll('.salary-number-format').forEach(function(input) {
+    var helperId = input.id === 'salary_min_input' ? 'salary_min_helper' : 'salary_max_helper';
+    if (input.value) {
+      input.value = formatCommas(input.value);
+      updateSalaryHelper(input, helperId);
+    }
+    input.addEventListener('input', function() {
+      this.value = formatCommas(this.value);
+      updateSalaryHelper(this, helperId);
+    });
+  });
 });
 </script>
 @endsection

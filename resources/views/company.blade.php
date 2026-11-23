@@ -64,6 +64,7 @@
         @if(data_get($company->tech_specs, 'established_year'))
           <span>📅 <b>سال تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
         @endif
+        <span>👁️ <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
       </div>
 
       <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت -->

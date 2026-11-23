@@ -89,7 +89,7 @@ class JobController extends Controller
             abort(404);
         }
 
-        $job->increment('views_count');
+        \App\Services\ViewTracker::track($job, 'job', $job->user_id);
         $job->load(['company', 'category', 'province', 'city', 'user']);
 
         // Related jobs in the same category or city

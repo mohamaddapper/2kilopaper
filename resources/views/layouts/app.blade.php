@@ -8,7 +8,7 @@
 <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"></noscript>
-<link rel="stylesheet" href="{{ asset('assets/style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/style.css') }}?v={{ file_exists(public_path('assets/style.css')) ? filemtime(public_path('assets/style.css')) : '1.2' }}">
 @stack('head')
 </head>
 <body>

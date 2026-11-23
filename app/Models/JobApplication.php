@@ -25,6 +25,7 @@ class JobApplication extends Model
         'resume_file',
         'cover_letter',
         'status',
+        'views_count',
         'employer_note',
         'interview_at',
     ];

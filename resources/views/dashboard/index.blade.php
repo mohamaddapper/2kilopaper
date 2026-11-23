@@ -364,7 +364,7 @@
                 <tr>
                   <td>
                     <b>{{ $app->full_name }}</b>
-                    <span style="display:block;font-size:11.5px;color:var(--muted)">{{ $app->created_at->diffForHumans() }}</span>
+                    <span style="display:block;font-size:11.5px;color:var(--muted)">{{ $app->created_at->diffForHumans() }} · 👁️ {{ number_format($app->views_count ?? 0) }} بازدید</span>
                   </td>
                   <td>
                     <a href="{{ route('jobs.show', $app->jobPosting) }}" target="_blank" style="color:var(--primary);text-decoration:none">

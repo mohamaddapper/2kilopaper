@@ -38,6 +38,7 @@
                   {{ $app->status_label }}
                 </span>
                 <span style="font-size:12px;color:var(--muted)">📅 {{ $app->created_at->diffForHumans() }}</span>
+                <span style="font-size:12px;color:var(--muted)">👁️ {{ number_format($app->views_count ?? 0) }} بار مشاهده</span>
               </div>
 
               <div style="display:flex;align-items:center;gap:14px;margin-top:8px;font-size:13.5px;color:var(--muted);flex-wrap:wrap">
