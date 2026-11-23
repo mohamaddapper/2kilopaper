@@ -14,7 +14,7 @@
     @foreach($cities as $c)<option value="{{ $c->id }}" @selected($f('city_id')==$c->id)>{{ $c->name }}</option>@endforeach</select></div>
   <div class="field"><label>معرفی</label><textarea name="description" rows="5">{{ $f('description') }}</textarea></div>
   <div class="field"><label>تلفن</label><input name="phone" value="{{ $f('phone') }}"></div>
-  <div class="field"><label>وب‌سایت</label><input name="website" value="{{ $f('website') }}" placeholder="https://"></div>
+  <div class="field"><label>وب‌سایت</label><input name="website" value="{{ $f('website') }}" placeholder="مثال: 2kilopaper.ir"></div>
   <div class="field"><label>آدرس</label><input name="address" value="{{ $f('address') }}"></div>
   @if($errors->any())<ul style="color:#c0392b">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>@endif
   <button class="btn">ذخیره</button>

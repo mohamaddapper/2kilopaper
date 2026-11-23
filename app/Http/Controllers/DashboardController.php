@@ -53,7 +53,16 @@ class DashboardController extends Controller
 
     private function validated(Request $r): array
     {
-        $r->merge(['phone' => normalize_phone((string) $r->input('phone'))]);
+        $website = trim((string) $r->input('website'));
+        if ($website !== '' && !preg_match('~^https?://~i', $website)) {
+            $website = 'https://' . $website;
+        }
+
+        $r->merge([
+            'phone' => normalize_phone((string) $r->input('phone')),
+            'website' => $website !== '' ? $website : null,
+        ]);
+
         return $r->validate([
             'name' => 'required|string|max:150',
             'category_id' => 'required|exists:categories,id',
@@ -62,6 +71,11 @@ class DashboardController extends Controller
             'phone' => 'nullable|string|max:20',
             'website' => 'nullable|url|max:255',
             'address' => 'nullable|string|max:255',
+        ], [
+            'name.required' => 'نام شرکت الزامی است.',
+            'category_id.required' => 'انتخاب دسته‌بندی الزامی است.',
+            'city_id.required' => 'انتخاب شهر الزامی است.',
+            'website.url' => 'آدرس وب‌سایت معتبر نیست (مثال: example.com)',
         ]);
     }
 }
