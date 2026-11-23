@@ -14,21 +14,37 @@
 <body>
 <header class="site"><div class="container nav">
   <a class="logo" href="{{ route('home') }}">{{ config('app.name') }}</a>
-  <ul>
-    <li><a href="{{ route('directory') }}">دایرکتوری</a></li>
-    @auth
-      <li><a href="{{ route('dashboard') }}">پنل من</a></li>
-      <li><form method="post" action="{{ route('logout') }}">@csrf<button class="btn ghost small">خروج</button></form></li>
-    @else
-      <li><a href="{{ route('login') }}">ورود</a></li>
-    @endauth
-  </ul>
+  @if(!empty($dashboardNav))
+    <div style="display:flex;align-items:center;gap:18px">
+      <a href="{{ route('directory') }}" style="color:var(--muted);font-size:14px;text-decoration:none">دایرکتوری</a>
+      <form method="post" action="{{ route('logout') }}" style="display:inline;margin:0">
+        @csrf
+        <button type="submit" style="background:none;border:none;color:var(--text);font-size:14.5px;font-family:inherit;cursor:pointer;padding:0;font-weight:500">خروج</button>
+      </form>
+    </div>
+  @else
+    <ul>
+      <li><a href="{{ route('directory') }}">دایرکتوری</a></li>
+      @auth
+        <li><a href="{{ route('dashboard') }}">پنل من</a></li>
+        <li><form method="post" action="{{ route('logout') }}">@csrf<button class="btn ghost small">خروج</button></form></li>
+      @else
+        <li><a href="{{ route('login') }}">ورود</a></li>
+      @endauth
+    </ul>
+  @endif
 </div></header>
 @yield('hero')
 <main class="container">
   @if(session('ok'))<div class="card" style="border-color:#2e9b5b;margin-bottom:16px">{{ session('ok') }}</div>@endif
   @yield('content')
 </main>
-<footer>© {{ config('app.name') }}</footer>
+<footer style="text-align:center;padding:24px 0;color:var(--muted);font-size:13px">
+  @if(!empty($dashboardNav))
+    © {{ config('app.name') }} · نمونه‌ی استاتیک
+  @else
+    © {{ config('app.name') }}
+  @endif
+</footer>
 </body>
 </html>

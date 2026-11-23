@@ -95,4 +95,27 @@ footer{background:#fff;border-top:1px solid var(--border);padding:20px 0;text-al
 .location-primary-label span{white-space:nowrap!important}
 .location-primary-label input[type="radio"]{width:17px;height:17px;margin:0;cursor:pointer;accent-color:var(--primary)}
 
+/* Dashboard Panel Styles */
+.dashboard-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;margin:28px 0 48px}
+@media(max-width:860px){.dashboard-layout{grid-template-columns:1fr}}
+.dashboard-sidebar-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px}
+.dashboard-menu{display:flex;flex-direction:column;gap:3px}
+.dashboard-menu-link{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;color:#475569;font-size:14px;font-weight:500;text-decoration:none;transition:all 0.15s ease;cursor:pointer}
+.dashboard-menu-link:hover{background:#f1f5f9;color:#1e293b}
+.dashboard-menu-link.active{background:#eff6ff;color:#1d4ed8;font-weight:700}
+.dash-alert{border-radius:8px;padding:12px 18px;margin-bottom:12px;font-size:13.5px;line-height:1.6}
+.dash-alert-warn{background:#fff8e1;border:1px solid #ffe58f;color:#855b00}
+.dash-alert-success{background:#e6f6ec;border:1px solid #b7eb8f;color:#135200}
+.dash-alert-danger{background:#fde8e8;border:1px solid #ffccc7;color:#a8071a}
+.dash-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+@media(max-width:768px){.dash-stat-grid{grid-template-columns:repeat(2,1fr)}}
+.dash-stat-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:right}
+.dash-stat-title{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500}
+.dash-stat-number{font-size:26px;font-weight:800;color:var(--text);line-height:1.1}
+.dash-table-card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.dash-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.dash-table th{padding:12px 18px;background:#fafbfd;color:#64748b;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);text-align:right}
+.dash-table td{padding:14px 18px;border-bottom:1px solid #f1f5f9;color:var(--text)}
+.dash-table tr:last-child td{border-bottom:0}
+
 
