@@ -42,6 +42,12 @@ class DashboardController extends Controller
             $data['gallery'] = array_slice($gallery, 0, 5);
         }
 
+        $categoryIds = (array) $r->input('category_ids', []);
+        $uniqueIds = array_slice(array_unique(array_filter(array_map('intval', $categoryIds))), 0, 10);
+        if (!empty($uniqueIds[0])) {
+            $data['category_id'] = $uniqueIds[0];
+        }
+
         $c = new Company($data);
         $c->user_id = $r->user()->id;
         $c->slug = Company::makeSlug($data['name']);
@@ -49,17 +55,11 @@ class DashboardController extends Controller
         $c->save();
 
         $syncData = [];
-        if (!empty($data['category_id'])) {
-            $syncData[$data['category_id']] = ['is_primary' => true];
+        foreach ($uniqueIds as $idx => $catId) {
+            $syncData[$catId] = ['is_primary' => ($idx === 0)];
         }
-        $secondary = $r->input('secondary_category_ids', []);
-        if (is_array($secondary)) {
-            foreach ($secondary as $secId) {
-                $secId = (int) $secId;
-                if ($secId && $secId != ($data['category_id'] ?? 0) && !isset($syncData[$secId])) {
-                    $syncData[$secId] = ['is_primary' => false];
-                }
-            }
+        if (empty($syncData) && !empty($data['category_id'])) {
+            $syncData[$data['category_id']] = ['is_primary' => true];
         }
         $c->categories()->sync($syncData);
 
@@ -95,20 +95,20 @@ class DashboardController extends Controller
             $data['gallery'] = array_slice($gallery, 0, 5);
         }
 
+        $categoryIds = (array) $r->input('category_ids', []);
+        $uniqueIds = array_slice(array_unique(array_filter(array_map('intval', $categoryIds))), 0, 10);
+        if (!empty($uniqueIds[0])) {
+            $data['category_id'] = $uniqueIds[0];
+        }
+
         $company->update($data);
 
         $syncData = [];
-        if (!empty($data['category_id'])) {
-            $syncData[$data['category_id']] = ['is_primary' => true];
+        foreach ($uniqueIds as $idx => $catId) {
+            $syncData[$catId] = ['is_primary' => ($idx === 0)];
         }
-        $secondary = $r->input('secondary_category_ids', []);
-        if (is_array($secondary)) {
-            foreach ($secondary as $secId) {
-                $secId = (int) $secId;
-                if ($secId && $secId != ($data['category_id'] ?? 0) && !isset($syncData[$secId])) {
-                    $syncData[$secId] = ['is_primary' => false];
-                }
-            }
+        if (empty($syncData) && !empty($data['category_id'])) {
+            $syncData[$data['category_id']] = ['is_primary' => true];
         }
         $company->categories()->sync($syncData);
 
@@ -275,17 +275,26 @@ class DashboardController extends Controller
             ];
         })->values();
 
-        // Existing secondary categories
-        $existingSecondaryCategories = [];
-        $oldSecIds = old('secondary_category_ids');
-        if (is_array($oldSecIds)) {
-            $existingSecondaryCategories = $categoriesFlat->whereIn('id', array_map('intval', $oldSecIds))->values();
+        // Selected categories (array of flat category objects)
+        $selectedCategories = [];
+        $oldCatIds = old('category_ids');
+        if (is_array($oldCatIds)) {
+            $catIdInts = array_values(array_filter(array_map('intval', $oldCatIds)));
+            $selectedCategories = $categoriesFlat->whereIn('id', $catIdInts)->values();
+            $order = array_flip($catIdInts);
+            $selectedCategories = $selectedCategories->sortBy(fn($item) => $order[$item['id']] ?? 999)->values();
         } elseif ($company->exists) {
-            $secIds = $company->categories()
-                ->where('categories.id', '!=', $company->category_id)
-                ->pluck('categories.id')
-                ->toArray();
-            $existingSecondaryCategories = $categoriesFlat->whereIn('id', $secIds)->values();
+            $companyCatIds = $company->categories()->orderByPivot('is_primary', 'desc')->pluck('categories.id')->toArray();
+            if (empty($companyCatIds) && $company->category_id) {
+                $companyCatIds = [$company->category_id];
+            }
+            if ($company->category_id && in_array($company->category_id, $companyCatIds)) {
+                $companyCatIds = array_values(array_unique(array_merge([$company->category_id], $companyCatIds)));
+            }
+            $order = array_flip($companyCatIds);
+            $selectedCategories = $categoriesFlat->whereIn('id', $companyCatIds)
+                ->sortBy(fn($item) => $order[$item['id']] ?? 999)
+                ->values();
         }
 
         return [
@@ -296,7 +305,7 @@ class DashboardController extends Controller
             'categories' => $pillars,
             'categoriesTree' => $categoriesTree,
             'categoriesFlat' => $categoriesFlat,
-            'existingSecondaryCategories' => $existingSecondaryCategories,
+            'selectedCategories' => $selectedCategories,
             'initialPillarId' => $initialPillarId,
         ];
     }
@@ -308,6 +317,11 @@ class DashboardController extends Controller
             $website = 'https://' . $website;
         }
 
+        $categoryIds = $r->input('category_ids');
+        if (is_array($categoryIds) && !empty($categoryIds)) {
+            $r->merge(['category_id' => $categoryIds[0]]);
+        }
+
         $r->merge([
             'phone' => normalize_phone((string) $r->input('phone')),
             'website' => $website !== '' ? $website : null,
@@ -317,10 +331,8 @@ class DashboardController extends Controller
             'name' => 'required|string|max:150',
             'slogan' => 'nullable|string|max:200',
             'category_id' => 'required|exists:categories,id',
-            'category_ids' => 'nullable|array',
+            'category_ids' => 'required|array|min:1|max:10',
             'category_ids.*' => 'exists:categories,id',
-            'secondary_category_ids' => 'nullable|array',
-            'secondary_category_ids.*' => 'exists:categories,id',
             'locations' => 'required|array|min:1',
             'locations.*.type' => 'required|string|max:50',
             'locations.*.province_id' => 'required|exists:provinces,id',
@@ -348,7 +360,10 @@ class DashboardController extends Controller
             'gallery.*' => 'nullable|image|max:6144',
         ], [
             'name.required' => 'نام شرکت الزامی است.',
-            'category_id.required' => 'انتخاب دسته‌بندی اصلی الزامی است.',
+            'category_id.required' => 'حداقل یک دسته‌بندی یا زمینه فعالیت را انتخاب کنید.',
+            'category_ids.required' => 'حداقل یک دسته‌بندی یا زمینه فعالیت را انتخاب کنید.',
+            'category_ids.min' => 'حداقل یک دسته‌بندی یا زمینه فعالیت را انتخاب کنید.',
+            'category_ids.max' => 'حداکثر می‌توانید ۱۰ دسته‌بندی انتخاب نمایید.',
             'locations.required' => 'حداقل وارد کردن یک آدرس یا موقعیت مکانی الزامی است.',
             'locations.min' => 'حداقل وارد کردن یک آدرس یا موقعیت مکانی الزامی است.',
             'locations.*.province_id.required' => 'انتخاب استان برای هر آدرس الزامی است.',

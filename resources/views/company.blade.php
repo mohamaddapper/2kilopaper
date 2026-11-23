@@ -63,10 +63,12 @@
 
       <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت -->
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
-        <span style="font-size:13px;font-weight:700;color:var(--text)">📂 دسته‌بندی‌ها:</span>
-        <a href="{{ route('directory', ['cat' => $company->category_id]) }}" class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd;text-decoration:none">
-          🌟 {{ $company->category->name }} (اصلی)
-        </a>
+        <span style="font-size:13px;font-weight:700;color:var(--text)">📂 زمینه‌های فعالیت:</span>
+        @if($company->category)
+          <a href="{{ route('directory', ['cat' => $company->category_id]) }}" class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd;text-decoration:none">
+            {{ $company->category->name }}
+          </a>
+        @endif
         @if($company->relationLoaded('categories'))
           @foreach($company->categories as $secCat)
             @if($secCat->id !== $company->category_id)
