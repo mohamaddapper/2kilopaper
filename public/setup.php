@@ -12,9 +12,17 @@ if (file_exists(__DIR__ . '/../laravel-app/vendor/autoload.php')) {
 require $baseDir . '/vendor/autoload.php';
 $app = require_once $baseDir . '/bootstrap/app.php';
 
-echo '<!doctype html><html dir="rtl" lang="fa"><head><meta charset="utf-8"><title>به‌روزرسانی دیتابیس</title>';
-echo '<style>body{font-family:tahoma,sans-serif;padding:30px;background:#f8f9fa;line-height:1.8} pre{background:#222;color:#a6e22e;padding:15px;border-radius:6px;direction:ltr;text-align:left;white-space:pre-wrap}</style></head><body>';
-echo '<h2>عملیات به‌روزرسانی فیلدهای دیتابیس لاراول</h2>';
+$action = $_GET['action'] ?? 'all';
+
+echo '<!doctype html><html dir="rtl" lang="fa"><head><meta charset="utf-8"><title>به‌روزرسانی خودکار سایت</title>';
+echo '<style>body{font-family:tahoma,sans-serif;padding:25px;background:#f8f9fa;line-height:1.8;color:#1e293b} pre{background:#1e293b;color:#38bdf8;padding:12px;border-radius:6px;direction:ltr;text-align:left;white-space:pre-wrap;font-size:13px} .btn{display:inline-block;padding:8px 16px;background:#0284c7;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold;font-size:13px;margin-left:6px}</style></head><body>';
+echo '<div style="max-width:800px;margin:0 auto;background:#fff;padding:24px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.05)">';
+echo '<h2 style="margin-top:0;color:#0369a1">⚙️ ابزار به‌روزرسانی آنلاین بدون نیاز به ترمینال</h2>';
+echo '<div style="margin-bottom:15px;display:flex;gap:8px;flex-wrap:wrap">';
+echo '<a href="setup.php?action=all" class="btn">🚀 به‌روزرسانی کامل (گیت + کش + مایگریشن)</a>';
+echo '<a href="setup.php?action=clear" class="btn" style="background:#64748b">🧹 فقط پاک‌سازی کش و ویوها</a>';
+echo '<a href="setup.php?action=seed" class="btn" style="background:#475569">🌱 ثبت مجدد شهرها و دسته‌ها</a>';
+echo '</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:15px 0">';
 
 try {
     $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
@@ -22,28 +30,44 @@ try {
 
     \Illuminate\Support\Facades\Schema::defaultStringLength(191);
 
-    echo '<p><b>در حال اجرای مایگریشن‌های جدید...</b></p>';
-    $kernel->call('migrate', ['--force' => true]);
-    echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+    // 1. Try Git Pull via PHP
+    if (in_array($action, ['all', 'pull'])) {
+        if (function_exists('shell_exec')) {
+            echo '<p><b>۱. دریافت آخرین کدها از GitHub (Git Pull):</b></p>';
+            $gitOutput = @shell_exec('cd ' . escapeshellarg($baseDir) . ' && git pull origin main 2>&1');
+            if ($gitOutput) {
+                echo '<pre>' . htmlspecialchars($gitOutput) . '</pre>';
+            } else {
+                echo '<p style="color:#d97706;font-size:13px">دستور شل در هاست خروجی نداد یا دسترسی به گیت از طریق شل بسته است (در این صورت از بخش Git Version Control سی‌پنل استفاده کنید).</p>';
+            }
+        }
+    }
 
-    echo '<p><b>در حال به‌روزرسانی دسته‌بندی‌های تخصصی (۵ ستون دایرکتوری از CSV)...</b></p>';
-    $kernel->call('db:seed', ['--class' => 'CategorySeeder', '--force' => true]);
-    echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
-
-    echo '<p><b>در حال ورود اطلاعات ۳۱ استان و ۳۶۸ شهر از فایل CSV...</b></p>';
-    $kernel->call('db:seed', ['--class' => 'LocationSeeder', '--force' => true]);
-    echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
-
+    // 2. Clear Caches
+    echo '<p><b>۲. پاک‌سازی کش‌ها و کامپایل مجدد فایل‌ها:</b></p>';
     $kernel->call('optimize:clear');
+    echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
 
-    echo '<p style="color:green;font-weight:bold;font-size:20px">✓ دیتابیس با موفقیت به آخرین نسخه فیلدهای جامع به‌روزرسانی شد!</p>';
-    echo '<div style="background:#fff3cd;color:#856404;padding:15px;border-radius:6px;border:1px solid #ffeeba;margin-top:20px">';
-    echo '<strong>هشدار امنیتی بسیار مهم:</strong> لطفاً همین الان این فایل (<code>setup.php</code>) را از پوشه public_html حذف کنید.';
-    echo '</div>';
-    echo '<p><a href="/dashboard" style="display:inline-block;margin-top:15px;padding:12px 25px;background:#0d6efd;color:#fff;text-decoration:none;border-radius:5px;font-weight:bold;font-size:16px">ورود به پنل و مشاهده فرم جدید</a></p>';
+    // 3. Migrations
+    if (in_array($action, ['all', 'migrate'])) {
+        echo '<p><b>۳. بررسی و اجرای مایگریشن‌های جدید دیتابیس:</b></p>';
+        $kernel->call('migrate', ['--force' => true]);
+        echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+    }
+
+    // 4. Seeds (only when requested or action=seed)
+    if ($action === 'seed') {
+        echo '<p><b>۴. ورود اطلاعات دسته‌ها و استان/شهرها:</b></p>';
+        $kernel->call('db:seed', ['--class' => 'CategorySeeder', '--force' => true]);
+        $kernel->call('db:seed', ['--class' => 'LocationSeeder', '--force' => true]);
+        echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+    }
+
+    echo '<p style="color:#16a34a;font-weight:bold;font-size:18px">✓ عملیات با موفقیت انجام شد!</p>';
+    echo '<p><a href="/dashboard" class="btn" style="background:#16a34a;padding:12px 24px;font-size:15px">ورود به پنل کاربری</a></p>';
 } catch (\Throwable $e) {
-    echo '<p style="color:red;font-weight:bold;font-size:18px">خطا در اجرای مایگریشن:</p>';
-    echo '<pre style="color:#ff6b6b">' . htmlspecialchars($e->getMessage()) . '</pre>';
+    echo '<p style="color:#dc2626;font-weight:bold;font-size:16px">خطا در اجرای عملیات:</p>';
+    echo '<pre style="color:#f87171;background:#450a0a">' . htmlspecialchars($e->getMessage()) . '</pre>';
 }
 
-echo '</body></html>';
+echo '</div></body></html>';
