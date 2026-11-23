@@ -296,7 +296,7 @@
 
         <!-- کادر جستجو -->
         <div style="position:relative">
-          <input type="text" id="cat_search_input" placeholder="🔍 تایپ کنید: مثلاً کارتن، جعبه، لاینر، گلاسه، افست، طلاکوب، سلفون، ماشین‌آلات، دایکات..." autocomplete="off" style="padding-right:38px;padding-left:80px;background:#fff;font-size:14px;height:44px;border:1.5px solid #cbd5e1;border-radius:8px;width:100%">
+          <input type="text" id="cat_search_input" placeholder="تایپ کنید: مثلاً کارتن، جعبه، لاینر، گلاسه، افست، طلاکوب، سلفون، ماشین‌آلات، دایکات..." autocomplete="off" style="padding-right:38px;padding-left:80px;background:#fff;font-size:14px;height:44px;border:1.5px solid #cbd5e1;border-radius:8px;width:100%">
           <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;pointer-events:none">🔍</span>
           <button type="button" id="cat_search_clear" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;display:none;color:#ef4444;font-size:12.5px;font-weight:700;font-family:inherit">✕ پاک کردن</button>
         </div>
@@ -336,9 +336,9 @@
         @foreach($locList as $idx => $loc)
           <div class="location-card" id="loc_card_{{ $idx }}" data-index="{{ $idx }}">
             <div class="location-header">
-              <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
+              <label class="location-primary-label" style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none;flex-shrink:0">
                 <input type="radio" name="primary_location_index" value="{{ $idx }}" @checked(!empty($loc['is_primary']) || $loop->first)>
-                <span><b>آدرس اصلی</b></span>
+                <span style="white-space:nowrap"><b>آدرس اصلی</b></span>
               </label>
               <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('{{ $idx }}')" style="{{ count($locList) > 1 ? '' : 'display:none;' }}">
                 🗑️ حذف این آدرس
@@ -539,7 +539,7 @@
         <span class="badge" style="background:#f4f6f9">دسترسی خریداران</span>
       </h3>
 
-      <div class="form-row-3">
+      <div class="form-row">
         <div class="field">
           <label>شماره تلفن ثابت اصلی دفتر مرکزی <span style="color:red">*</span></label>
           <input name="phone" value="{{ $f('phone') }}" placeholder="مثال: 02128421075" required>
@@ -547,10 +547,6 @@
         <div class="field">
           <label>شماره موبایل پشتیبانی / پیام‌رسان‌ها</label>
           <input name="contacts[support_mobile]" value="{{ $cVal('contacts', 'support_mobile') }}" placeholder="مثال: 09121234567">
-        </div>
-        <div class="field">
-          <label>آدرس ایمیل رسمی شرکت (اختیاری)</label>
-          <input type="email" name="email" value="{{ $f('email') }}" placeholder="مثال: info@company.ir">
         </div>
       </div>
 
@@ -707,10 +703,10 @@
       </div>
     </div>
 
-    <!-- بخش ۸: وب‌سایت و شبکه‌های اجتماعی -->
+    <!-- بخش ۸: وب‌سایت، ایمیل و شبکه‌های اجتماعی -->
     <div class="form-card">
       <h3>
-        <span>۸. وب‌سایت و شبکه‌های اجتماعی</span>
+        <span>۸. وب‌سایت، ایمیل و شبکه‌های اجتماعی</span>
       </h3>
 
       <div class="form-row">
@@ -719,12 +715,16 @@
           <input name="website" value="{{ $f('website') }}" placeholder="مثال: 2kilopaper.ir">
         </div>
         <div class="field">
-          <label>آیدی اینستاگرام</label>
-          <input name="socials[instagram]" value="{{ $sVal('socials', 'instagram') }}" placeholder="مثال: 2kilopaper">
+          <label>آدرس ایمیل رسمی شرکت (اختیاری)</label>
+          <input type="email" name="email" value="{{ $f('email') }}" placeholder="مثال: info@company.ir">
         </div>
       </div>
 
-      <div class="form-row" style="margin-top:10px">
+      <div class="form-row-3" style="margin-top:10px">
+        <div class="field">
+          <label>آیدی اینستاگرام</label>
+          <input name="socials[instagram]" value="{{ $sVal('socials', 'instagram') }}" placeholder="مثال: 2kilopaper">
+        </div>
         <div class="field">
           <label>کانال یا آیدی تلگرام</label>
           <input name="socials[telegram]" value="{{ $sVal('socials', 'telegram') }}" placeholder="مثال: kilopaper2">
@@ -1136,9 +1136,9 @@ function addNewLocation() {
   const cardHtml = `
     <div class="location-card fade-in" id="loc_card_${idx}" data-index="${idx}">
       <div class="location-header">
-        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
+        <label class="location-primary-label" style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none;flex-shrink:0">
           <input type="radio" name="primary_location_index" value="${idx}">
-          <span><b>آدرس اصلی</b></span>
+          <span style="white-space:nowrap"><b>آدرس اصلی</b></span>
         </label>
         <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('${idx}')">
           🗑️ حذف این آدرس

@@ -6,11 +6,29 @@ if (!function_exists('slugify')) {
         return mb_strtolower($s) ?: 'x';
     }
 }
-if (!function_exists('normalize_phone')) {
-    function normalize_phone(string $p): string
+if (!function_exists('fa_to_en_digits')) {
+    function fa_to_en_digits($val)
     {
-        $p = strtr($p, ['۰'=>'0','۱'=>'1','۲'=>'2','۳'=>'3','۴'=>'4','۵'=>'5','۶'=>'6','۷'=>'7','۸'=>'8','۹'=>'9',
-                        '٠'=>'0','١'=>'1','٢'=>'2','٣'=>'3','٤'=>'4','٥'=>'5','٦'=>'6','٧'=>'7','٨'=>'8','٩'=>'9']);
-        return preg_replace('/\D+/', '', $p);
+        if (is_array($val)) {
+            return array_map('fa_to_en_digits', $val);
+        }
+        if (!is_string($val)) {
+            return $val;
+        }
+        return strtr($val, [
+            '۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4',
+            '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9',
+            '٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4',
+            '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9',
+        ]);
+    }
+}
+
+if (!function_exists('normalize_phone')) {
+    function normalize_phone(?string $p): string
+    {
+        if (!$p) return '';
+        $p = fa_to_en_digits($p);
+        return preg_replace('/[^\d+]+/', '', $p);
     }
 }

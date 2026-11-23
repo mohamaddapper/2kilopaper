@@ -147,8 +147,8 @@ class DashboardController extends Controller
                 'province_name' => $province?->name ?? '',
                 'city_name' => $city?->name ?? '',
                 'address' => trim((string)($item['address'] ?? '')),
-                'phone' => trim((string)($item['phone'] ?? '')),
-                'phone2' => trim((string)($item['phone2'] ?? '')),
+                'phone' => normalize_phone((string)($item['phone'] ?? '')),
+                'phone2' => normalize_phone((string)($item['phone2'] ?? '')),
                 'is_primary' => $isPrimary,
             ];
 
@@ -312,6 +312,10 @@ class DashboardController extends Controller
 
     private function validated(Request $r): array
     {
+        if (function_exists('fa_to_en_digits')) {
+            $r->replace(fa_to_en_digits($r->all()));
+        }
+
         $website = trim((string) $r->input('website'));
         if ($website !== '' && !preg_match('~^https?://~i', $website)) {
             $website = 'https://' . $website;
