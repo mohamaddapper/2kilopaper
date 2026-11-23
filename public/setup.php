@@ -26,6 +26,10 @@ try {
     $kernel->call('migrate', ['--force' => true]);
     echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
 
+    echo '<p><b>در حال ورود اطلاعات ۳۱ استان و ۳۶۸ شهر از فایل CSV...</b></p>';
+    $kernel->call('db:seed', ['--class' => 'LocationSeeder', '--force' => true]);
+    echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+
     $kernel->call('optimize:clear');
 
     echo '<p style="color:green;font-weight:bold;font-size:20px">✓ دیتابیس با موفقیت به آخرین نسخه فیلدهای جامع به‌روزرسانی شد!</p>';

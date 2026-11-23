@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Company;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -22,6 +23,26 @@ class DashboardController extends Controller
     public function store(Request $r)
     {
         $data = $this->validated($r);
+
+        // Sync location relationships
+        if (!empty($data['city_id'])) {
+            $city = City::with('province')->find($data['city_id']);
+            if ($city) {
+                $data['province_id'] = $city->province_id;
+                $data['factory_city'] = $city->name;
+                $data['factory_province'] = $city->province?->name;
+            }
+        }
+        if (!empty($data['address'])) {
+            $data['factory_address'] = $data['address'];
+        }
+        if (!empty($data['office_city']) && is_numeric($data['office_city'])) {
+            $offCity = City::with('province')->find($data['office_city']);
+            if ($offCity) {
+                $data['office_city'] = $offCity->name;
+                $data['office_province'] = $offCity->province?->name;
+            }
+        }
 
         if ($r->hasFile('logo')) {
             $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
@@ -62,6 +83,26 @@ class DashboardController extends Controller
         abort_unless($company->user_id === $r->user()->id, 403);
         $data = $this->validated($r);
 
+        // Sync location relationships
+        if (!empty($data['city_id'])) {
+            $city = City::with('province')->find($data['city_id']);
+            if ($city) {
+                $data['province_id'] = $city->province_id;
+                $data['factory_city'] = $city->name;
+                $data['factory_province'] = $city->province?->name;
+            }
+        }
+        if (!empty($data['address'])) {
+            $data['factory_address'] = $data['address'];
+        }
+        if (!empty($data['office_city']) && is_numeric($data['office_city'])) {
+            $offCity = City::with('province')->find($data['office_city']);
+            if ($offCity) {
+                $data['office_city'] = $offCity->name;
+                $data['office_province'] = $offCity->province?->name;
+            }
+        }
+
         if ($r->hasFile('logo')) {
             $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
         }
@@ -99,18 +140,22 @@ class DashboardController extends Controller
 
     private function formData(Company $company): array
     {
-        $provinces = [
-            'تهران', 'آذربایجان شرقی', 'آذربایجان غربی', 'اصفهان', 'البرز', 'فارس', 'مازندران',
-            'گیلان', 'خراسان رضوی', 'خوزستان', 'قزوین', 'قم', 'یزد', 'سمنان', 'مرکزی',
-            'همدان', 'کرمانشاه', 'کردستان', 'لرستان', 'گلستان', 'اردبیل', 'زنجان', 'بوشهر',
-            'هرمزگان', 'سیستان و بلوچستان', 'کرمان', 'خراسان جنوبی', 'خراسان شمالی',
-            'چهارمحال و بختیاری', 'کهگیلویه و بویراحمد', 'ایلام'
-        ];
+        $provinces = Province::with(['cities' => fn($q) => $q->orderBy('name')])->orderBy('name')->get();
+        $locationsTree = $provinces->map(fn($p) => [
+            'id' => $p->id,
+            'name' => $p->name,
+            'slug' => $p->slug,
+            'cities' => $p->cities->map(fn($c) => [
+                'id' => $c->id,
+                'name' => $c->name,
+                'slug' => $c->slug,
+            ])->values(),
+        ])->values();
 
         return [
             'company' => $company,
-            'cities' => City::orderBy('name')->get(),
             'provinces' => $provinces,
+            'locationsTree' => $locationsTree,
             'categories' => Category::whereNull('parent_id')->with('children')->orderBy('sort')->get(),
         ];
     }
@@ -131,11 +176,12 @@ class DashboardController extends Controller
             'name' => 'required|string|max:150',
             'slogan' => 'nullable|string|max:200',
             'category_id' => 'required|exists:categories,id',
+            'province_id' => 'required|exists:provinces,id',
             'city_id' => 'required|exists:cities,id',
+            'address' => 'required|string|max:500',
             'description' => 'nullable|string|max:10000',
             'phone' => 'nullable|string|max:30',
             'website' => 'nullable|url|max:255',
-            'address' => 'nullable|string|max:500',
             'factory_province' => 'nullable|string|max:100',
             'factory_city' => 'nullable|string|max:100',
             'factory_address' => 'nullable|string|max:1000',
@@ -157,7 +203,9 @@ class DashboardController extends Controller
         ], [
             'name.required' => 'نام شرکت الزامی است.',
             'category_id.required' => 'انتخاب دسته‌بندی اصلی الزامی است.',
+            'province_id.required' => 'انتخاب استان الزامی است.',
             'city_id.required' => 'انتخاب شهر الزامی است.',
+            'address.required' => 'وارد کردن آدرس دقیق الزامی است.',
             'website.url' => 'آدرس وب‌سایت معتبر نیست (مثال: example.com)',
             'logo.image' => 'فایل لوگو باید تصویر باشد.',
             'logo.max' => 'حجم لوگو نباید بیشتر از ۴ مگابایت باشد.',

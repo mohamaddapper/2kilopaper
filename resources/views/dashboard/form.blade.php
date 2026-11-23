@@ -7,7 +7,7 @@
     <a href="{{ route('dashboard') }}" class="btn ghost small">بازگشت به پنل من</a>
   </div>
 
-  @if($errors->any())
+  @if(isset($errors) && $errors->any())
     <div class="notice bad" style="margin-bottom:20px">
       <b style="display:block;margin-bottom:6px">لطفاً موارد زیر را بررسی کنید:</b>
       <ul style="margin:0;padding-right:20px">
@@ -50,33 +50,21 @@
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="field">
-          <label>دسته‌بندی اصلی در دایرکتوری <span style="color:red">*</span></label>
-          <select name="category_id" required>
-            <option value="">-- انتخاب دسته‌بندی --</option>
-            @foreach($categories as $p)
-              <optgroup label="{{ $p->name }}">
-                @foreach($p->children as $ch)
-                  <option value="{{ $ch->id }}" @selected($f('category_id') == $ch->id)>{{ $ch->name }}</option>
-                @endforeach
-              </optgroup>
-            @endforeach
-          </select>
-        </div>
-
-        <div class="field">
-          <label>شهر اصلی دایرکتوری <span style="color:red">*</span></label>
-          <select name="city_id" required>
-            <option value="">-- انتخاب شهر --</option>
-            @foreach($cities as $c)
-              <option value="{{ $c->id }}" @selected($f('city_id') == $c->id)>{{ $c->name }}</option>
-            @endforeach
-          </select>
-        </div>
+      <div class="field">
+        <label>دسته‌بندی اصلی در دایرکتوری <span style="color:red">*</span></label>
+        <select name="category_id" required>
+          <option value="">-- انتخاب دسته‌بندی --</option>
+          @foreach($categories as $p)
+            <optgroup label="{{ $p->name }}">
+              @foreach($p->children as $ch)
+                <option value="{{ $ch->id }}" @selected($f('category_id') == $ch->id)>{{ $ch->name }}</option>
+              @endforeach
+            </optgroup>
+          @endforeach
+        </select>
       </div>
 
-      <div class="field" style="margin-top:10px">
+      <div class="field" style="margin-top:10px;margin-bottom:0">
         <label><b>حوزه‌های فعالیت شرکت:</b> (می‌توانید چند مورد را انتخاب کنید تا گزینه‌های تخصصی آن‌ها باز شود)</label>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
           <label class="activity-pill">
@@ -99,10 +87,88 @@
       </div>
     </div>
 
-    <!-- بخش ۲: محصولات و خدمات تخصصی شرطی -->
+    <!-- بخش ۲: آدرس و موقعیت مکانی هوشمند (انتخاب استان -> شهر -> آدرس دقیق) -->
+    <div class="form-card">
+      <h3>
+        <span>۲. آدرس کارخانه، کارگاه، دفتر یا فروشگاه</span>
+        <span class="badge ok">الزامی</span>
+      </h3>
+
+      <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:18px">
+        <div class="form-row">
+          <!-- گام ۱: انتخاب استان -->
+          <div class="field" style="flex:1">
+            <label>استان <span style="color:red">*</span></label>
+            <select name="province_id" id="loc_province" required>
+              <option value="">-- انتخاب استان --</option>
+              @foreach($provinces as $pr)
+                <option value="{{ $pr->id }}" data-slug="{{ $pr->slug }}" data-name="{{ $pr->name }}" @selected(old('province_id', $company->province_id) == $pr->id)>{{ $pr->name }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <!-- گام ۲: ظاهر شدن شهر پس از انتخاب استان -->
+          <div class="field fade-in" id="loc_city_wrapper" style="flex:1;display:none">
+            <label>شهر / شهرستان <span style="color:red">*</span></label>
+            <select name="city_id" id="loc_city" required>
+              <option value="">-- انتخاب شهر --</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- گام ۳: ظاهر شدن فیلد آدرس دقیق پس از انتخاب شهر -->
+        <div class="field fade-in" id="loc_address_wrapper" style="display:none;margin-bottom:0;margin-top:10px">
+          <label>آدرس دقیق کارخانه / کارگاه یا دفتر <span style="color:red">*</span></label>
+          <input name="address" id="loc_address" value="{{ old('address', $company->address ?: $company->factory_address) }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:5px">
+            💡 در صورتی که آدرس کارخانه با دفتر شما متفاوت است، ابتدا مشخصات کارخانه / کارگاه را در این بخش وارد کنید.
+          </div>
+        </div>
+      </div>
+
+      <!-- گزینه دفتر مرکزی مجزا (اختیاری) -->
+      <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--border)">
+        @php
+          $hasOffice = old('has_office', ($company->office_address || $company->office_city || $company->office_province) ? '1' : '');
+        @endphp
+        <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;user-select:none;color:var(--text)">
+          <input type="checkbox" id="has_office_toggle" name="has_office" value="1" @checked($hasOffice) onchange="toggleOfficeSection()">
+          <span>🏢 دفتر مرکزی یا فروشگاه در آدرس متفاوتی قرار دارد (اختیاری)</span>
+        </label>
+
+        <div id="office_section_wrapper" class="fade-in" style="{{ $hasOffice ? '' : 'display:none;' }}margin-top:14px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:18px">
+          <h4 style="margin:0 0 14px;font-size:14.5px;color:var(--text)">مشخصات دفتر مرکزی / فروشگاه:</h4>
+          <div class="form-row">
+            <div class="field" style="flex:1">
+              <label>استان دفتر</label>
+              <select name="office_province" id="office_province">
+                <option value="">-- انتخاب استان --</option>
+                @foreach($provinces as $pr)
+                  <option value="{{ $pr->name }}" data-id="{{ $pr->id }}" @selected(old('office_province', $company->office_province) == $pr->name || old('office_province') == $pr->id)>{{ $pr->name }}</option>
+                @endforeach
+              </select>
+            </div>
+
+            <div class="field fade-in" id="office_city_wrapper" style="flex:1;display:none">
+              <label>شهر دفتر مرکزی</label>
+              <select name="office_city" id="office_city">
+                <option value="">-- انتخاب شهر --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field fade-in" id="office_address_wrapper" style="display:none;margin-bottom:0;margin-top:10px">
+            <label>آدرس دقیق دفتر مرکزی</label>
+            <input name="office_address" id="office_address" value="{{ old('office_address', $company->office_address) }}" placeholder="مثال: خیابان شریعتی، مجتمع اداری نور، طبقه ۴">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- بخش ۳: محصولات و خدمات تخصصی شرطی -->
     <div class="form-card" id="services_section" style="display:none">
       <h3>
-        <span>۲. محصولات و خدمات تخصصی</span>
+        <span>۳. محصولات و خدمات تخصصی</span>
         <span class="badge" style="background:#eef3f9;color:var(--primary)">هوشمند و انتخابی</span>
       </h3>
 
@@ -168,60 +234,6 @@
       </div>
     </div>
 
-    <!-- بخش ۳: موقعیت‌های مکانی (کارخانه و دفتر) -->
-    <div class="form-card">
-      <h3>
-        <span>۳. اطلاعات مکانی و آدرس‌ها</span>
-        <span class="badge" style="background:#f4f6f9">تفکیک کارخانه و دفتر</span>
-      </h3>
-
-      <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px">
-        <h4 style="margin:0 0 10px;font-size:15px;color:var(--text)">🏭 مشخصات کارخانه / کارگاه:</h4>
-        <div class="form-row">
-          <div class="field">
-            <label>استان کارخانه</label>
-            <select name="factory_province">
-              <option value="">-- انتخاب استان --</option>
-              @foreach($provinces as $pr)
-                <option value="{{ $pr }}" @selected($f('factory_province') == $pr)>{{ $pr }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="field">
-            <label>شهرستان / شهرک صنعتی کارخانه</label>
-            <input name="factory_city" value="{{ $f('factory_city') }}" placeholder="مثال: پیرانشهر، شهرک صنعتی">
-          </div>
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>آدرس دقیق کارخانه</label>
-          <input name="factory_address" value="{{ $f('factory_address') }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
-        </div>
-      </div>
-
-      <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px">
-        <h4 style="margin:0 0 10px;font-size:15px;color:var(--text)">🏢 مشخصات دفتر مرکزی / فروشگاه (اختیاری):</h4>
-        <div class="form-row">
-          <div class="field">
-            <label>استان دفتر</label>
-            <select name="office_province">
-              <option value="">-- انتخاب استان --</option>
-              @foreach($provinces as $pr)
-                <option value="{{ $pr }}" @selected($f('office_province') == $pr)>{{ $pr }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="field">
-            <label>شهر دفتر مرکزی</label>
-            <input name="office_city" value="{{ $f('office_city') }}" placeholder="مثال: ارومیه">
-          </div>
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>آدرس دقیق دفتر</label>
-          <input name="office_address" value="{{ $f('office_address') }}" placeholder="مثال: خیابان حسنی، مجتمع پزشکان، طبقه ۱۲">
-        </div>
-      </div>
-    </div>
-
     <!-- بخش ۴: اطلاعات تماس و افراد کلیدی -->
     <div class="form-card">
       <h3>
@@ -231,7 +243,7 @@
 
       <div class="form-row">
         <div class="field">
-          <label>شماره تلفن ثابت اصلی <span style="color:red">*</span></label>
+          <label>شماره تلفن ثابت اصلی (به همراه کد شهرستان) <span style="color:red">*</span></label>
           <input name="phone" value="{{ $f('phone') }}" placeholder="مثال: 02128421075" required>
         </div>
         <div class="field">
@@ -318,7 +330,7 @@
         </div>
       </div>
 
-      <div class="field" style="margin-top:10px">
+      <div class="field" style="margin-top:10px;margin-bottom:0">
         <label>گواهینامه‌های کیفی و استانداردها:</label>
         <div class="check-grid">
           @php
@@ -443,29 +455,136 @@
 </div>
 
 <script>
+const locationsTree = @json($locationsTree);
+
+function setupCascade(config) {
+  const {
+    provinceEl,
+    cityWrapper,
+    cityEl,
+    addressWrapper,
+    addressEl,
+    initialProvinceVal,
+    initialCityVal,
+    isOffice
+  } = config;
+
+  if (!provinceEl || !cityWrapper || !cityEl) return;
+
+  function findProvince(val) {
+    if (!val) return null;
+    return locationsTree.find(p => p.id == val || p.name === val || p.slug === val);
+  }
+
+  function renderCities(prov, selectedVal = '') {
+    cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
+    if (!prov || !prov.cities) return;
+
+    prov.cities.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = isOffice ? c.name : c.id;
+      opt.textContent = c.name;
+      opt.dataset.slug = c.slug;
+      opt.dataset.name = c.name;
+      if (selectedVal && (c.id == selectedVal || c.name === selectedVal || c.slug === selectedVal)) {
+        opt.selected = true;
+      }
+      cityEl.appendChild(opt);
+    });
+  }
+
+  provinceEl.addEventListener('change', function() {
+    const prov = findProvince(this.value);
+    if (prov) {
+      renderCities(prov);
+      cityWrapper.style.display = 'block';
+      if (addressWrapper) addressWrapper.style.display = 'none';
+    } else {
+      cityWrapper.style.display = 'none';
+      if (addressWrapper) addressWrapper.style.display = 'none';
+      cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
+    }
+  });
+
+  cityEl.addEventListener('change', function() {
+    if (this.value) {
+      if (addressWrapper) {
+        addressWrapper.style.display = 'block';
+        if (addressEl && !addressEl.value) {
+          addressEl.focus();
+        }
+      }
+    } else {
+      if (addressWrapper) addressWrapper.style.display = 'none';
+    }
+  });
+
+  // Initial restore for edit / validation error
+  if (initialProvinceVal) {
+    const prov = findProvince(initialProvinceVal);
+    if (prov) {
+      provinceEl.value = isOffice ? prov.name : prov.id;
+      renderCities(prov, initialCityVal);
+      cityWrapper.style.display = 'block';
+      if (initialCityVal && addressWrapper) {
+        addressWrapper.style.display = 'block';
+      }
+    }
+  }
+}
+
+function toggleOfficeSection() {
+  const toggle = document.getElementById('has_office_toggle');
+  const sec = document.getElementById('office_section_wrapper');
+  if (sec) {
+    sec.style.display = toggle.checked ? 'block' : 'none';
+  }
+}
+
 function toggleServices() {
-  const carton = document.getElementById('act_carton').checked;
-  const machine = document.getElementById('act_machine').checked;
-  const print = document.getElementById('act_print').checked;
+  const carton = document.getElementById('act_carton')?.checked;
+  const machine = document.getElementById('act_machine')?.checked;
+  const print = document.getElementById('act_print')?.checked;
 
   const sec = document.getElementById('services_section');
   const boxCarton = document.getElementById('group_carton');
   const boxMachine = document.getElementById('group_machinery');
   const boxPrint = document.getElementById('group_printing');
 
-  if (carton || machine || print) {
-    sec.style.display = 'block';
-  } else {
-    sec.style.display = 'none';
+  if (sec) {
+    sec.style.display = (carton || machine || print) ? 'block' : 'none';
   }
-
-  boxCarton.style.display = carton ? 'block' : 'none';
-  boxMachine.style.display = machine ? 'block' : 'none';
-  boxPrint.style.display = print ? 'block' : 'none';
+  if (boxCarton) boxCarton.style.display = carton ? 'block' : 'none';
+  if (boxMachine) boxMachine.style.display = machine ? 'block' : 'none';
+  if (boxPrint) boxPrint.style.display = print ? 'block' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   toggleServices();
+
+  // Primary Location (Province -> City -> Detailed Address)
+  setupCascade({
+    provinceEl: document.getElementById('loc_province'),
+    cityWrapper: document.getElementById('loc_city_wrapper'),
+    cityEl: document.getElementById('loc_city'),
+    addressWrapper: document.getElementById('loc_address_wrapper'),
+    addressEl: document.getElementById('loc_address'),
+    initialProvinceVal: '{{ old("province_id", $company->province_id) }}',
+    initialCityVal: '{{ old("city_id", $company->city_id) }}',
+    isOffice: false
+  });
+
+  // Office Location (Province -> City -> Detailed Address)
+  setupCascade({
+    provinceEl: document.getElementById('office_province'),
+    cityWrapper: document.getElementById('office_city_wrapper'),
+    cityEl: document.getElementById('office_city'),
+    addressWrapper: document.getElementById('office_address_wrapper'),
+    addressEl: document.getElementById('office_address'),
+    initialProvinceVal: '{{ old("office_province", $company->office_province) }}',
+    initialCityVal: '{{ old("office_city", $company->office_city) }}',
+    isOffice: true
+  });
 });
 </script>
 @endsection

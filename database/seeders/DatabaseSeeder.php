@@ -22,8 +22,6 @@ class DatabaseSeeder extends Seeder
                 Category::firstOrCreate(['slug' => slugify($c)], ['name' => $c, 'parent_id' => $p->id]);
             }
         }
-        foreach (['تهران', 'اصفهان', 'مشهد', 'تبریز', 'شیراز', 'کرج', 'قم', 'اهواز', 'رشت', 'یزد'] as $c) {
-            City::firstOrCreate(['slug' => slugify($c)], ['name' => $c]);
-        }
+        $this->call(LocationSeeder::class);
     }
 }
