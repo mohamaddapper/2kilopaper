@@ -5,6 +5,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -21,12 +22,33 @@ class DashboardController extends Controller
     public function store(Request $r)
     {
         $data = $this->validated($r);
+
+        if ($r->hasFile('logo')) {
+            $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
+        }
+        if ($r->hasFile('cover')) {
+            $data['cover'] = $this->uploadFile($r->file('cover'), 'covers');
+        }
+        if ($r->hasFile('catalog')) {
+            $data['catalog'] = $this->uploadFile($r->file('catalog'), 'catalogs');
+        }
+        if ($r->hasFile('gallery')) {
+            $gallery = [];
+            foreach ($r->file('gallery') as $file) {
+                if ($uploaded = $this->uploadFile($file, 'gallery')) {
+                    $gallery[] = $uploaded;
+                }
+            }
+            $data['gallery'] = $gallery;
+        }
+
         $c = new Company($data);
         $c->user_id = $r->user()->id;
         $c->slug = Company::makeSlug($data['name']);
         $c->status = config('gap.auto_approve') ? 'approved' : 'pending';
         $c->save();
-        return redirect()->route('dashboard')->with('ok', 'شرکت ثبت شد.');
+
+        return redirect()->route('dashboard')->with('ok', 'شرکت با موفقیت ثبت شد.');
     }
 
     public function edit(Request $r, Company $company)
@@ -38,15 +60,57 @@ class DashboardController extends Controller
     public function update(Request $r, Company $company)
     {
         abort_unless($company->user_id === $r->user()->id, 403);
-        $company->update($this->validated($r));
-        return redirect()->route('dashboard')->with('ok', 'تغییرات ذخیره شد.');
+        $data = $this->validated($r);
+
+        if ($r->hasFile('logo')) {
+            $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
+        }
+        if ($r->hasFile('cover')) {
+            $data['cover'] = $this->uploadFile($r->file('cover'), 'covers');
+        }
+        if ($r->hasFile('catalog')) {
+            $data['catalog'] = $this->uploadFile($r->file('catalog'), 'catalogs');
+        }
+        if ($r->hasFile('gallery')) {
+            $gallery = $company->gallery ?? [];
+            foreach ($r->file('gallery') as $file) {
+                if ($uploaded = $this->uploadFile($file, 'gallery')) {
+                    $gallery[] = $uploaded;
+                }
+            }
+            $data['gallery'] = $gallery;
+        }
+
+        $company->update($data);
+        return redirect()->route('dashboard')->with('ok', 'تغییرات با موفقیت ذخیره شد.');
+    }
+
+    private function uploadFile($file, string $subfolder): ?string
+    {
+        if (!$file || !$file->isValid()) return null;
+        $dir = app()->publicPath() . '/uploads/' . $subfolder;
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+        $file->move($dir, $filename);
+        return 'uploads/' . $subfolder . '/' . $filename;
     }
 
     private function formData(Company $company): array
     {
+        $provinces = [
+            'تهران', 'آذربایجان شرقی', 'آذربایجان غربی', 'اصفهان', 'البرز', 'فارس', 'مازندران',
+            'گیلان', 'خراسان رضوی', 'خوزستان', 'قزوین', 'قم', 'یزد', 'سمنان', 'مرکزی',
+            'همدان', 'کرمانشاه', 'کردستان', 'لرستان', 'گلستان', 'اردبیل', 'زنجان', 'بوشهر',
+            'هرمزگان', 'سیستان و بلوچستان', 'کرمان', 'خراسان جنوبی', 'خراسان شمالی',
+            'چهارمحال و بختیاری', 'کهگیلویه و بویراحمد', 'ایلام'
+        ];
+
         return [
             'company' => $company,
             'cities' => City::orderBy('name')->get(),
+            'provinces' => $provinces,
             'categories' => Category::whereNull('parent_id')->with('children')->orderBy('sort')->get(),
         ];
     }
@@ -63,19 +127,45 @@ class DashboardController extends Controller
             'website' => $website !== '' ? $website : null,
         ]);
 
-        return $r->validate([
+        $validated = $r->validate([
             'name' => 'required|string|max:150',
+            'slogan' => 'nullable|string|max:200',
             'category_id' => 'required|exists:categories,id',
             'city_id' => 'required|exists:cities,id',
-            'description' => 'nullable|string|max:3000',
-            'phone' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:10000',
+            'phone' => 'nullable|string|max:30',
             'website' => 'nullable|url|max:255',
-            'address' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'factory_province' => 'nullable|string|max:100',
+            'factory_city' => 'nullable|string|max:100',
+            'factory_address' => 'nullable|string|max:1000',
+            'office_province' => 'nullable|string|max:100',
+            'office_city' => 'nullable|string|max:100',
+            'office_address' => 'nullable|string|max:1000',
+            'phones' => 'nullable|array',
+            'phones.*' => 'nullable|string|max:30',
+            'contacts' => 'nullable|array',
+            'tech_specs' => 'nullable|array',
+            'activity_types' => 'nullable|array',
+            'services' => 'nullable|array',
+            'video_code' => 'nullable|string|max:500',
+            'socials' => 'nullable|array',
+            'logo' => 'nullable|image|max:4096',
+            'cover' => 'nullable|image|max:8192',
+            'catalog' => 'nullable|mimes:pdf|max:25600',
+            'gallery.*' => 'nullable|image|max:6144',
         ], [
             'name.required' => 'نام شرکت الزامی است.',
-            'category_id.required' => 'انتخاب دسته‌بندی الزامی است.',
+            'category_id.required' => 'انتخاب دسته‌بندی اصلی الزامی است.',
             'city_id.required' => 'انتخاب شهر الزامی است.',
             'website.url' => 'آدرس وب‌سایت معتبر نیست (مثال: example.com)',
+            'logo.image' => 'فایل لوگو باید تصویر باشد.',
+            'logo.max' => 'حجم لوگو نباید بیشتر از ۴ مگابایت باشد.',
+            'cover.image' => 'فایل بنر کاور باید تصویر باشد.',
+            'catalog.mimes' => 'کاتالوگ باید در قالب فایل PDF باشد.',
+            'catalog.max' => 'حجم فایل کاتالوگ حداکثر می‌تواند ۲۵ مگابایت باشد.',
         ]);
+
+        return $validated;
     }
 }

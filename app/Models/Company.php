@@ -7,13 +7,62 @@ use Illuminate\Support\Str;
 
 class Company extends Model
 {
-    protected $fillable = ['category_id', 'city_id', 'name', 'description', 'phone', 'website', 'address'];
-    protected $casts = ['tier_expires_at' => 'datetime'];
+    protected $fillable = [
+        'user_id',
+        'category_id',
+        'city_id',
+        'name',
+        'slug',
+        'status',
+        'tier',
+        'slogan',
+        'description',
+        'phone',
+        'website',
+        'address',
+        'factory_province',
+        'factory_city',
+        'factory_address',
+        'office_province',
+        'office_city',
+        'office_address',
+        'phones',
+        'contacts',
+        'tech_specs',
+        'activity_types',
+        'services',
+        'logo',
+        'cover',
+        'catalog',
+        'gallery',
+        'video_code',
+        'socials',
+    ];
+
+    protected $casts = [
+        'tier_expires_at' => 'datetime',
+        'phones' => 'array',
+        'contacts' => 'array',
+        'tech_specs' => 'array',
+        'activity_types' => 'array',
+        'services' => 'array',
+        'gallery' => 'array',
+        'socials' => 'array',
+    ];
 
     public function user() { return $this->belongsTo(User::class); }
     public function category() { return $this->belongsTo(Category::class); }
     public function city() { return $this->belongsTo(City::class); }
     public function getRouteKeyName() { return 'slug'; }
+
+    public function resolveRouteBindingQuery($query, $value, $field = null)
+    {
+        $field = $field ?? $this->getRouteKeyName();
+        return $query->where(function ($q) use ($field, $value) {
+            $q->where($field, urldecode((string) $value))
+              ->orWhere($field, (string) $value);
+        });
+    }
 
     public function scopeApproved(Builder $q) { return $q->where('status', 'approved'); }
 
