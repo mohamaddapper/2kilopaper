@@ -25,13 +25,6 @@
 @section('content')
 <div style="max-width:1050px;margin:15px auto">
 
-  <!-- بنر کاور بالا در صورت وجود -->
-  @if($company->cover)
-    <div style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-bottom:-50px;position:relative">
-      <img src="{{ asset($company->cover) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">
-    </div>
-  @endif
-
   <!-- هدر پروفایل شرکت -->
   <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px">
     <div class="logo-box" style="width:100px;height:100px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff">
@@ -60,6 +53,9 @@
 
       <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:6px;flex-wrap:wrap;align-items:center">
         <span>📍 <b>شهر:</b> {{ $company->city->name }}</span>
+        @if($company->email)
+          <span>✉️ <b>ایمیل:</b> {{ $company->email }}</span>
+        @endif
         @if(data_get($company->tech_specs, 'established_year'))
           <span>📅 <b>سال تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
         @endif
@@ -87,6 +83,9 @@
     <div style="display:flex;gap:8px;flex-direction:column;min-width:180px">
       @if($company->phone)
         <a href="tel:{{ $company->phone }}" class="btn" style="text-align:center;font-weight:700">📞 تماس: {{ $company->phone }}</a>
+      @endif
+      @if($company->email)
+        <a href="mailto:{{ $company->email }}" class="btn ghost" style="text-align:center;font-size:13px">✉️ ارسال ایمیل</a>
       @endif
       @if($company->catalog)
         <a href="{{ asset($company->catalog) }}" target="_blank" class="btn ghost" style="text-align:center;font-size:13px">📄 دریافت کاتالوگ (PDF)</a>
@@ -141,20 +140,24 @@
                   <div style="display:flex;align-items:center;gap:6px">
                     <span style="font-size:19px">{{ $tInfo['icon'] }}</span>
                     <b style="color:var(--primary);font-size:15px">
-                      {{ !empty($loc['title']) ? $loc['title'] : $tInfo['title'] }}
+                      {{ $tInfo['title'] }}
                     </b>
-                    @if(!empty($loc['title']))
-                      <span class="badge" style="font-size:11px;background:#f1f5f9;color:#475569">({{ $tInfo['title'] }})</span>
-                    @endif
                     @if(!empty($loc['is_primary']))
-                      <span class="badge ok" style="font-size:11px">آدرس اصلی دایرکتوری</span>
+                      <span class="badge ok" style="font-size:11px">آدرس اصلی</span>
                     @endif
                   </div>
-                  @if(!empty($loc['phone']))
-                    <a href="tel:{{ $loc['phone'] }}" class="btn ghost small" style="font-size:12.5px;padding:4px 12px;font-weight:700">
-                      📞 تماس: {{ $loc['phone'] }}
-                    </a>
-                  @endif
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    @if(!empty($loc['phone']))
+                      <a href="tel:{{ $loc['phone'] }}" class="btn ghost small" style="font-size:12.5px;padding:4px 12px;font-weight:700">
+                        📞 {{ $loc['phone'] }}
+                      </a>
+                    @endif
+                    @if(!empty($loc['phone2']))
+                      <a href="tel:{{ $loc['phone2'] }}" class="btn ghost small" style="font-size:12.5px;padding:4px 12px;font-weight:700">
+                        📞 {{ $loc['phone2'] }}
+                      </a>
+                    @endif
+                  </div>
                 </div>
 
                 <p style="margin:4px 0 0;color:var(--text);font-size:14px;line-height:1.8">

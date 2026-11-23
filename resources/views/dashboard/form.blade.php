@@ -315,36 +315,6 @@
           هیچ دسته ثانویه‌ای اضافه نشده است (برای شرکت‌های تک‌منظوره نیازی به ثبت این بخش نیست).
         </div>
       </div>
-
-      <div class="field" style="margin-top:12px;margin-bottom:0">
-        <label><b>حوزه‌های کلیدی فعالیت شرکت:</b> (می‌توانید چند مورد را انتخاب کنید تا پنل‌های تخصصی خدمات باز شوند)</label>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-          <label class="activity-pill">
-            <input type="checkbox" name="activity_types[]" value="carton_maker" id="act_carton" @checked($hasAct('carton_maker')) onchange="toggleServices()">
-            <span>📦 تولیدکننده جعبه و کارتن</span>
-          </label>
-          <label class="activity-pill">
-            <input type="checkbox" name="activity_types[]" value="printing" id="act_print" @checked($hasAct('printing')) onchange="toggleServices()">
-            <span>🖨️ چاپخانه و مجتمع چاپ</span>
-          </label>
-          <label class="activity-pill">
-            <input type="checkbox" name="activity_types[]" value="post_press" id="act_post_press" @checked($hasAct('post_press')) onchange="toggleServices()">
-            <span>✂️ خدمات پس از چاپ و تکمیلی</span>
-          </label>
-          <label class="activity-pill">
-            <input type="checkbox" name="activity_types[]" value="machinery" id="act_machine" @checked($hasAct('machinery')) onchange="toggleServices()">
-            <span>⚙️ فروش یا واردات ماشین‌آلات</span>
-          </label>
-          <label class="activity-pill">
-            <input type="checkbox" name="activity_types[]" value="machine_services" id="act_machine_srv" @checked($hasAct('machine_services')) onchange="toggleServices()">
-            <span>🛠️ نصب و خدمات فنی ماشین‌آلات</span>
-          </label>
-          <label class="activity-pill">
-            <input type="checkbox" name="activity_types[]" value="raw_material" id="act_raw" @checked($hasAct('raw_material')) onchange="toggleServices()">
-            <span>📜 تأمین کاغذ، مقوا و مواد اولیه</span>
-          </label>
-        </div>
-      </div>
     </div>
 
     <!-- بخش ۲: موقعیت‌های مکانی و آدرس‌ها (سیستم چندگانه پویا: کارخانه، دفتر، فروشگاه، انبار) -->
@@ -361,36 +331,23 @@
         @foreach($locList as $idx => $loc)
           <div class="location-card" id="loc_card_{{ $idx }}" data-index="{{ $idx }}">
             <div class="location-header">
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                <span class="badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">
-                  📍 موقعیت شماره <span class="loc-number">{{ $loop->iteration }}</span>
-                </span>
-                <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
-                  <input type="radio" name="primary_location_index" value="{{ $idx }}" @checked(!empty($loc['is_primary']) || $loop->first)>
-                  <span><b>آدرس و شهر اصلی دایرکتوری</b></span>
-                </label>
-              </div>
+              <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
+                <input type="radio" name="primary_location_index" value="{{ $idx }}" @checked(!empty($loc['is_primary']) || $loop->first)>
+                <span><b>آدرس اصلی</b></span>
+              </label>
               <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('{{ $idx }}')" style="{{ count($locList) > 1 ? '' : 'display:none;' }}">
                 🗑️ حذف این آدرس
               </button>
             </div>
 
-            <div class="form-row">
-              <!-- نوع مکان -->
-              <div class="field" style="flex:1">
-                <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
-                <select name="locations[{{ $idx }}][type]" required>
-                  @foreach($locationTypes as $typeKey => $typeInfo)
-                    <option value="{{ $typeKey }}" @selected(($loc['type'] ?? '') == $typeKey)>{{ $typeInfo['icon'] }} {{ $typeInfo['title'] }}</option>
-                  @endforeach
-                </select>
-              </div>
-
-              <!-- عنوان شعبه -->
-              <div class="field" style="flex:1">
-                <label>عنوان یا نام اختصاصی این مکان (اختیاری)</label>
-                <input name="locations[{{ $idx }}][title]" value="{{ $loc['title'] ?? '' }}" placeholder="مثال: شعبه ظهیرالاسلام، کارخانه شماره ۱، انبار کهریزک">
-              </div>
+            <!-- نوع مکان -->
+            <div class="field" style="margin-bottom:12px">
+              <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
+              <select name="locations[{{ $idx }}][type]" required>
+                @foreach($locationTypes as $typeKey => $typeInfo)
+                  <option value="{{ $typeKey }}" @selected(($loc['type'] ?? '') == $typeKey)>{{ $typeInfo['icon'] }} {{ $typeInfo['title'] }}</option>
+                @endforeach
+              </select>
             </div>
 
             <!-- ردیف استان و شهر هوشمند -->
@@ -419,10 +376,16 @@
               <input name="locations[{{ $idx }}][address]" id="loc_addr_{{ $idx }}" value="{{ $loc['address'] ?? '' }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
             </div>
 
-            <!-- تلفن اختصاصی این مکان -->
-            <div class="field" style="margin-bottom:0;margin-top:10px">
-              <label>تلفن مستقیم این مکان یا شعبه (اختیاری)</label>
-              <input name="locations[{{ $idx }}][phone]" value="{{ $loc['phone'] ?? '' }}" placeholder="مثال: 02128421075 (به همراه کد شهرستان)">
+            <!-- تلفن‌های اختصاصی این مکان (۲ فیلد) -->
+            <div class="form-row" style="margin-bottom:0;margin-top:10px">
+              <div class="field" style="flex:1;margin-bottom:0">
+                <label>تلفن مستقیم ۱ این مکان (اختیاری)</label>
+                <input name="locations[{{ $idx }}][phone]" value="{{ $loc['phone'] ?? '' }}" placeholder="مثال: 02128421075">
+              </div>
+              <div class="field" style="flex:1;margin-bottom:0">
+                <label>تلفن مستقیم ۲ این مکان (اختیاری)</label>
+                <input name="locations[{{ $idx }}][phone2]" value="{{ $loc['phone2'] ?? '' }}" placeholder="مثال: 02128421076">
+              </div>
             </div>
           </div>
         @endforeach
@@ -571,7 +534,7 @@
         <span class="badge" style="background:#f4f6f9">دسترسی خریداران</span>
       </h3>
 
-      <div class="form-row">
+      <div class="form-row-3">
         <div class="field">
           <label>شماره تلفن ثابت اصلی دفتر مرکزی <span style="color:red">*</span></label>
           <input name="phone" value="{{ $f('phone') }}" placeholder="مثال: 02128421075" required>
@@ -579,6 +542,10 @@
         <div class="field">
           <label>شماره موبایل پشتیبانی / پیام‌رسان‌ها</label>
           <input name="contacts[support_mobile]" value="{{ $cVal('contacts', 'support_mobile') }}" placeholder="مثال: 09121234567">
+        </div>
+        <div class="field">
+          <label>آدرس ایمیل رسمی شرکت (اختیاری)</label>
+          <input type="email" name="email" value="{{ $f('email') }}" placeholder="مثال: info@company.ir">
         </div>
       </div>
 
@@ -702,20 +669,9 @@
             <div style="margin-bottom:6px"><img src="{{ asset($company->logo) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
           @endif
           <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
-          <div class="note">فرمت‌های مجاز: PNG, JPG (حداکثر ۴ مگابایت)</div>
+          <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۴ مگابایت)</div>
         </div>
 
-        <div class="field">
-          <label>تصویر بنر کاور بالای صفحه</label>
-          @if($company->cover)
-            <div style="margin-bottom:6px"><img src="{{ asset($company->cover) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
-          @endif
-          <input type="file" name="cover" accept="image/png,image/jpeg,image/webp">
-          <div class="note">نمایش در پس‌زمینه بالای پروفایل شرکت</div>
-        </div>
-      </div>
-
-      <div class="form-row" style="margin-top:10px">
         <div class="field">
           <label>📄 کاتالوگ محصولات و خدمات (فایل PDF)</label>
           @if($company->catalog)
@@ -724,19 +680,19 @@
           <input type="file" name="catalog" accept="application/pdf">
           <div class="note">فرمت مجاز: PDF (حداکثر ۲۵ مگابایت)</div>
         </div>
+      </div>
 
-        <div class="field">
-          <label>📸 گالری تصاویر محصولات یا کارخانه (انتخاب چندتایی)</label>
-          @if($company->gallery)
-            <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
-              @foreach((array)$company->gallery as $img)
-                <img src="{{ asset($img) }}" height="40" style="border-radius:4px;border:1px solid var(--border)">
-              @endforeach
-            </div>
-          @endif
-          <input type="file" name="gallery[]" multiple accept="image/png,image/jpeg,image/webp">
-          <div class="note">می‌توانید هم‌زمان چند عکس انتخاب کنید.</div>
-        </div>
+      <div class="field" style="margin-top:10px">
+        <label>📸 گالری تصاویر محصولات یا کارخانه (حداکثر ۵ تصویر)</label>
+        @if($company->gallery)
+          <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+            @foreach((array)$company->gallery as $img)
+              <img src="{{ asset($img) }}" height="40" style="border-radius:4px;border:1px solid var(--border)">
+            @endforeach
+          </div>
+        @endif
+        <input type="file" name="gallery[]" id="gallery_input" multiple accept="image/png,image/jpeg,image/webp">
+        <div class="note">می‌توانید هم‌زمان حداکثر ۵ عکس با فرمت‌های PNG, JPG, WEBP انتخاب کنید.</div>
       </div>
 
       <div class="field" style="margin-top:10px;margin-bottom:0">
@@ -793,22 +749,6 @@ let secondaryCategories = @json($existingSecondaryCategories);
 const initialPillarId = '{{ $initialPillarId ?? "" }}';
 const initialCategoryId = '{{ old("category_id", $company->category_id) }}';
 let nextLocIndex = {{ count($locList) }};
-
-function autoCheckActivityPill(slug) {
-  if (slug === 'factories') {
-    const act = document.getElementById('act_carton');
-    if (act && !act.checked) { act.checked = true; toggleServices(); }
-  } else if (slug === 'printing-services') {
-    const act = document.getElementById('act_print');
-    if (act && !act.checked) { act.checked = true; toggleServices(); }
-  } else if (slug === 'service-providers') {
-    const act = document.getElementById('act_post_press');
-    if (act && !act.checked) { act.checked = true; toggleServices(); }
-  } else if (slug === 'stores' || slug === 'importers') {
-    const act = document.getElementById('act_raw');
-    if (act && !act.checked) { act.checked = true; toggleServices(); }
-  }
-}
 
 function initCategoryCascade() {
   const pillarSelect = document.getElementById('main_pillar_select');
@@ -870,9 +810,7 @@ function initCategoryCascade() {
 
   pillarSelect.addEventListener('change', function() {
     window.renderMainSubCategories(this.value);
-    const selectedOpt = this.options[this.selectedIndex];
-    const slug = selectedOpt ? selectedOpt.dataset.slug : '';
-    autoCheckActivityPill(slug);
+    toggleServices();
   });
 
   // Initial load
@@ -985,7 +923,7 @@ function applySearchSelection(catId, isPrimary) {
       if (window.renderMainSubCategories) {
         window.renderMainSubCategories(cat.pillar_id, cat.id);
       }
-      autoCheckActivityPill(cat.pillar_slug);
+      toggleServices();
     }
   } else {
     if (window.addSecondaryCategoryById) {
@@ -1046,13 +984,14 @@ function initSecondaryCategories() {
     if (cat) {
       secondaryCategories.push(cat);
       renderBadges();
-      autoCheckActivityPill(cat.pillar_slug);
+      toggleServices();
     }
   };
 
   window.removeSecondaryCategory = function(catId) {
     secondaryCategories = secondaryCategories.filter(c => c.id != catId);
     renderBadges();
+    toggleServices();
   };
 
   if (toggleBtn && pickerBox) {
@@ -1197,9 +1136,7 @@ function initLocationCascade(idx, initialProvinceVal = '', initialCityVal = '') 
 
 function updateLocationNumbers() {
   const cards = document.querySelectorAll('#locations_container .location-card');
-  cards.forEach((card, i) => {
-    const numEl = card.querySelector('.loc-number');
-    if (numEl) numEl.textContent = (i + 1);
+  cards.forEach((card) => {
     const delBtn = card.querySelector('.btn-remove-loc');
     if (delBtn) delBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
   });
@@ -1242,31 +1179,20 @@ function addNewLocation() {
   const cardHtml = `
     <div class="location-card fade-in" id="loc_card_${idx}" data-index="${idx}">
       <div class="location-header">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">
-            📍 موقعیت شماره <span class="loc-number"></span>
-          </span>
-          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
-            <input type="radio" name="primary_location_index" value="${idx}">
-            <span><b>آدرس و شهر اصلی دایرکتوری</b></span>
-          </label>
-        </div>
+        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
+          <input type="radio" name="primary_location_index" value="${idx}">
+          <span><b>آدرس اصلی</b></span>
+        </label>
         <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('${idx}')">
           🗑️ حذف این آدرس
         </button>
       </div>
 
-      <div class="form-row">
-        <div class="field" style="flex:1">
-          <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
-          <select name="locations[${idx}][type]" required>
-            ${typeOptions}
-          </select>
-        </div>
-        <div class="field" style="flex:1">
-          <label>عنوان یا نام اختصاصی این مکان (اختیاری)</label>
-          <input name="locations[${idx}][title]" placeholder="مثال: شعبه ظهیرالاسلام، کارخانه شماره ۱، انبار کهریزک">
-        </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
+        <select name="locations[${idx}][type]" required>
+          ${typeOptions}
+        </select>
       </div>
 
       <div class="form-row">
@@ -1289,9 +1215,15 @@ function addNewLocation() {
         <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
       </div>
 
-      <div class="field" style="margin-bottom:0;margin-top:10px">
-        <label>تلفن مستقیم این مکان یا شعبه (اختیاری)</label>
-        <input name="locations[${idx}][phone]" placeholder="مثال: 02128421075 (به همراه کد شهرستان)">
+      <div class="form-row" style="margin-bottom:0;margin-top:10px">
+        <div class="field" style="flex:1;margin-bottom:0">
+          <label>تلفن مستقیم ۱ این مکان (اختیاری)</label>
+          <input name="locations[${idx}][phone]" placeholder="مثال: 02128421075">
+        </div>
+        <div class="field" style="flex:1;margin-bottom:0">
+          <label>تلفن مستقیم ۲ این مکان (اختیاری)</label>
+          <input name="locations[${idx}][phone2]" placeholder="مثال: 02128421076">
+        </div>
       </div>
     </div>
   `;
@@ -1300,7 +1232,6 @@ function addNewLocation() {
   updateLocationNumbers();
   initLocationCascade(idx);
 
-  // Smooth scroll into view
   const newCard = document.getElementById('loc_card_' + idx);
   if (newCard) {
     newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1308,12 +1239,21 @@ function addNewLocation() {
 }
 
 function toggleServices() {
-  const carton = document.getElementById('act_carton')?.checked;
-  const print = document.getElementById('act_print')?.checked;
-  const postPress = document.getElementById('act_post_press')?.checked;
-  const machine = document.getElementById('act_machine')?.checked;
-  const machineSrv = document.getElementById('act_machine_srv')?.checked;
-  const raw = document.getElementById('act_raw')?.checked;
+  const pillarSelect = document.getElementById('main_pillar_select');
+  const selectedSlug = pillarSelect?.options[pillarSelect.selectedIndex]?.dataset?.slug || '';
+
+  const activeSlugs = new Set();
+  if (selectedSlug) activeSlugs.add(selectedSlug);
+  if (Array.isArray(secondaryCategories)) {
+    secondaryCategories.forEach(c => {
+      if (c.pillar_slug) activeSlugs.add(c.pillar_slug);
+    });
+  }
+
+  const isCarton = activeSlugs.has('factories');
+  const isPrint = activeSlugs.has('printing-services');
+  const isService = activeSlugs.has('service-providers');
+  const isMachinery = activeSlugs.has('stores') || activeSlugs.has('importers') || activeSlugs.has('service-providers');
 
   const sec = document.getElementById('services_section');
   const boxCarton = document.getElementById('group_carton');
@@ -1323,15 +1263,14 @@ function toggleServices() {
   const boxMachine = document.getElementById('group_machinery');
   const boxMachineSrv = document.getElementById('group_machine_services');
 
-  if (sec) {
-    sec.style.display = (carton || print || postPress || machine || machineSrv || raw) ? 'block' : 'none';
-  }
-  if (boxCarton) boxCarton.style.display = carton ? 'block' : 'none';
-  if (boxPrint) boxPrint.style.display = print ? 'block' : 'none';
-  if (boxPostPress) boxPostPress.style.display = (postPress || print) ? 'block' : 'none';
-  if (boxPrintProducts) boxPrintProducts.style.display = (print || carton) ? 'block' : 'none';
-  if (boxMachine) boxMachine.style.display = machine ? 'block' : 'none';
-  if (boxMachineSrv) boxMachineSrv.style.display = machineSrv ? 'block' : 'none';
+  const hasAny = (isCarton || isPrint || isService || isMachinery);
+  if (sec) sec.style.display = hasAny ? 'block' : 'none';
+  if (boxCarton) boxCarton.style.display = isCarton ? 'block' : 'none';
+  if (boxPrint) boxPrint.style.display = isPrint ? 'block' : 'none';
+  if (boxPostPress) boxPostPress.style.display = (isPrint || isService) ? 'block' : 'none';
+  if (boxPrintProducts) boxPrintProducts.style.display = (isPrint || isCarton) ? 'block' : 'none';
+  if (boxMachine) boxMachine.style.display = isMachinery ? 'block' : 'none';
+  if (boxMachineSrv) boxMachineSrv.style.display = (isService || isMachinery) ? 'block' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1350,6 +1289,17 @@ document.addEventListener('DOMContentLoaded', function() {
   @endforeach
 
   updateLocationNumbers();
+
+  // Limit gallery to max 5 images
+  const galleryInput = document.getElementById('gallery_input');
+  if (galleryInput) {
+    galleryInput.addEventListener('change', function() {
+      if (this.files && this.files.length > 5) {
+        alert('حداکثر می‌توانید ۵ تصویر برای گالری انتخاب کنید.');
+        this.value = '';
+      }
+    });
+  }
 });
 </script>
 @endsection

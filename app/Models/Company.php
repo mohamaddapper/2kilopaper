@@ -19,6 +19,7 @@ class Company extends Model
         'slogan',
         'description',
         'phone',
+        'email',
         'website',
         'address',
         'locations',

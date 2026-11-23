@@ -28,20 +28,18 @@ class DashboardController extends Controller
         if ($r->hasFile('logo')) {
             $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
         }
-        if ($r->hasFile('cover')) {
-            $data['cover'] = $this->uploadFile($r->file('cover'), 'covers');
-        }
         if ($r->hasFile('catalog')) {
             $data['catalog'] = $this->uploadFile($r->file('catalog'), 'catalogs');
         }
         if ($r->hasFile('gallery')) {
             $gallery = [];
             foreach ($r->file('gallery') as $file) {
+                if (count($gallery) >= 5) break;
                 if ($uploaded = $this->uploadFile($file, 'gallery')) {
                     $gallery[] = $uploaded;
                 }
             }
-            $data['gallery'] = $gallery;
+            $data['gallery'] = array_slice($gallery, 0, 5);
         }
 
         $c = new Company($data);
@@ -83,20 +81,18 @@ class DashboardController extends Controller
         if ($r->hasFile('logo')) {
             $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
         }
-        if ($r->hasFile('cover')) {
-            $data['cover'] = $this->uploadFile($r->file('cover'), 'covers');
-        }
         if ($r->hasFile('catalog')) {
             $data['catalog'] = $this->uploadFile($r->file('catalog'), 'catalogs');
         }
         if ($r->hasFile('gallery')) {
             $gallery = $company->gallery ?? [];
             foreach ($r->file('gallery') as $file) {
+                if (count($gallery) >= 5) break;
                 if ($uploaded = $this->uploadFile($file, 'gallery')) {
                     $gallery[] = $uploaded;
                 }
             }
-            $data['gallery'] = $gallery;
+            $data['gallery'] = array_slice($gallery, 0, 5);
         }
 
         $company->update($data);
@@ -146,13 +142,13 @@ class DashboardController extends Controller
 
             $loc = [
                 'type' => $item['type'] ?? 'factory',
-                'title' => trim((string)($item['title'] ?? '')),
                 'province_id' => $pId,
                 'city_id' => $cId,
                 'province_name' => $province?->name ?? '',
                 'city_name' => $city?->name ?? '',
                 'address' => trim((string)($item['address'] ?? '')),
                 'phone' => trim((string)($item['phone'] ?? '')),
+                'phone2' => trim((string)($item['phone2'] ?? '')),
                 'is_primary' => $isPrimary,
             ];
 
@@ -327,15 +323,16 @@ class DashboardController extends Controller
             'secondary_category_ids.*' => 'exists:categories,id',
             'locations' => 'required|array|min:1',
             'locations.*.type' => 'required|string|max:50',
-            'locations.*.title' => 'nullable|string|max:100',
             'locations.*.province_id' => 'required|exists:provinces,id',
             'locations.*.city_id' => 'required|exists:cities,id',
             'locations.*.address' => 'required|string|max:500',
             'locations.*.phone' => 'nullable|string|max:40',
+            'locations.*.phone2' => 'nullable|string|max:40',
             'locations.*.is_primary' => 'nullable',
             'primary_location_index' => 'nullable|integer',
             'description' => 'nullable|string|max:10000',
             'phone' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:100',
             'website' => 'nullable|url|max:255',
             'phones' => 'nullable|array',
             'phones.*' => 'nullable|string|max:30',
@@ -346,8 +343,8 @@ class DashboardController extends Controller
             'video_code' => 'nullable|string|max:500',
             'socials' => 'nullable|array',
             'logo' => 'nullable|image|max:4096',
-            'cover' => 'nullable|image|max:8192',
             'catalog' => 'nullable|mimes:pdf|max:25600',
+            'gallery' => 'nullable|array|max:5',
             'gallery.*' => 'nullable|image|max:6144',
         ], [
             'name.required' => 'نام شرکت الزامی است.',
@@ -357,12 +354,13 @@ class DashboardController extends Controller
             'locations.*.province_id.required' => 'انتخاب استان برای هر آدرس الزامی است.',
             'locations.*.city_id.required' => 'انتخاب شهر برای هر آدرس الزامی است.',
             'locations.*.address.required' => 'وارد کردن آدرس دقیق برای هر موقعیت الزامی است.',
+            'email.email' => 'فرمت آدرس ایمیل وارد شده معتبر نیست.',
             'website.url' => 'آدرس وب‌سایت معتبر نیست (مثال: example.com)',
             'logo.image' => 'فایل لوگو باید تصویر باشد.',
             'logo.max' => 'حجم لوگو نباید بیشتر از ۴ مگابایت باشد.',
-            'cover.image' => 'فایل بنر کاور باید تصویر باشد.',
             'catalog.mimes' => 'کاتالوگ باید در قالب فایل PDF باشد.',
             'catalog.max' => 'حجم فایل کاتالوگ حداکثر می‌تواند ۲۵ مگابایت باشد.',
+            'gallery.max' => 'حداکثر می‌توانید ۵ تصویر برای گالری انتخاب کنید.',
         ]);
 
         return $validated;
