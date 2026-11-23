@@ -104,32 +104,79 @@
         <div style="line-height:2;color:#334155;font-size:15px;white-space:pre-line">{!! e($company->description) !!}</div>
       </div>
 
-      <!-- موقعیت‌های مکانی (کارخانه و دفتر) -->
-      <div class="card" style="margin-bottom:20px">
-        <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📍 آدرس کارخانه و دفاتر</h3>
-        
-        @if($company->factory_address || $company->address)
-          <div style="margin-bottom:14px">
-            <b style="color:var(--primary);font-size:14.5px">🏭 آدرس کارخانه / کارگاه:</b>
-            <p style="margin:4px 0 0;color:var(--text)">
-              @if($company->factory_province){{ $company->factory_province }}، @endif
-              @if($company->factory_city){{ $company->factory_city }}، @endif
-              {{ $company->factory_address ?: $company->address }}
-            </p>
-          </div>
-        @endif
+      <!-- موقعیت‌های مکانی و دفاتر شرکت -->
+      @php
+        $locations = $company->locations;
+      @endphp
+      @if($locations && count($locations) > 0)
+        <div class="card" style="margin-bottom:20px">
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">
+            📍 موقعیت‌های مکانی و شعب شرکت
+            <span class="badge" style="background:#eef3f9;color:var(--primary);font-size:12px;margin-right:6px">{{ count($locations) }} موقعیت ثبت‌شده</span>
+          </h3>
+          
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+            @foreach($locations as $loc)
+              @php
+                $tInfo = \App\Models\Company::getLocationTypeInfo($loc['type'] ?? 'factory');
+              @endphp
+              <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:19px">{{ $tInfo['icon'] }}</span>
+                    <b style="color:var(--primary);font-size:15px">
+                      {{ !empty($loc['title']) ? $loc['title'] : $tInfo['title'] }}
+                    </b>
+                    @if(!empty($loc['title']))
+                      <span class="badge" style="font-size:11px;background:#f1f5f9;color:#475569">({{ $tInfo['title'] }})</span>
+                    @endif
+                    @if(!empty($loc['is_primary']))
+                      <span class="badge ok" style="font-size:11px">آدرس اصلی دایرکتوری</span>
+                    @endif
+                  </div>
+                  @if(!empty($loc['phone']))
+                    <a href="tel:{{ $loc['phone'] }}" class="btn ghost small" style="font-size:12.5px;padding:4px 12px;font-weight:700">
+                      📞 تماس: {{ $loc['phone'] }}
+                    </a>
+                  @endif
+                </div>
 
-        @if($company->office_address)
-          <div>
-            <b style="color:var(--primary);font-size:14.5px">🏢 دفتر مرکزی / فروشگاه:</b>
-            <p style="margin:4px 0 0;color:var(--text)">
-              @if($company->office_province){{ $company->office_province }}، @endif
-              @if($company->office_city){{ $company->office_city }}، @endif
-              {{ $company->office_address }}
-            </p>
+                <p style="margin:4px 0 0;color:var(--text);font-size:14px;line-height:1.8">
+                  @if(!empty($loc['province_name']))<b>استان:</b> {{ $loc['province_name'] }} | @endif
+                  @if(!empty($loc['city_name']))<b>شهر:</b> {{ $loc['city_name'] }} | @endif
+                  {{ $loc['address'] }}
+                </p>
+              </div>
+            @endforeach
           </div>
-        @endif
-      </div>
+        </div>
+      @elseif($company->factory_address || $company->address || $company->office_address)
+        <div class="card" style="margin-bottom:20px">
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">📍 آدرس کارخانه و دفاتر</h3>
+          
+          @if($company->factory_address || $company->address)
+            <div style="margin-bottom:14px">
+              <b style="color:var(--primary);font-size:14.5px">🏭 آدرس کارخانه / کارگاه:</b>
+              <p style="margin:4px 0 0;color:var(--text)">
+                @if($company->factory_province){{ $company->factory_province }}، @endif
+                @if($company->factory_city){{ $company->factory_city }}، @endif
+                {{ $company->factory_address ?: $company->address }}
+              </p>
+            </div>
+          @endif
+
+          @if($company->office_address)
+            <div>
+              <b style="color:var(--primary);font-size:14.5px">🏢 دفتر مرکزی / فروشگاه:</b>
+              <p style="margin:4px 0 0;color:var(--text)">
+                @if($company->office_province){{ $company->office_province }}، @endif
+                @if($company->office_city){{ $company->office_city }}، @endif
+                {{ $company->office_address }}
+              </p>
+            </div>
+          @endif
+        </div>
+      @endif
 
       <!-- گالری تصاویر -->
       @if($company->gallery && count($company->gallery) > 0)

@@ -1,6 +1,44 @@
 @extends('layouts.app', ['title' => $company->exists ? 'ویرایش شرکت' : 'ثبت شرکت'])
 
 @section('content')
+<style>
+.location-card {
+  background: #fbfcfe;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 16px;
+  position: relative;
+  transition: all 0.2s;
+}
+.location-card:hover {
+  border-color: #cbd5e1;
+}
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--border);
+}
+.btn-remove-loc {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-remove-loc:hover {
+  background: #fca5a5;
+}
+</style>
+
 <div style="max-width:920px;margin:20px auto">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
     <h2 style="margin:0;font-size:22px;color:var(--primary)">{{ $company->exists ? 'ویرایش شرکت' : 'ثبت نام و اطلاعات شرکت' }}</h2>
@@ -30,6 +68,47 @@
       $hasAct = fn($type) => in_array($type, old('activity_types', (array)($company->activity_types ?? [])));
       $hasServ = fn($srv) => in_array($srv, old('services', (array)($company->services ?? [])));
       $hasCert = fn($cert) => in_array($cert, (array)old('tech_specs.certificates', (array)(data_get($company->tech_specs, 'certificates') ?? [])));
+
+      // Initialize location list
+      $locList = old('locations', $company->locations);
+      if (empty($locList)) {
+        if ($company->exists && ($company->address || $company->city_id)) {
+          $locList = [
+            [
+              'type' => 'factory',
+              'title' => 'محل کارخانه / دفتر اصلی',
+              'province_id' => $company->province_id,
+              'city_id' => $company->city_id,
+              'address' => $company->address ?: $company->factory_address,
+              'phone' => $company->phone,
+              'is_primary' => true,
+            ]
+          ];
+          if ($company->office_address || $company->office_city) {
+            $locList[] = [
+              'type' => 'central_office',
+              'title' => 'دفتر مرکزی',
+              'province_name' => $company->office_province,
+              'city_name' => $company->office_city,
+              'address' => $company->office_address,
+              'phone' => data_get($company->contacts, 'support_mobile'),
+              'is_primary' => false,
+            ];
+          }
+        } else {
+          $locList = [
+            [
+              'type' => 'factory',
+              'title' => '',
+              'province_id' => '',
+              'city_id' => '',
+              'address' => '',
+              'phone' => '',
+              'is_primary' => true,
+            ]
+          ];
+        }
+      }
     @endphp
 
     <!-- بخش ۱: اطلاعات پایه -->
@@ -87,82 +166,90 @@
       </div>
     </div>
 
-    <!-- بخش ۲: آدرس و موقعیت مکانی هوشمند (انتخاب استان -> شهر -> آدرس دقیق) -->
+    <!-- بخش ۲: موقعیت‌های مکانی و آدرس‌ها (سیستم چندگانه پویا: کارخانه، دفتر، فروشگاه، انبار) -->
     <div class="form-card">
       <h3>
-        <span>۲. آدرس کارخانه، کارگاه، دفتر یا فروشگاه</span>
-        <span class="badge ok">الزامی</span>
+        <span>۲. موقعیت‌های مکانی و آدرس‌ها</span>
+        <span class="badge ok">امکان ثبت چندگانه</span>
       </h3>
+      <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px">
+        شما می‌توانید هر تعداد آدرس یا شعبه (کارخانه، دفتر مرکزی، فروشگاه/شوروم، انبار و...) را با مشخصات مجزا ثبت کنید.
+      </p>
 
-      <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:18px">
-        <div class="form-row">
-          <!-- گام ۱: انتخاب استان -->
-          <div class="field" style="flex:1">
-            <label>استان <span style="color:red">*</span></label>
-            <select name="province_id" id="loc_province" required>
-              <option value="">-- انتخاب استان --</option>
-              @foreach($provinces as $pr)
-                <option value="{{ $pr->id }}" data-slug="{{ $pr->slug }}" data-name="{{ $pr->name }}" @selected(old('province_id', $company->province_id) == $pr->id)>{{ $pr->name }}</option>
-              @endforeach
-            </select>
-          </div>
-
-          <!-- گام ۲: ظاهر شدن شهر پس از انتخاب استان -->
-          <div class="field fade-in" id="loc_city_wrapper" style="flex:1;display:none">
-            <label>شهر / شهرستان <span style="color:red">*</span></label>
-            <select name="city_id" id="loc_city" required>
-              <option value="">-- انتخاب شهر --</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- گام ۳: ظاهر شدن فیلد آدرس دقیق پس از انتخاب شهر -->
-        <div class="field fade-in" id="loc_address_wrapper" style="display:none;margin-bottom:0;margin-top:10px">
-          <label>آدرس دقیق کارخانه / کارگاه یا دفتر <span style="color:red">*</span></label>
-          <input name="address" id="loc_address" value="{{ old('address', $company->address ?: $company->factory_address) }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
-          <div style="font-size:12.5px;color:var(--muted);margin-top:5px">
-            💡 در صورتی که آدرس کارخانه با دفتر شما متفاوت است، ابتدا مشخصات کارخانه / کارگاه را در این بخش وارد کنید.
-          </div>
-        </div>
-      </div>
-
-      <!-- گزینه دفتر مرکزی مجزا (اختیاری) -->
-      <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--border)">
-        @php
-          $hasOffice = old('has_office', ($company->office_address || $company->office_city || $company->office_province) ? '1' : '');
-        @endphp
-        <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;user-select:none;color:var(--text)">
-          <input type="checkbox" id="has_office_toggle" name="has_office" value="1" @checked($hasOffice) onchange="toggleOfficeSection()">
-          <span>🏢 دفتر مرکزی یا فروشگاه در آدرس متفاوتی قرار دارد (اختیاری)</span>
-        </label>
-
-        <div id="office_section_wrapper" class="fade-in" style="{{ $hasOffice ? '' : 'display:none;' }}margin-top:14px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:18px">
-          <h4 style="margin:0 0 14px;font-size:14.5px;color:var(--text)">مشخصات دفتر مرکزی / فروشگاه:</h4>
-          <div class="form-row">
-            <div class="field" style="flex:1">
-              <label>استان دفتر</label>
-              <select name="office_province" id="office_province">
-                <option value="">-- انتخاب استان --</option>
-                @foreach($provinces as $pr)
-                  <option value="{{ $pr->name }}" data-id="{{ $pr->id }}" @selected(old('office_province', $company->office_province) == $pr->name || old('office_province') == $pr->id)>{{ $pr->name }}</option>
-                @endforeach
-              </select>
+      <div id="locations_container">
+        @foreach($locList as $idx => $loc)
+          <div class="location-card" id="loc_card_{{ $idx }}" data-index="{{ $idx }}">
+            <div class="location-header">
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span class="badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">
+                  📍 موقعیت شماره <span class="loc-number">{{ $loop->iteration }}</span>
+                </span>
+                <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
+                  <input type="radio" name="primary_location_index" value="{{ $idx }}" @checked(!empty($loc['is_primary']) || $loop->first)>
+                  <span><b>آدرس و شهر اصلی دایرکتوری</b></span>
+                </label>
+              </div>
+              <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('{{ $idx }}')" style="{{ count($locList) > 1 ? '' : 'display:none;' }}">
+                🗑️ حذف این آدرس
+              </button>
             </div>
 
-            <div class="field fade-in" id="office_city_wrapper" style="flex:1;display:none">
-              <label>شهر دفتر مرکزی</label>
-              <select name="office_city" id="office_city">
-                <option value="">-- انتخاب شهر --</option>
-              </select>
+            <div class="form-row">
+              <!-- نوع مکان -->
+              <div class="field" style="flex:1">
+                <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
+                <select name="locations[{{ $idx }}][type]" required>
+                  @foreach($locationTypes as $typeKey => $typeInfo)
+                    <option value="{{ $typeKey }}" @selected(($loc['type'] ?? '') == $typeKey)>{{ $typeInfo['icon'] }} {{ $typeInfo['title'] }}</option>
+                  @endforeach
+                </select>
+              </div>
+
+              <!-- عنوان شعبه -->
+              <div class="field" style="flex:1">
+                <label>عنوان یا نام اختصاصی این مکان (اختیاری)</label>
+                <input name="locations[{{ $idx }}][title]" value="{{ $loc['title'] ?? '' }}" placeholder="مثال: شعبه ظهیرالاسلام، کارخانه شماره ۱، انبار کهریزک">
+              </div>
+            </div>
+
+            <!-- ردیف استان و شهر هوشمند -->
+            <div class="form-row">
+              <div class="field" style="flex:1">
+                <label>استان <span style="color:red">*</span></label>
+                <select name="locations[{{ $idx }}][province_id]" id="loc_prov_{{ $idx }}" required>
+                  <option value="">-- انتخاب استان --</option>
+                  @foreach($provinces as $pr)
+                    <option value="{{ $pr->id }}" data-slug="{{ $pr->slug }}" data-name="{{ $pr->name }}" @selected(($loc['province_id'] ?? '') == $pr->id || ($loc['province_name'] ?? '') == $pr->name)>{{ $pr->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+
+              <div class="field fade-in" id="loc_city_wrap_{{ $idx }}" style="flex:1;display:none">
+                <label>شهر / شهرستان <span style="color:red">*</span></label>
+                <select name="locations[{{ $idx }}][city_id]" id="loc_city_{{ $idx }}" required>
+                  <option value="">-- انتخاب شهر --</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- ردیف آدرس دقیق -->
+            <div class="field fade-in" id="loc_addr_wrap_{{ $idx }}" style="display:none;margin-top:6px">
+              <label>آدرس دقیق پستی <span style="color:red">*</span></label>
+              <input name="locations[{{ $idx }}][address]" id="loc_addr_{{ $idx }}" value="{{ $loc['address'] ?? '' }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
+            </div>
+
+            <!-- تلفن اختصاصی این مکان -->
+            <div class="field" style="margin-bottom:0;margin-top:10px">
+              <label>تلفن مستقیم این مکان یا شعبه (اختیاری)</label>
+              <input name="locations[{{ $idx }}][phone]" value="{{ $loc['phone'] ?? '' }}" placeholder="مثال: 02128421075 (به همراه کد شهرستان)">
             </div>
           </div>
-
-          <div class="field fade-in" id="office_address_wrapper" style="display:none;margin-bottom:0;margin-top:10px">
-            <label>آدرس دقیق دفتر مرکزی</label>
-            <input name="office_address" id="office_address" value="{{ old('office_address', $company->office_address) }}" placeholder="مثال: خیابان شریعتی، مجتمع اداری نور، طبقه ۴">
-          </div>
-        </div>
+        @endforeach
       </div>
+
+      <button type="button" class="btn ghost" onclick="addNewLocation()" style="width:100%;margin-top:10px;padding:12px;font-weight:700;border-style:dashed;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:8px">
+        <span>➕ افزودن آدرس و شعبه دیگر (کارخانه دیگر، دفتر، فروشگاه، انبار...)</span>
+      </button>
     </div>
 
     <!-- بخش ۳: محصولات و خدمات تخصصی شرطی -->
@@ -243,7 +330,7 @@
 
       <div class="form-row">
         <div class="field">
-          <label>شماره تلفن ثابت اصلی (به همراه کد شهرستان) <span style="color:red">*</span></label>
+          <label>شماره تلفن ثابت اصلی دفتر مرکزی <span style="color:red">*</span></label>
           <input name="phone" value="{{ $f('phone') }}" placeholder="مثال: 02128421075" required>
         </div>
         <div class="field">
@@ -456,20 +543,17 @@
 
 <script>
 const locationsTree = @json($locationsTree);
+const locationTypesData = @json($locationTypes);
+let nextLocIndex = {{ count($locList) }};
 
-function setupCascade(config) {
-  const {
-    provinceEl,
-    cityWrapper,
-    cityEl,
-    addressWrapper,
-    addressEl,
-    initialProvinceVal,
-    initialCityVal,
-    isOffice
-  } = config;
+function initLocationCascade(idx, initialProvinceVal = '', initialCityVal = '') {
+  const provEl = document.getElementById('loc_prov_' + idx);
+  const cityWrap = document.getElementById('loc_city_wrap_' + idx);
+  const cityEl = document.getElementById('loc_city_' + idx);
+  const addrWrap = document.getElementById('loc_addr_wrap_' + idx);
+  const addrEl = document.getElementById('loc_addr_' + idx);
 
-  if (!provinceEl || !cityWrapper || !cityEl) return;
+  if (!provEl || !cityWrap || !cityEl) return;
 
   function findProvince(val) {
     if (!val) return null;
@@ -482,7 +566,7 @@ function setupCascade(config) {
 
     prov.cities.forEach(c => {
       const opt = document.createElement('option');
-      opt.value = isOffice ? c.name : c.id;
+      opt.value = c.id;
       opt.textContent = c.name;
       opt.dataset.slug = c.slug;
       opt.dataset.name = c.name;
@@ -493,51 +577,155 @@ function setupCascade(config) {
     });
   }
 
-  provinceEl.addEventListener('change', function() {
+  provEl.addEventListener('change', function() {
     const prov = findProvince(this.value);
     if (prov) {
       renderCities(prov);
-      cityWrapper.style.display = 'block';
-      if (addressWrapper) addressWrapper.style.display = 'none';
+      cityWrap.style.display = 'block';
+      if (addrWrap) addrWrap.style.display = 'none';
     } else {
-      cityWrapper.style.display = 'none';
-      if (addressWrapper) addressWrapper.style.display = 'none';
+      cityWrap.style.display = 'none';
+      if (addrWrap) addrWrap.style.display = 'none';
       cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
     }
   });
 
   cityEl.addEventListener('change', function() {
     if (this.value) {
-      if (addressWrapper) {
-        addressWrapper.style.display = 'block';
-        if (addressEl && !addressEl.value) {
-          addressEl.focus();
+      if (addrWrap) {
+        addrWrap.style.display = 'block';
+        if (addrEl && !addrEl.value) {
+          addrEl.focus();
         }
       }
     } else {
-      if (addressWrapper) addressWrapper.style.display = 'none';
+      if (addrWrap) addrWrap.style.display = 'none';
     }
   });
 
-  // Initial restore for edit / validation error
+  // Initial restore
   if (initialProvinceVal) {
     const prov = findProvince(initialProvinceVal);
     if (prov) {
-      provinceEl.value = isOffice ? prov.name : prov.id;
+      provEl.value = prov.id;
       renderCities(prov, initialCityVal);
-      cityWrapper.style.display = 'block';
-      if (initialCityVal && addressWrapper) {
-        addressWrapper.style.display = 'block';
+      cityWrap.style.display = 'block';
+      if (initialCityVal && addrWrap) {
+        addrWrap.style.display = 'block';
       }
     }
   }
 }
 
-function toggleOfficeSection() {
-  const toggle = document.getElementById('has_office_toggle');
-  const sec = document.getElementById('office_section_wrapper');
-  if (sec) {
-    sec.style.display = toggle.checked ? 'block' : 'none';
+function updateLocationNumbers() {
+  const cards = document.querySelectorAll('#locations_container .location-card');
+  cards.forEach((card, i) => {
+    const numEl = card.querySelector('.loc-number');
+    if (numEl) numEl.textContent = (i + 1);
+    const delBtn = card.querySelector('.btn-remove-loc');
+    if (delBtn) delBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+  });
+}
+
+function removeLocationBlock(idx) {
+  const cards = document.querySelectorAll('#locations_container .location-card');
+  if (cards.length <= 1) {
+    alert('حداقل وارد کردن یک موقعیت مکانی الزامی است.');
+    return;
+  }
+  const target = document.getElementById('loc_card_' + idx);
+  if (target) {
+    target.remove();
+    updateLocationNumbers();
+
+    // Ensure one primary radio is checked
+    const checked = document.querySelector('input[name="primary_location_index"]:checked');
+    if (!checked) {
+      const firstRadio = document.querySelector('input[name="primary_location_index"]');
+      if (firstRadio) firstRadio.checked = true;
+    }
+  }
+}
+
+function addNewLocation() {
+  const idx = nextLocIndex++;
+  const container = document.getElementById('locations_container');
+
+  let typeOptions = '';
+  for (const [key, val] of Object.entries(locationTypesData)) {
+    typeOptions += `<option value="${key}">${val.icon} ${val.title}</option>`;
+  }
+
+  let provOptions = '<option value="">-- انتخاب استان --</option>';
+  locationsTree.forEach(p => {
+    provOptions += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`;
+  });
+
+  const cardHtml = `
+    <div class="location-card fade-in" id="loc_card_${idx}" data-index="${idx}">
+      <div class="location-header">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="badge" style="background:#e0e7ff;color:#3730a3;font-weight:700">
+            📍 موقعیت شماره <span class="loc-number"></span>
+          </span>
+          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none">
+            <input type="radio" name="primary_location_index" value="${idx}">
+            <span><b>آدرس و شهر اصلی دایرکتوری</b></span>
+          </label>
+        </div>
+        <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('${idx}')">
+          🗑️ حذف این آدرس
+        </button>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex:1">
+          <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
+          <select name="locations[${idx}][type]" required>
+            ${typeOptions}
+          </select>
+        </div>
+        <div class="field" style="flex:1">
+          <label>عنوان یا نام اختصاصی این مکان (اختیاری)</label>
+          <input name="locations[${idx}][title]" placeholder="مثال: شعبه ظهیرالاسلام، کارخانه شماره ۱، انبار کهریزک">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex:1">
+          <label>استان <span style="color:red">*</span></label>
+          <select name="locations[${idx}][province_id]" id="loc_prov_${idx}" required>
+            ${provOptions}
+          </select>
+        </div>
+        <div class="field fade-in" id="loc_city_wrap_${idx}" style="flex:1;display:none">
+          <label>شهر / شهرستان <span style="color:red">*</span></label>
+          <select name="locations[${idx}][city_id]" id="loc_city_${idx}" required>
+            <option value="">-- انتخاب شهر --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field fade-in" id="loc_addr_wrap_${idx}" style="display:none;margin-top:6px">
+        <label>آدرس دقیق پستی <span style="color:red">*</span></label>
+        <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
+      </div>
+
+      <div class="field" style="margin-bottom:0;margin-top:10px">
+        <label>تلفن مستقیم این مکان یا شعبه (اختیاری)</label>
+        <input name="locations[${idx}][phone]" placeholder="مثال: 02128421075 (به همراه کد شهرستان)">
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML('beforeend', cardHtml);
+  updateLocationNumbers();
+  initLocationCascade(idx);
+
+  // Smooth scroll into view
+  const newCard = document.getElementById('loc_card_' + idx);
+  if (newCard) {
+    newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
 
@@ -562,29 +750,16 @@ function toggleServices() {
 document.addEventListener('DOMContentLoaded', function() {
   toggleServices();
 
-  // Primary Location (Province -> City -> Detailed Address)
-  setupCascade({
-    provinceEl: document.getElementById('loc_province'),
-    cityWrapper: document.getElementById('loc_city_wrapper'),
-    cityEl: document.getElementById('loc_city'),
-    addressWrapper: document.getElementById('loc_address_wrapper'),
-    addressEl: document.getElementById('loc_address'),
-    initialProvinceVal: '{{ old("province_id", $company->province_id) }}',
-    initialCityVal: '{{ old("city_id", $company->city_id) }}',
-    isOffice: false
-  });
+  // Initialize existing location cards
+  @foreach($locList as $idx => $loc)
+    initLocationCascade(
+      '{{ $idx }}',
+      '{{ $loc["province_id"] ?? $loc["province_name"] ?? "" }}',
+      '{{ $loc["city_id"] ?? $loc["city_name"] ?? "" }}'
+    );
+  @endforeach
 
-  // Office Location (Province -> City -> Detailed Address)
-  setupCascade({
-    provinceEl: document.getElementById('office_province'),
-    cityWrapper: document.getElementById('office_city_wrapper'),
-    cityEl: document.getElementById('office_city'),
-    addressWrapper: document.getElementById('office_address_wrapper'),
-    addressEl: document.getElementById('office_address'),
-    initialProvinceVal: '{{ old("office_province", $company->office_province) }}',
-    initialCityVal: '{{ old("office_city", $company->office_city) }}',
-    isOffice: true
-  });
+  updateLocationNumbers();
 });
 </script>
 @endsection

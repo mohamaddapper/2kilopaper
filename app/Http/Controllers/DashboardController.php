@@ -23,26 +23,7 @@ class DashboardController extends Controller
     public function store(Request $r)
     {
         $data = $this->validated($r);
-
-        // Sync location relationships
-        if (!empty($data['city_id'])) {
-            $city = City::with('province')->find($data['city_id']);
-            if ($city) {
-                $data['province_id'] = $city->province_id;
-                $data['factory_city'] = $city->name;
-                $data['factory_province'] = $city->province?->name;
-            }
-        }
-        if (!empty($data['address'])) {
-            $data['factory_address'] = $data['address'];
-        }
-        if (!empty($data['office_city']) && is_numeric($data['office_city'])) {
-            $offCity = City::with('province')->find($data['office_city']);
-            if ($offCity) {
-                $data['office_city'] = $offCity->name;
-                $data['office_province'] = $offCity->province?->name;
-            }
-        }
+        $this->processLocations($r, $data);
 
         if ($r->hasFile('logo')) {
             $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
@@ -82,26 +63,7 @@ class DashboardController extends Controller
     {
         abort_unless($company->user_id === $r->user()->id, 403);
         $data = $this->validated($r);
-
-        // Sync location relationships
-        if (!empty($data['city_id'])) {
-            $city = City::with('province')->find($data['city_id']);
-            if ($city) {
-                $data['province_id'] = $city->province_id;
-                $data['factory_city'] = $city->name;
-                $data['factory_province'] = $city->province?->name;
-            }
-        }
-        if (!empty($data['address'])) {
-            $data['factory_address'] = $data['address'];
-        }
-        if (!empty($data['office_city']) && is_numeric($data['office_city'])) {
-            $offCity = City::with('province')->find($data['office_city']);
-            if ($offCity) {
-                $data['office_city'] = $offCity->name;
-                $data['office_province'] = $offCity->province?->name;
-            }
-        }
+        $this->processLocations($r, $data);
 
         if ($r->hasFile('logo')) {
             $data['logo'] = $this->uploadFile($r->file('logo'), 'logos');
@@ -124,6 +86,81 @@ class DashboardController extends Controller
 
         $company->update($data);
         return redirect()->route('dashboard')->with('ok', 'تغییرات با موفقیت ذخیره شد.');
+    }
+
+    private function processLocations(Request $r, array &$data): void
+    {
+        $raw = $r->input('locations');
+        if (!is_array($raw) || empty($raw)) {
+            return;
+        }
+
+        $provinces = Province::all()->keyBy('id');
+        $cities = City::all()->keyBy('id');
+
+        $primaryIndex = (int) $r->input('primary_location_index', 0);
+        $processed = [];
+        $primaryLoc = null;
+
+        foreach ($raw as $idx => $item) {
+            $pId = !empty($item['province_id']) ? (int) $item['province_id'] : null;
+            $cId = !empty($item['city_id']) ? (int) $item['city_id'] : null;
+            if (!$pId || !$cId) {
+                continue;
+            }
+
+            $province = $provinces->get($pId);
+            $city = $cities->get($cId);
+            $isPrimary = ($idx === $primaryIndex) || !empty($item['is_primary']);
+
+            $loc = [
+                'type' => $item['type'] ?? 'factory',
+                'title' => trim((string)($item['title'] ?? '')),
+                'province_id' => $pId,
+                'city_id' => $cId,
+                'province_name' => $province?->name ?? '',
+                'city_name' => $city?->name ?? '',
+                'address' => trim((string)($item['address'] ?? '')),
+                'phone' => trim((string)($item['phone'] ?? '')),
+                'is_primary' => $isPrimary,
+            ];
+
+            if ($isPrimary && !$primaryLoc) {
+                $primaryLoc = $loc;
+            }
+
+            $processed[] = $loc;
+        }
+
+        if (!$primaryLoc && count($processed) > 0) {
+            $processed[0]['is_primary'] = true;
+            $primaryLoc = $processed[0];
+        }
+
+        if ($primaryLoc) {
+            $data['province_id'] = $primaryLoc['province_id'];
+            $data['city_id'] = $primaryLoc['city_id'];
+            $data['address'] = $primaryLoc['address'];
+            if (!empty($primaryLoc['phone']) && empty($data['phone'])) {
+                $data['phone'] = $primaryLoc['phone'];
+            }
+        }
+
+        // Backward compatibility sync for legacy factory/office fields
+        foreach ($processed as $loc) {
+            if ($loc['type'] === 'factory' && empty($data['factory_address'])) {
+                $data['factory_province'] = $loc['province_name'];
+                $data['factory_city'] = $loc['city_name'];
+                $data['factory_address'] = $loc['address'];
+            }
+            if (($loc['type'] === 'central_office' || $loc['type'] === 'sales_office') && empty($data['office_address'])) {
+                $data['office_province'] = $loc['province_name'];
+                $data['office_city'] = $loc['city_name'];
+                $data['office_address'] = $loc['address'];
+            }
+        }
+
+        $data['locations'] = $processed;
     }
 
     private function uploadFile($file, string $subfolder): ?string
@@ -156,6 +193,7 @@ class DashboardController extends Controller
             'company' => $company,
             'provinces' => $provinces,
             'locationsTree' => $locationsTree,
+            'locationTypes' => Company::locationTypes(),
             'categories' => Category::whereNull('parent_id')->with('children')->orderBy('sort')->get(),
         ];
     }
@@ -176,18 +214,18 @@ class DashboardController extends Controller
             'name' => 'required|string|max:150',
             'slogan' => 'nullable|string|max:200',
             'category_id' => 'required|exists:categories,id',
-            'province_id' => 'required|exists:provinces,id',
-            'city_id' => 'required|exists:cities,id',
-            'address' => 'required|string|max:500',
+            'locations' => 'required|array|min:1',
+            'locations.*.type' => 'required|string|max:50',
+            'locations.*.title' => 'nullable|string|max:100',
+            'locations.*.province_id' => 'required|exists:provinces,id',
+            'locations.*.city_id' => 'required|exists:cities,id',
+            'locations.*.address' => 'required|string|max:500',
+            'locations.*.phone' => 'nullable|string|max:40',
+            'locations.*.is_primary' => 'nullable',
+            'primary_location_index' => 'nullable|integer',
             'description' => 'nullable|string|max:10000',
             'phone' => 'nullable|string|max:30',
             'website' => 'nullable|url|max:255',
-            'factory_province' => 'nullable|string|max:100',
-            'factory_city' => 'nullable|string|max:100',
-            'factory_address' => 'nullable|string|max:1000',
-            'office_province' => 'nullable|string|max:100',
-            'office_city' => 'nullable|string|max:100',
-            'office_address' => 'nullable|string|max:1000',
             'phones' => 'nullable|array',
             'phones.*' => 'nullable|string|max:30',
             'contacts' => 'nullable|array',
@@ -203,9 +241,11 @@ class DashboardController extends Controller
         ], [
             'name.required' => 'نام شرکت الزامی است.',
             'category_id.required' => 'انتخاب دسته‌بندی اصلی الزامی است.',
-            'province_id.required' => 'انتخاب استان الزامی است.',
-            'city_id.required' => 'انتخاب شهر الزامی است.',
-            'address.required' => 'وارد کردن آدرس دقیق الزامی است.',
+            'locations.required' => 'حداقل وارد کردن یک آدرس یا موقعیت مکانی الزامی است.',
+            'locations.min' => 'حداقل وارد کردن یک آدرس یا موقعیت مکانی الزامی است.',
+            'locations.*.province_id.required' => 'انتخاب استان برای هر آدرس الزامی است.',
+            'locations.*.city_id.required' => 'انتخاب شهر برای هر آدرس الزامی است.',
+            'locations.*.address.required' => 'وارد کردن آدرس دقیق برای هر موقعیت الزامی است.',
             'website.url' => 'آدرس وب‌سایت معتبر نیست (مثال: example.com)',
             'logo.image' => 'فایل لوگو باید تصویر باشد.',
             'logo.max' => 'حجم لوگو نباید بیشتر از ۴ مگابایت باشد.',

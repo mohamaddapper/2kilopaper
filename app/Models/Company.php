@@ -21,6 +21,7 @@ class Company extends Model
         'phone',
         'website',
         'address',
+        'locations',
         'factory_province',
         'factory_city',
         'factory_address',
@@ -49,6 +50,7 @@ class Company extends Model
         'services' => 'array',
         'gallery' => 'array',
         'socials' => 'array',
+        'locations' => 'array',
     ];
 
     public function user() { return $this->belongsTo(User::class); }
@@ -77,6 +79,24 @@ public function scopeRanked(Builder $q)
         [now()->format('Y-m-d H:i:s')]
     )->orderByDesc('id');
 }
+
+    public static function locationTypes(): array
+    {
+        return [
+            'factory' => ['title' => 'کارخانه / کارگاه تولیدی', 'icon' => '🏭'],
+            'central_office' => ['title' => 'دفتر مرکزی', 'icon' => '🏢'],
+            'sales_office' => ['title' => 'دفتر فروش / بازرگانی', 'icon' => '💼'],
+            'store' => ['title' => 'فروشگاه / مغازه / شوروم', 'icon' => '🏪'],
+            'warehouse' => ['title' => 'انبار مرکزی / بارانداز', 'icon' => '📦'],
+            'branch' => ['title' => 'شعبه دیگر', 'icon' => '📍'],
+        ];
+    }
+
+    public static function getLocationTypeInfo(?string $type): array
+    {
+        $types = static::locationTypes();
+        return $types[$type] ?? ['title' => 'موقعیت مکانی', 'icon' => '📍'];
+    }
 
     public function activeTier(): ?string
     {
