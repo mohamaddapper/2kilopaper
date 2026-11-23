@@ -6,7 +6,8 @@
 <title>{{ $title ?? 'دایرکتوری صنعت کاغذ، چاپ و بسته‌بندی' }} | {{ config('app.name') }}</title>
 <meta name="description" content="{{ $description ?? 'دایرکتوری شرکت‌های کاغذ، چاپ و بسته‌بندی ایران' }}">
 <link rel="canonical" href="{{ $canonical ?? url()->current() }}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"></noscript>
 <link rel="stylesheet" href="{{ asset('assets/style.css') }}">
 @stack('head')
 </head>

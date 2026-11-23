@@ -28,7 +28,7 @@
   <!-- بنر کاور بالا در صورت وجود -->
   @if($company->cover)
     <div style="width:100%;height:220px;border-radius:12px;overflow:hidden;margin-bottom:-50px;position:relative">
-      <img src="{{ asset($company->cover) }}" style="width:100%;height:100%;object-fit:cover">
+      <img src="{{ asset($company->cover) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">
     </div>
   @endif
 
@@ -36,7 +36,7 @@
   <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px">
     <div class="logo-box" style="width:100px;height:100px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff">
       @if($company->logo)
-        <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" style="width:100%;height:100%;object-fit:contain;padding:4px">
+        <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:4px">
       @else
         <span style="font-size:32px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
       @endif
@@ -138,7 +138,7 @@
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px">
             @foreach($company->gallery as $img)
               <a href="{{ asset($img) }}" target="_blank" style="display:block;height:140px;border-radius:8px;overflow:hidden;border:1px solid var(--border)">
-                <img src="{{ asset($img) }}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="{{ asset($img) }}" alt="تصویر {{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
               </a>
             @endforeach
           </div>
@@ -147,12 +147,28 @@
 
       <!-- ویدیو معرفی -->
       @if($company->video_code)
-        <div class="card" style="margin-bottom:20px">
-          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیوی معرفی</h3>
-          <div style="margin-top:10px;text-align:center">
-            {!! $company->video_code !!}
+        @php
+          $rawVideo = trim($company->video_code);
+          $embedUrl = null;
+          if (preg_match('/aparat\.com\/v\/([a-zA-Z0-9]+)/', $rawVideo, $m)) {
+              $embedUrl = "https://www.aparat.com/video/video/embed/videohash/{$m[1]}/vt/frame";
+          }
+        @endphp
+        @if($embedUrl)
+          <div class="card" style="margin-bottom:20px">
+            <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیوی معرفی</h3>
+            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px">
+              <iframe src="{{ $embedUrl }}" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen></iframe>
+            </div>
           </div>
-        </div>
+        @elseif(str_contains($rawVideo, '<iframe'))
+          <div class="card" style="margin-bottom:20px">
+            <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">🎥 ویدیوی معرفی</h3>
+            <div style="margin-top:10px;text-align:center">
+              {!! $rawVideo !!}
+            </div>
+          </div>
+        @endif
       @endif
     </div>
 
