@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-  'title' => $job->title . ' در ' . ($job->company->name ?? 'کارخانجات کاغذ و کارتن'),
+ 'title' => $job->title . ' در ' . ($job->company->name ?? 'کارخانجات کاغذ و کارتن'),
   'description' => 'استخدام ' . $job->title . ' در ' . ($job->company->name ?? 'صنعت چاپ و بسته‌بندی') . ' - حقوق، شرایط سرویس و ارسال رزومه'
 ])
 
@@ -41,14 +41,14 @@
             <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted);flex-wrap:wrap">
               @if($job->company)
                 <a href="{{ $job->company->url }}" style="color:var(--primary);font-weight:700;text-decoration:none">
-                  🏢 {{ $job->company->name }}
+                  {!! svg_icon('building', 15) !!} {{ $job->company->name }}
                 </a>
               @endif
-              <span>📍 {{ $job->province->name ?? '' }} {{ $job->city ? '· ' . $job->city->name : '' }}</span>
+              <span>{!! svg_icon('map-pin', 15) !!} {{ $job->province->name ?? '' }} {{ $job->city ? '· ' . $job->city->name : '' }}</span>
               <span>•</span>
-              <span>👁️ {{ $job->views_count }} بازدید</span>
+              <span>{!! svg_icon('eye', 15) !!} {{ $job->views_count }} بازدید</span>
               <span>•</span>
-              <span>📅 {{ $job->created_at->diffForHumans() }}</span>
+              <span>{!! svg_icon('calendar', 15) !!} {{ $job->created_at->diffForHumans() }}</span>
             </div>
           </div>
 
@@ -94,7 +94,7 @@
 
         @if($job->address)
           <div style="margin-top:14px;font-size:13.5px;color:var(--muted);background:#fffdf0;border:1px solid #fef08a;padding:10px 14px;border-radius:8px">
-            <b>📍 آدرس دقیق / نام شهرک صنعتی:</b> {{ $job->address }}
+            <b>{!! svg_icon('map-pin', 15) !!} آدرس دقیق / نام شهرک صنعتی:</b> {{ $job->address }}
           </div>
         @endif
       </div>
@@ -103,13 +103,13 @@
       @if(!empty($job->benefits) && count(array_filter($job->benefits)) > 0)
         <div class="card" style="padding:20px;margin-bottom:20px;border-radius:12px;background:#fff">
           <h3 style="margin:0 0 14px;font-size:16px;color:var(--text);display:flex;align-items:center;gap:6px">
-            <span>🎁 امکانات و تسهیلات رفاهی کارفرما</span>
+            <span>{!! svg_icon('gift', 15) !!} امکانات و تسهیلات رفاهی کارفرما</span>
           </h3>
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
             @if(!empty($job->benefits['has_service']))
               <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#eff6ff;border-radius:8px;color:#1e40af;font-size:13.5px">
-                <span style="font-size:18px">🚌</span>
+                <span style="font-size:18px">{!! svg_icon('bus', 15) !!}</span>
                 <div>
                   <b>سرویس رفت‌وآمد: دارد</b>
                   @if(!empty($job->benefits['service_routes']))
@@ -121,35 +121,35 @@
 
             @if(!empty($job->benefits['has_meal']))
               <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f0fdf4;border-radius:8px;color:#166534;font-size:13.5px">
-                <span style="font-size:18px">🍽️</span>
+                <span style="font-size:18px">{!! svg_icon('utensils', 15) !!}</span>
                 <b>وعده غذایی / ناهار گرم</b>
               </div>
             @endif
 
             @if(!empty($job->benefits['has_accommodation']))
               <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fef3c7;border-radius:8px;color:#92400e;font-size:13.5px">
-                <span style="font-size:18px">🛏️</span>
+                <span style="font-size:18px">{!! svg_icon('bed', 15) !!}</span>
                 <b>خوابگاه / محل اسکان پرسنل</b>
               </div>
             @endif
 
             @if(!empty($job->benefits['has_insurance']))
               <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;border-radius:8px;color:#334155;font-size:13.5px">
-                <span style="font-size:18px">🛡️</span>
+                <span style="font-size:18px">{!! svg_icon('shield', 15) !!}</span>
                 <b>بیمه تأمین اجتماعی از روز اول</b>
               </div>
             @endif
 
             @if(!empty($job->benefits['has_supplementary_insurance']))
               <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;border-radius:8px;color:#334155;font-size:13.5px">
-                <span style="font-size:18px">🏥</span>
+                <span style="font-size:18px">{!! svg_icon('heart-pulse', 15) !!}</span>
                 <b>بیمه درمان تکمیلی</b>
               </div>
             @endif
 
             @if(!empty($job->benefits['has_bonus']))
               <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fdf2f8;border-radius:8px;color:#9d174d;font-size:13.5px">
-                <span style="font-size:18px">💰</span>
+                <span style="font-size:18px">{!! svg_icon('wallet', 15) !!}</span>
                 <b>پاداش تولید / آکورد ماهانه</b>
               </div>
             @endif
@@ -160,7 +160,7 @@
       <!-- مهارت‌ها و دستگاه‌های تخصصی -->
       @if(!empty($job->skills) && count($job->skills) > 0)
         <div class="card" style="padding:20px;margin-bottom:20px;border-radius:12px;background:#fff">
-          <h3 style="margin:0 0 12px;font-size:16px;color:var(--text)">⚙️ مهارت‌ها و دستگاه‌های مورد نظر</h3>
+          <h3 style="margin:0 0 12px;font-size:16px;color:var(--text)">{!! svg_icon('settings', 15) !!} مهارت‌ها و دستگاه‌های مورد نظر</h3>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             @foreach($job->skills as $skill)
               <span class="badge" style="background:#eef3f9;color:var(--primary);padding:6px 14px;font-size:13px;border-radius:8px;font-weight:600">
@@ -174,7 +174,7 @@
       <!-- شرح شغل و وظایف -->
       @if($job->description)
         <div class="card" style="padding:20px;margin-bottom:20px;border-radius:12px;background:#fff">
-          <h3 style="margin:0 0 12px;font-size:16px;color:var(--text)">📋 شرح وظایف و مسئولیت‌ها</h3>
+          <h3 style="margin:0 0 12px;font-size:16px;color:var(--text)">{!! svg_icon('clipboard', 15) !!} شرح وظایف و مسئولیت‌ها</h3>
           <div style="line-height:2;color:#334155;font-size:14.5px;white-space:pre-line">
             {{ $job->description }}
           </div>
@@ -184,7 +184,7 @@
       <!-- شرایط احراز شغل -->
       @if($job->requirements)
         <div class="card" style="padding:20px;margin-bottom:20px;border-radius:12px;background:#fff">
-          <h3 style="margin:0 0 12px;font-size:16px;color:var(--text)">🎯 شرایط احراز و شایستگی‌ها</h3>
+          <h3 style="margin:0 0 12px;font-size:16px;color:var(--text)">{!! svg_icon('target', 15) !!} شرایط احراز و شایستگی‌ها</h3>
           <div style="line-height:2;color:#334155;font-size:14.5px;white-space:pre-line">
             {{ $job->requirements }}
           </div>
@@ -194,17 +194,17 @@
       <!-- تماس مستقیم کارفرما (برای کارهای فوری کارگاهی) -->
       @if($job->contact_phone || $job->contact_whatsapp)
         <div class="card" style="padding:20px;margin-bottom:20px;border-radius:12px;background:#f0fdf4;border:1px solid #bbf7d0">
-          <h3 style="margin:0 0 10px;font-size:16px;color:#166534">📞 راه‌های تماس مستقیم جهت استخدام فوری</h3>
+          <h3 style="margin:0 0 10px;font-size:16px;color:#166534">{!! svg_icon('phone', 15) !!} راه‌های تماس مستقیم جهت استخدام فوری</h3>
           <p style="margin:0 0 14px;font-size:13.5px;color:#15803d">در صورت تمایل، می‌توانید مستقیماً با مسئول استخدام تماس حاصل فرمایید:</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
             @if($job->contact_phone)
               <a href="tel:{{ $job->contact_phone }}" class="btn" style="background:#16a34a;padding:9px 20px;font-size:14px">
-                📞 تماس تلفنی: {{ $job->contact_phone }}
+                {!! svg_icon('phone', 15) !!} تماس تلفنی: {{ $job->contact_phone }}
               </a>
             @endif
             @if($job->contact_whatsapp)
               <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $job->contact_whatsapp) }}" target="_blank" class="btn" style="background:#25d366;padding:9px 20px;font-size:14px">
-                💬 پیام در واتساپ: {{ $job->contact_whatsapp }}
+                {!! svg_icon('message', 15) !!} پیام در واتساپ: {{ $job->contact_whatsapp }}
               </a>
             @endif
           </div>
@@ -213,7 +213,7 @@
 
       <!-- فرم ارسال رزومه و درخواست همکاری -->
       <div id="apply_section" class="card" style="padding:24px;border-radius:12px;background:#fff;border:2px solid var(--primary)">
-        <h3 style="margin:0 0 8px;font-size:18px;color:var(--text)">📨 فرم ارسال رزومه و درخواست همکاری</h3>
+        <h3 style="margin:0 0 8px;font-size:18px;color:var(--text)">{!! svg_icon('mail', 15) !!} فرم ارسال رزومه و درخواست همکاری</h3>
         <p style="margin:0 0 20px;color:var(--muted);font-size:13.5px">رزومه و اطلاعات شما مستقیماً در پنل مدیریت این شرکت قرار خواهد گرفت.</p>
 
         <form method="post" action="{{ route('jobs.apply', $job) }}" enctype="multipart/form-data">
@@ -284,7 +284,7 @@
           </div>
 
           <button type="submit" class="btn" style="padding:12px 32px;font-size:15px;font-weight:700;width:100%">
-            🚀 ثبت و ارسال درخواست همکاری به کارفرما
+            {!! svg_icon('rocket', 15) !!} ثبت و ارسال درخواست همکاری به کارفرما
           </button>
         </form>
       </div>
@@ -300,7 +300,7 @@
               @if($job->company->logo)
                 <img src="{{ asset($job->company->logo) }}" alt="{{ $job->company->name }}" style="width:100%;height:100%;object-fit:cover">
               @else
-                <span style="font-size:32px">🏭</span>
+                <span style="font-size:32px">{!! svg_icon('factory', 15) !!}</span>
               @endif
             </div>
             <h3 style="margin:0 0 4px;font-size:16.5px;color:var(--text)">{{ $job->company->name }}</h3>
@@ -317,10 +317,10 @@
 
           <div style="font-size:13px;color:var(--muted);margin-bottom:16px;display:flex;flex-direction:column;gap:6px">
             @if($job->company->city)
-              <div>📍 <b>شهر:</b> {{ $job->company->province->name ?? '' }} · {{ $job->company->city->name }}</div>
+              <div>{!! svg_icon('map-pin', 15) !!} <b>شهر:</b> {{ $job->company->province->name ?? '' }} · {{ $job->company->city->name }}</div>
             @endif
             @if($job->company->website)
-              <div>🌐 <b>سایت:</b> <a href="https://{{ preg_replace('#^https?://#', '', $job->company->website) }}" target="_blank" style="color:var(--primary)">{{ $job->company->website }}</a></div>
+              <div>{!! svg_icon('globe', 15) !!} <b>سایت:</b> <a href="https://{{ preg_replace('#^https?://#', '', $job->company->website) }}" target="_blank" style="color:var(--primary)">{{ $job->company->website }}</a></div>
             @endif
           </div>
 

@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'هزینه اشتراک‌ها و تعرفه خدمات | ۲ کیلو کاغذ',
-  'description' => 'تعرفه اشتراک کارخانجات و شرکت‌های صنعت کاغذ، چاپ و بسته‌بندی در دایرکتوری ۲ کیلو کاغذ'
+ 'title' => 'هزینه اشتراک‌ها و تعرفه خدمات | ۲ کیلو کاغذ',
+ 'description' => 'تعرفه اشتراک کارخانجات و شرکت‌های صنعت کاغذ، چاپ و بسته‌بندی در دایرکتوری ۲ کیلو کاغذ'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- بنر هدر و معرفی ارزش افزوده -->
   <div style="text-align:center;padding:36px 20px;background:#fff;border:1px solid var(--border);border-radius:16px;margin-bottom:32px;box-shadow:0 2px 10px rgba(0,0,0,0.02)">
     <span class="badge" style="background:#e0f2fe;color:#0369a1;font-size:13px;padding:4px 14px;font-weight:700;margin-bottom:12px;display:inline-block">
-      💎 تعرفه اشتراک‌های سالانه و دوره‌ای
+      {!! svg_icon('gem', 15) !!} تعرفه اشتراک‌های سالانه و دوره‌ای
     </span>
     <h1 style="margin:0 0 12px;font-size:26px;color:var(--text);line-height:1.5">
       فقط در فهرست نباشید؛ فرصت بیشتری برای انتخاب‌شدن داشته باشید
@@ -23,7 +23,7 @@
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:36px">
     
     <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border)">
-      <div style="font-size:28px;margin-bottom:8px">🚀</div>
+      <div style="font-size:28px;margin-bottom:8px">{!! svg_icon('rocket', 15) !!}</div>
       <h3 style="margin:0 0 6px;font-size:15.5px;color:var(--text)">بالاتر دیده شوید</h3>
       <p style="margin:0;font-size:13px;color:var(--muted);line-height:1.7">
         شرکت‌های دارای اشتراک در فهرست شرکت‌ها، بالاتر از مجموعه‌های بدون اشتراک نمایش داده می‌شوند.
@@ -31,7 +31,7 @@
     </div>
 
     <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border)">
-      <div style="font-size:28px;margin-bottom:8px">📸</div>
+      <div style="font-size:28px;margin-bottom:8px">{!! svg_icon('camera', 15) !!}</div>
       <h3 style="margin:0 0 6px;font-size:15.5px;color:var(--text)">محصولاتتان را نشان دهید</h3>
       <p style="margin:0;font-size:13px;color:var(--muted);line-height:1.7">
         با درج تصاویر محصولات و افزودن کاتالوگ PDF، شناخت شفاف‌تری از توانمندی‌های خود به مشتری بدهید.
@@ -39,7 +39,7 @@
     </div>
 
     <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border)">
-      <div style="font-size:28px;margin-bottom:8px">🛡️</div>
+      <div style="font-size:28px;margin-bottom:8px">{!! svg_icon('shield', 15) !!}</div>
       <h3 style="margin:0 0 6px;font-size:15.5px;color:var(--text)">حفظ تمرکز مخاطب</h3>
       <p style="margin:0;font-size:13px;color:var(--muted);line-height:1.7">
         با فعال‌سازی اشتراک، تبلیغات سایر شرکت‌ها از صفحه اختصاصی شما حذف می‌شود تا مخاطب فقط شما را ببیند.
@@ -47,7 +47,7 @@
     </div>
 
     <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border)">
-      <div style="font-size:28px;margin-bottom:8px">📢</div>
+      <div style="font-size:28px;margin-bottom:8px">{!! svg_icon('megaphone', 15) !!}</div>
       <h3 style="margin:0 0 6px;font-size:15.5px;color:var(--text)">جذب نیرو و استخدام</h3>
       <p style="margin:0;font-size:13px;color:var(--muted);line-height:1.7">
         آگهی‌های استخدام مجموعه‌تان را در فضای تخصصی صنعت کاغذ، چاپ و کارتن منتشر کنید.
@@ -72,12 +72,12 @@
         </p>
         
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">
-          <li style="color:#94a3b8">✕ درج تصویر و گالری محصولات</li>
-          <li style="color:#94a3b8">✕ انتشار آگهی استخدام</li>
-          <li style="color:#94a3b8">✕ افزودن کاتالوگ محصولات</li>
-          <li style="color:#94a3b8">✕ ویدیوی معرفی خدمات و کالا</li>
-          <li style="color:#94a3b8">✕ اطلاع‌رسانی پیامکی</li>
-          <li style="color:#ef4444">⚠️ نمایش تبلیغ سایرین در صفحه شما</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} درج تصویر و گالری محصولات</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} انتشار آگهی استخدام</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} افزودن کاتالوگ محصولات</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} ویدیوی معرفی خدمات و کالا</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} اطلاع‌رسانی پیامکی</li>
+          <li style="color:#ef4444">{!! svg_icon('alert', 15) !!} نمایش تبلیغ سایرین در صفحه شما</li>
           <li style="color:#64748b">نمایش پایین‌تر از شرکت‌های اشتراکی</li>
         </ul>
       </div>
@@ -102,13 +102,13 @@
         </p>
         
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">
-          <li style="color:#16a34a;font-weight:600">✓ درج تصویر و گالری محصولات</li>
-          <li style="color:#16a34a;font-weight:600">✓ انتشار آگهی استخدام در سامانه</li>
-          <li style="color:#16a34a;font-weight:600">✓ افزودن کاتالوگ محصولات (PDF)</li>
-          <li style="color:#94a3b8">✕ ویدیوی معرفی کالا و خدمات</li>
-          <li style="color:#94a3b8">✕ اطلاع‌رسانی پیامکی</li>
-          <li style="color:#16a34a">✓ حذف تبلیغات سایرین از صفحه شما</li>
-          <li style="color:#0284c7;font-weight:600">✓ اولویت بالاتر از شرکت‌های عادی</li>
+          <li style="color:#16a34a;font-weight:600">{!! svg_icon('check', 15) !!} درج تصویر و گالری محصولات</li>
+          <li style="color:#16a34a;font-weight:600">{!! svg_icon('check', 15) !!} انتشار آگهی استخدام در سامانه</li>
+          <li style="color:#16a34a;font-weight:600">{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} ویدیوی معرفی کالا و خدمات</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} اطلاع‌رسانی پیامکی</li>
+          <li style="color:#16a34a">{!! svg_icon('check', 15) !!} حذف تبلیغات سایرین از صفحه شما</li>
+          <li style="color:#0284c7;font-weight:600">{!! svg_icon('check', 15) !!} اولویت بالاتر از شرکت‌های عادی</li>
         </ul>
       </div>
 
@@ -132,13 +132,13 @@
         </p>
         
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">
-          <li style="color:#16a34a;font-weight:600">✓ درج تصویر و گالری محصولات</li>
-          <li style="color:#16a34a;font-weight:600">✓ انتشار آگهی استخدام در سامانه</li>
-          <li style="color:#16a34a;font-weight:600">✓ افزودن کاتالوگ محصولات (PDF)</li>
-          <li style="color:#94a3b8">✕ ویدیوی معرفی کالا و خدمات</li>
-          <li style="color:#94a3b8">✕ اطلاع‌رسانی پیامکی</li>
-          <li style="color:#16a34a">✓ حذف تبلیغات سایرین از صفحه شما</li>
-          <li style="color:#0284c7;font-weight:600">✓ اولویت بالاتر از شرکت‌های عادی</li>
+          <li style="color:#16a34a;font-weight:600">{!! svg_icon('check', 15) !!} درج تصویر و گالری محصولات</li>
+          <li style="color:#16a34a;font-weight:600">{!! svg_icon('check', 15) !!} انتشار آگهی استخدام در سامانه</li>
+          <li style="color:#16a34a;font-weight:600">{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} ویدیوی معرفی کالا و خدمات</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} اطلاع‌رسانی پیامکی</li>
+          <li style="color:#16a34a">{!! svg_icon('check', 15) !!} حذف تبلیغات سایرین از صفحه شما</li>
+          <li style="color:#0284c7;font-weight:600">{!! svg_icon('check', 15) !!} اولویت بالاتر از شرکت‌های عادی</li>
         </ul>
       </div>
 
@@ -152,7 +152,7 @@
     <!-- پلن ۴: ۱ ساله (پیشنهاد ویژه) -->
     <div class="card" style="padding:24px;background:#fefce8;border-radius:14px;border:2px solid #eab308;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:0 4px 15px rgba(234,179,8,0.15)">
       <div style="position:absolute;top:-12px;left:24px;background:#eab308;color:#000;font-size:11.5px;font-weight:800;padding:3px 12px;border-radius:20px">
-        ★ به‌صرفه‌ترین انتخاب
+        {!! svg_icon('star-filled', 15) !!} به‌صرفه‌ترین انتخاب
       </div>
 
       <div>
@@ -166,19 +166,19 @@
         </p>
         
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">
-          <li style="color:#16a34a;font-weight:700">✓ درج تصویر و گالری محصولات</li>
-          <li style="color:#16a34a;font-weight:700">✓ انتشار آگهی استخدام در سامانه</li>
-          <li style="color:#16a34a;font-weight:700">✓ افزودن کاتالوگ محصولات (PDF)</li>
-          <li style="color:#854d0e;font-weight:700">✓ ویدیوی معرفی کالا و خدمات (آپارات)</li>
-          <li style="color:#854d0e;font-weight:700">✓ اطلاع‌رسانی پیامکی به مدیر</li>
-          <li style="color:#16a34a;font-weight:700">✓ حذف تبلیغات سایرین از صفحه شما</li>
-          <li style="color:#b45309;font-weight:700">★ بالاترین اولویت نمایش در دایرکتوری</li>
+          <li style="color:#16a34a;font-weight:700">{!! svg_icon('check', 15) !!} درج تصویر و گالری محصولات</li>
+          <li style="color:#16a34a;font-weight:700">{!! svg_icon('check', 15) !!} انتشار آگهی استخدام در سامانه</li>
+          <li style="color:#16a34a;font-weight:700">{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
+          <li style="color:#854d0e;font-weight:700">{!! svg_icon('check', 15) !!} ویدیوی معرفی کالا و خدمات (آپارات)</li>
+          <li style="color:#854d0e;font-weight:700">{!! svg_icon('check', 15) !!} اطلاع‌رسانی پیامکی به مدیر</li>
+          <li style="color:#16a34a;font-weight:700">{!! svg_icon('check', 15) !!} حذف تبلیغات سایرین از صفحه شما</li>
+          <li style="color:#b45309;font-weight:700">{!! svg_icon('star-filled', 15) !!} بالاترین اولویت نمایش در دایرکتوری</li>
         </ul>
       </div>
 
       <div style="margin-top:24px">
         <a href="{{ route('dashboard') }}#subscription" class="btn" style="width:100%;text-align:center;background:#eab308;color:#000;font-weight:800;box-sizing:border-box">
-          ★ خرید اشتراک سالانه
+          {!! svg_icon('star-filled', 15) !!} خرید اشتراک سالانه
         </a>
       </div>
     </div>
@@ -204,7 +204,7 @@
           <b>اشتراک ۱ ساله؛ کامل‌ترین و به‌صرفه‌ترین انتخاب:</b> با ۵ میلیون تومان، ۳۶۵ روز حضور مداوم داشته باشید و علاوه بر تمامی امکانات بالا، از درج ویدیوی معرفی کالا و خدمات و اطلاع‌رسانی پیامکی نیز بهره‌مند شوید.
         </p>
         <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:13px;color:#166534">
-          💡 <b>نیاز به دیده‌شدن در صدر نتایج و بنر اختصاصی دارید؟</b><br>
+          {!! svg_icon('lightbulb', 15) !!} <b>نیاز به دیده‌شدن در صدر نتایج و بنر اختصاصی دارید؟</b><br>
           پلن‌های ویژه طلایی، نقره‌ای و برنزی و بنرهای سایت را در <a href="{{ route('advertising') }}" style="color:#15803d;font-weight:700">صفحه تبلیغات ۲ کیلو کاغذ</a> مشاهده کنید.
         </div>
       </div>

@@ -169,22 +169,22 @@
 
       <nav class="admin-nav">
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-          📊 پیشخوان
+          {!! svg_icon('bar-chart', 15) !!} پیشخوان
         </a>
         <a href="{{ route('admin.companies') }}" class="{{ request()->routeIs('admin.companies') ? 'active' : '' }}">
-          🏢 شرکت‌ها
+          {!! svg_icon('building', 15) !!} شرکت‌ها
         </a>
         <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-          🏷️ دسته‌بندی و سئو
+          {!! svg_icon('tag', 15) !!} دسته‌بندی و سئو
         </a>
         <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs') ? 'active' : '' }}">
-          💼 آگهی‌های شغلی
+          {!! svg_icon('briefcase', 15) !!} آگهی‌های شغلی
         </a>
         <a href="{{ route('admin.applications') }}" class="{{ request()->routeIs('admin.applications') ? 'active' : '' }}">
-          👥 رزومه‌ها و متقاضیان
+          {!! svg_icon('users', 15) !!} رزومه‌ها و متقاضیان
         </a>
         <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
-          👤 کاربران
+          {!! svg_icon('user', 15) !!} کاربران
         </a>
       </nav>
     </div>
@@ -206,12 +206,12 @@
   <main class="admin-container">
     @if(session('ok'))
       <div style="background:#dcfce7;border:1px solid #86efac;color:#166534;padding:12px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;font-weight:600">
-        ✓ {{ session('ok') }}
+        {!! svg_icon('check', 15) !!} {{ session('ok') }}
       </div>
     @endif
     @if(session('error'))
       <div style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;font-weight:600">
-        ✕ {{ session('error') }}
+        {!! svg_icon('x', 15) !!} {{ session('error') }}
       </div>
     @endif
 

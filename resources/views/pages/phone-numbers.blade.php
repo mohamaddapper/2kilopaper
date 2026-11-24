@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'شماره تماس‌های ضروری صنایع سلولزی',
-  'description' => 'شماره تماس و آدرس واحدهای وابسته به صنایع سلولزی شامل کاغذ، کارتن، مقوا، چاپ و نوشت‌افزار در ایران'
+ 'title' => 'شماره تماس‌های ضروری صنایع سلولزی',
+ 'description' => 'شماره تماس و آدرس واحدهای وابسته به صنایع سلولزی شامل کاغذ، کارتن، مقوا، چاپ و نوشت‌افزار در ایران'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- هدر صفحه و معرفی -->
   <div class="page-hero-card">
     <div class="page-hero-badge">
-      <span>📞</span>
+      <span>{!! svg_icon('phone', 15) !!}</span>
       <span>اطلاعات تماس ارگان‌ها و تشکل‌ها</span>
     </div>
     <h1 class="page-hero-title">شماره تماس‌های ضروری صنایع سلولزی</h1>
@@ -17,7 +17,7 @@
       در این فهرست شماره تماس‌ و آدرس‌ واحدهای دولتی، سندیکاها، انجمن‌ها و تعاونی‌های وابسته به صنایع سلولزی کشور (کاغذ، کارتن، مقوا، چاپ، نوشت‌افزار و بهداشتی) گردآوری شده است تا بتوانید به سرعت با آن‌ها ارتباط برقرار فرمایید.
     </p>
     <div class="page-hero-update-pill">
-      <span>🔄</span>
+      <span>{!! svg_icon('refresh', 15) !!}</span>
       <span>این فهرست به‌مرور و به صورت مستمر توسط ۲ کیلو کاغذ به‌روزرسانی می‌شود.</span>
     </div>
   </div>
@@ -41,7 +41,7 @@
       </div>
       <div class="org-body">
         <div class="org-address-row">
-          <span class="icon">📍</span>
+          <span class="icon">{!! svg_icon('map-pin', 15) !!}</span>
           <p class="address-text">تهران، خیابان کریمخان زند، خیابان استاد نجات‌الهی (ویلا)، خیابان کلانتری، وزارت صنعت، معدن و تجارت (ساختمان شهید حسین الهی)</p>
           <button type="button" class="copy-btn" onclick="copyAddress(this, 'تهران، خیابان کریمخان زند، خیابان استاد نجات‌الهی (ویلا)، خیابان کلانتری، وزارت صمت (ساختمان شهید حسین الهی)')" title="کپی آدرس">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -63,7 +63,7 @@
         </div>
 
         <div class="org-notice-box">
-          <span class="notice-icon">ℹ️</span>
+          <span class="notice-icon">{!! svg_icon('info', 15) !!}</span>
           <p>در صورت عدم پاسخگویی خطوط مستقیم، با شماره‌های سانترال زیر تماس گرفته و داخلی صنایع سلولزی را درخواست فرمایید:</p>
         </div>
 
@@ -86,7 +86,7 @@
       </div>
       <div class="org-body">
         <div class="org-address-row">
-          <span class="icon">📍</span>
+          <span class="icon">{!! svg_icon('map-pin', 15) !!}</span>
           <p class="address-text">تهران، خیابان مطهری، خیابان مفتح شمالی، کوچه اصلی‌پور، پلاک ۳۶، طبقه اول، واحد ۱</p>
           <button type="button" class="copy-btn" onclick="copyAddress(this, 'تهران، خیابان مطهری، خیابان مفتح شمالی، کوچه اصلی‌پور، پلاک ۳۶، طبقه اول، واحد ۱')" title="کپی آدرس">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -117,7 +117,7 @@
       </div>
       <div class="org-body">
         <div class="org-address-row">
-          <span class="icon">📍</span>
+          <span class="icon">{!! svg_icon('map-pin', 15) !!}</span>
           <p class="address-text">تهران، خیابان سید جمال‌الدین اسدآبادی (یوسف‌آباد)، نبش خیابان پنجاه و هشتم، شماره ۴۲۲، ساختمان نگین، طبقه اول، واحد ۴</p>
           <button type="button" class="copy-btn" onclick="copyAddress(this, 'تهران، خیابان یوسف‌آباد، نبش خیابان ۵۸، شماره ۴۲۲، ساختمان نگین، طبقه اول، واحد ۴')" title="کپی آدرس">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -149,7 +149,7 @@
       </div>
       <div class="org-body">
         <div class="org-address-row">
-          <span class="icon">📍</span>
+          <span class="icon">{!! svg_icon('map-pin', 15) !!}</span>
           <p class="address-text">تهران، خیابان سید جمال‌الدین اسدآبادی (یوسف‌آباد)، بین خیابان ۲۰ و ۲۲، شماره ۱۹۲، طبقه سوم</p>
           <button type="button" class="copy-btn" onclick="copyAddress(this, 'تهران، خیابان یوسف‌آباد، بین خیابان ۲۰ و ۲۲، شماره ۱۹۲، طبقه سوم')" title="کپی آدرس">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -188,7 +188,7 @@
       </div>
       <div class="org-body">
         <div class="org-address-row">
-          <span class="icon">📍</span>
+          <span class="icon">{!! svg_icon('map-pin', 15) !!}</span>
           <p class="address-text">تهران، بزرگراه یادگار امام (ره) به طرف آزادی، خیابان شهید تیموری، پلاک ۸۱</p>
           <button type="button" class="copy-btn" onclick="copyAddress(this, 'تهران، بزرگراه یادگار امام به طرف آزادی، خیابان شهید تیموری، پلاک ۸۱')" title="کپی آدرس">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -564,26 +564,26 @@
 
 <script>
 function filterPhoneCards() {
-  const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
-  const cards = document.querySelectorAll('.org-card');
-  cards.forEach(card => {
-    const text = card.getAttribute('data-search').toLowerCase();
-    if (!query || text.includes(query)) {
-      card.style.display = 'flex';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+ const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
+ const cards = document.querySelectorAll('.org-card');
+ cards.forEach(card => {
+ const text = card.getAttribute('data-search').toLowerCase();
+ if (!query || text.includes(query)) {
+ card.style.display = 'flex';
+ } else {
+ card.style.display = 'none';
+ }
+ });
 }
 
 function copyAddress(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const toast = document.getElementById('copyToast');
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2500);
-  });
+ navigator.clipboard.writeText(text).then(() => {
+ const toast = document.getElementById('copyToast');
+ toast.classList.add('show');
+ setTimeout(() => {
+ toast.classList.remove('show');
+ }, 2500);
+ });
 }
 </script>
 @endsection

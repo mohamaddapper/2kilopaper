@@ -24,7 +24,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>📢</span>
+                <span>{!! svg_icon('megaphone', 15) !!}</span>
                 <span>تبلیغات هدفمند B2B</span>
               </div>
               <h2 class="home-banner-title">برند خود را به هزاران خریدار و فعال صنعت معرفی کنید</h2>
@@ -36,7 +36,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">🎯</div>
+            <div class="home-banner-graphic">{!! svg_icon('target', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>📦</span>
+                <span>{!! svg_icon('box', 15) !!}</span>
                 <span>دایرکتوری تخصصی صنعت کاغذ، کارتن و چاپ</span>
               </div>
               <h2 class="home-banner-title">بزرگ‌ترین بانک اطلاعاتی کارخانجات و تولیدکنندگان ایران</h2>
@@ -61,7 +61,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">🏭</div>
+            <div class="home-banner-graphic">{!! svg_icon('factory', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>⭐</span>
+                <span>{!! svg_icon('star-filled', 15) !!}</span>
                 <span>دیده‌شدن حداکثری و افزایش فروش</span>
               </div>
               <h2 class="home-banner-title">با اشتراک طلایی، در رتبه اول نتایج و دید خریداران باشید</h2>
@@ -86,7 +86,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">👑</div>
+            <div class="home-banner-graphic">{!! svg_icon('crown', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>💼</span>
+                <span>{!! svg_icon('briefcase', 15) !!}</span>
                 <span>کاریابی و استخدام صنایع چاپ و بسته‌بندی</span>
               </div>
               <h2 class="home-banner-title">مرجع فرصت‌های شغلی و جذب نیروهای متخصص</h2>
@@ -111,7 +111,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">🤝</div>
+            <div class="home-banner-graphic">{!! svg_icon('handshake', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>🚀</span>
+                <span>{!! svg_icon('rocket', 15) !!}</span>
                 <span>ویژه مدیران و تولیدکنندگان</span>
               </div>
               <h2 class="home-banner-title">شرکت یا کارگاه خود را رایگان در دایرکتوری ثبت کنید</h2>
@@ -136,7 +136,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">📑</div>
+            <div class="home-banner-graphic">{!! svg_icon('file-text', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>📢</span>
+                <span>{!! svg_icon('megaphone', 15) !!}</span>
                 <span>تبلیغات هدفمند B2B</span>
               </div>
               <h2 class="home-banner-title">برند خود را به هزاران خریدار و فعال صنعت معرفی کنید</h2>
@@ -161,7 +161,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">🎯</div>
+            <div class="home-banner-graphic">{!! svg_icon('target', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -174,7 +174,7 @@
           <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
-                <span>📦</span>
+                <span>{!! svg_icon('box', 15) !!}</span>
                 <span>دایرکتوری تخصصی صنعت کاغذ، کارتن و چاپ</span>
               </div>
               <h2 class="home-banner-title">بزرگ‌ترین بانک اطلاعاتی کارخانجات و تولیدکنندگان ایران</h2>
@@ -186,7 +186,7 @@
                 </a>
               </div>
             </div>
-            <div class="home-banner-graphic">🏭</div>
+            <div class="home-banner-graphic">{!! svg_icon('factory', 15) !!}</div>
           </div>
         </div>
       </div>
@@ -280,21 +280,21 @@
   </div>
 
   @php
-    $catIcons = [
-        41 => ['icon' => '📦', 'color' => '#2563eb', 'bg' => '#eff6ff'], // جعبه کارتن
-        130 => ['icon' => '📢', 'color' => '#0891b2', 'bg' => '#ecfeff'], // چاپ تبلیغاتی
-        124 => ['icon' => '🖨️', 'color' => '#4f46e5', 'bg' => '#eef2ff'], // چاپ افست
-        128 => ['icon' => '🏷️', 'color' => '#059669', 'bg' => '#ecfdf5'], // چاپ لیبل و برچسب
-        129 => ['icon' => '🛍️', 'color' => '#9333ea', 'bg' => '#faf5ff'], // چاپ جعبه و بسته بندی
-        40 => ['icon' => '📄', 'color' => '#d97706', 'bg' => '#fffbeb'], // ورق کارتن
-        62 => ['icon' => '🎁', 'color' => '#e11d48', 'bg' => '#fff1f2'], // جعبه مقوایی
-        56 => ['icon' => '⚙️', 'color' => '#475569', 'bg' => '#f1f5f9'], // ماشین آلات
-    ];
-  @endphp
+ $catIcons = [
+ 41 => ['icon' => '', 'color' => '#2563eb', 'bg' => '#eff6ff'], // جعبه کارتن
+ 130 => ['icon' => '', 'color' => '#0891b2', 'bg' => '#ecfeff'], // چاپ تبلیغاتی
+ 124 => ['icon' => '', 'color' => '#4f46e5', 'bg' => '#eef2ff'], // چاپ افست
+ 128 => ['icon' => '', 'color' => '#059669', 'bg' => '#ecfdf5'], // چاپ لیبل و برچسب
+ 129 => ['icon' => '', 'color' => '#9333ea', 'bg' => '#faf5ff'], // چاپ جعبه و بسته بندی
+ 40 => ['icon' => '', 'color' => '#d97706', 'bg' => '#fffbeb'], // ورق کارتن
+ 62 => ['icon' => '', 'color' => '#e11d48', 'bg' => '#fff1f2'], // جعبه مقوایی
+ 56 => ['icon' => '', 'color' => '#475569', 'bg' => '#f1f5f9'], // ماشین آلات
+ ];
+ @endphp
 
   <div class="core-cat-grid">
     @foreach($coreCategories as $cat)
-      @php $meta = $catIcons[$cat->id] ?? ['icon' => '🏭', 'color' => '#1f5fa8', 'bg' => '#f0f7ff']; @endphp
+      @php $meta = $catIcons[$cat->id] ?? ['icon' => '', 'color' => '#1f5fa8', 'bg' => '#f0f7ff']; @endphp
       <a href="{{ route('directory', ['cat' => $cat->id]) }}" class="core-cat-card">
         <div class="core-cat-icon" style="background:{{ $meta['bg'] }};color:{{ $meta['color'] }}">
           <span>{{ $meta['icon'] }}</span>
@@ -374,7 +374,7 @@
   <div class="home-section-header">
     <div class="header-right">
       <h2 class="home-section-title">
-        <span style="color:#f59e0b;margin-left:4px">★</span>
+        <span style="color:#f59e0b;margin-left:4px">{!! svg_icon('star-filled', 15) !!}</span>
         شرکت‌های ویژه
       </h2>
     </div>
@@ -427,7 +427,7 @@
     <div class="jobs-col">
       <div class="jobs-col-head">
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:20px">💼</span>
+          <span style="font-size:20px">{!! svg_icon('briefcase', 15) !!}</span>
           <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">فرصت‌های شغلی جدید</h3>
         </div>
         <a href="{{ route('jobs.index') }}" style="font-size:13px;font-weight:700;color:var(--primary)">همه آگهی‌ها ←</a>
@@ -439,7 +439,7 @@
             <div class="job-item-main">
               <h4 class="job-item-title">{{ $job->title }}</h4>
               <p class="job-item-company">
-                {{ $job->company->name ?? 'کارخانه معتبر صنعتی' }} · 📍 {{ $job->province->name ?? 'ایران' }}
+                {{ $job->company->name ?? 'کارخانه معتبر صنعتی' }} · {!! svg_icon('map-pin', 15) !!} {{ $job->province->name ?? 'ایران' }}
               </p>
             </div>
             <div class="job-item-badges">
@@ -469,7 +469,7 @@
     <div class="jobs-col">
       <div class="jobs-col-head">
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:20px">👤</span>
+          <span style="font-size:20px">{!! svg_icon('user', 15) !!}</span>
           <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">رزومه متخصصین و کارجویان</h3>
         </div>
         <a href="{{ route('jobs.index') }}" style="font-size:13px;font-weight:700;color:var(--primary)">بانک کارجویان ←</a>
@@ -481,7 +481,7 @@
             <div class="job-item-main">
               <h4 class="job-item-title">{{ $resume->full_name }}</h4>
               <p class="job-item-company">
-                {{ $resume->education ?? 'متخصص صنعت کارتن و چاپ' }} · 📍 {{ $resume->province->name ?? 'ایران' }}
+                {{ $resume->education ?? 'متخصص صنعت کارتن و چاپ' }} · {!! svg_icon('map-pin', 15) !!} {{ $resume->province->name ?? 'ایران' }}
               </p>
             </div>
             <div class="job-item-badges">
@@ -552,19 +552,19 @@
   <!-- تب‌های انتخاب رسته -->
   <div class="showcase-tabs">
     <button type="button" class="showcase-tab active" onclick="switchShowcaseTab('carton', this)">
-      <span>📦</span>
+      <span>{!! svg_icon('box', 15) !!}</span>
       <span>ورق و کارتن‌سازی</span>
     </button>
     <button type="button" class="showcase-tab" onclick="switchShowcaseTab('paper', this)">
-      <span>📜</span>
+      <span>{!! svg_icon('file-text', 15) !!}</span>
       <span>کاغذ و مقوا</span>
     </button>
     <button type="button" class="showcase-tab" onclick="switchShowcaseTab('print', this)">
-      <span>🖨️</span>
+      <span>{!! svg_icon('printer', 15) !!}</span>
       <span>چاپ و بسته‌بندی</span>
     </button>
     <button type="button" class="showcase-tab" onclick="switchShowcaseTab('machinery', this)">
-      <span>⚙️</span>
+      <span>{!! svg_icon('settings', 15) !!}</span>
       <span>ماشین‌آلات و تجهیزات</span>
     </button>
   </div>
@@ -684,7 +684,7 @@
     @foreach($topProvinces as $province)
       <a href="{{ route('directory', ['province' => $province->id]) }}" class="province-card">
         <div class="province-card-right">
-          <span class="province-pin">📍</span>
+          <span class="province-pin">{!! svg_icon('map-pin', 15) !!}</span>
           <span class="province-name">{{ $province->name }}</span>
         </div>
         <span class="province-badge">{{ number_format($province->companies_count) }} واحد</span>
@@ -747,16 +747,16 @@
       <div class="app-cta-actions">
         <a href="{{ route('home') }}" class="btn app-btn-white">
           <span>دانلود مستقیم اپلیکیشن</span>
-          <span>📥</span>
+          <span>{!! svg_icon('download', 15) !!}</span>
         </a>
         <a href="https://t.me" target="_blank" rel="noopener" class="btn app-btn-trans">
           <span>عضویت در کانال تلگرام قیمت‌ها</span>
-          <span>✈️</span>
+          <span>{!! svg_icon('send', 15) !!}</span>
         </a>
       </div>
     </div>
     <div class="app-cta-icon-box">
-      <span style="font-size:100px;opacity:0.35">📱</span>
+      <span style="font-size:100px;opacity:0.35">{!! svg_icon('smartphone', 15) !!}</span>
     </div>
   </div>
 </section>
@@ -1979,293 +1979,293 @@
 <script>
 /* اسکریپت تب‌های نمایشگاه */
 function switchShowcaseTab(tabKey, btn) {
-  document.querySelectorAll('.showcase-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.showcase-content').forEach(c => c.classList.remove('active'));
-  
-  btn.classList.add('active');
-  const target = document.getElementById('tab-' + tabKey);
-  if (target) {
-    target.classList.add('active');
-  }
+ document.querySelectorAll('.showcase-tab').forEach(b => b.classList.remove('active'));
+ document.querySelectorAll('.showcase-content').forEach(c => c.classList.remove('active'));
+ 
+ btn.classList.add('active');
+ const target = document.getElementById('tab-' + tabKey);
+ if (target) {
+ target.classList.add('active');
+ }
 }
 
 /* اسکریپت اسلایدر ۵۰۰ پیکسلی Center Mode Peek */
 document.addEventListener('DOMContentLoaded', function () {
-  const wrapper = document.getElementById('homeSliderWrapper');
-  const track = document.getElementById('homeSliderTrack');
-  const items = document.querySelectorAll('.home-slider-item');
-  const dots = document.querySelectorAll('.home-slider-dot');
-  const totalRealSlides = 5;
-  
-  if (!wrapper || !track || items.length === 0) return;
+ const wrapper = document.getElementById('homeSliderWrapper');
+ const track = document.getElementById('homeSliderTrack');
+ const items = document.querySelectorAll('.home-slider-item');
+ const dots = document.querySelectorAll('.home-slider-dot');
+ const totalRealSlides = 5;
+ 
+ if (!wrapper || !track || items.length === 0) return;
 
-  let currentTrackIndex = 1;
-  let isAnimating = false;
-  let autoPlayTimer = null;
+ let currentTrackIndex = 1;
+ let isAnimating = false;
+ let autoPlayTimer = null;
 
-  function getSlideDimensions() {
-    const wrapperW = wrapper.offsetWidth;
-    const isMobile = window.innerWidth <= 768;
-    const isSmallMobile = window.innerWidth <= 480;
+ function getSlideDimensions() {
+ const wrapperW = wrapper.offsetWidth;
+ const isMobile = window.innerWidth <= 768;
+ const isSmallMobile = window.innerWidth <= 480;
 
-    // فاصله افقی (گپ) بین بنرها دقیقاً ۱۰ پیکسل
-    const gap = 10;
+ // فاصله افقی (گپ) بین بنرها دقیقاً ۱۰ پیکسل
+ const gap = 10;
 
-    let slideW;
-    let slideH;
+ let slideW;
+ let slideH;
 
-    if (isMobile) {
-      // در گوشی: بنر اصلی بزرگ‌تر باشد (۸۸٪ عرض صفحه)، گپ ۱۰ پیکسل
-      const mobileRatio = isSmallMobile ? 0.88 : 0.86;
-      slideW = Math.floor(wrapperW * mobileRatio);
-      // نسبت ۱:۱ مربعی ۱۰۸۰ در ۱۰۸۰ در گوشی متناسب با عرض
-      slideH = slideW;
-    } else {
-      // در دسکتاپ: اندازه بنر اسلایدی از عرض باکس اصلی سایت بیشتر نشود و دقیقاً با آن یکی باشد
-      const mainContainer = document.querySelector('main.container');
-      let maxSiteBoxW = 1160;
-      if (mainContainer) {
-        const cs = window.getComputedStyle(mainContainer);
-        const pl = parseFloat(cs.paddingLeft) || 20;
-        const pr = parseFloat(cs.paddingRight) || 20;
-        maxSiteBoxW = Math.round(mainContainer.clientWidth - pl - pr);
-      }
+ if (isMobile) {
+ // در گوشی: بنر اصلی بزرگ‌تر باشد (۸۸٪ عرض صفحه)، گپ ۱۰ پیکسل
+ const mobileRatio = isSmallMobile ? 0.88 : 0.86;
+ slideW = Math.floor(wrapperW * mobileRatio);
+ // نسبت ۱:۱ مربعی ۱۰۸۰ در ۱۰۸۰ در گوشی متناسب با عرض
+ slideH = slideW;
+ } else {
+ // در دسکتاپ: اندازه بنر اسلایدی از عرض باکس اصلی سایت بیشتر نشود و دقیقاً با آن یکی باشد
+ const mainContainer = document.querySelector('main.container');
+ let maxSiteBoxW = 1160;
+ if (mainContainer) {
+ const cs = window.getComputedStyle(mainContainer);
+ const pl = parseFloat(cs.paddingLeft) || 20;
+ const pr = parseFloat(cs.paddingRight) || 20;
+ maxSiteBoxW = Math.round(mainContainer.clientWidth - pl - pr);
+ }
 
-      // عرض بنر اسلایدی از عرض باکس اصلی فراتر نرود و با آن تراز باشد
-      slideW = Math.min(maxSiteBoxW, Math.floor(wrapperW * 0.86));
-      slideH = 450;
-    }
+ // عرض بنر اسلایدی از عرض باکس اصلی فراتر نرود و با آن تراز باشد
+ slideW = Math.min(maxSiteBoxW, Math.floor(wrapperW * 0.86));
+ slideH = 450;
+ }
 
-    return { wrapperW, slideW, slideH, gap, isMobile };
-  }
+ return { wrapperW, slideW, slideH, gap, isMobile };
+ }
 
-  function applyDimensions() {
-    const { slideW, slideH, gap } = getSlideDimensions();
+ function applyDimensions() {
+ const { slideW, slideH, gap } = getSlideDimensions();
 
-    wrapper.style.height = slideH + 'px';
-    track.style.height = slideH + 'px';
+ wrapper.style.height = slideH + 'px';
+ track.style.height = slideH + 'px';
 
-    items.forEach((item, idx) => {
-      item.style.width = slideW + 'px';
-      item.style.height = slideH + 'px';
-      const card = item.querySelector('.home-banner-card');
-      if (card) {
-        card.style.height = slideH + 'px';
-      }
+ items.forEach((item, idx) => {
+ item.style.width = slideW + 'px';
+ item.style.height = slideH + 'px';
+ const card = item.querySelector('.home-banner-card');
+ if (card) {
+ card.style.height = slideH + 'px';
+ }
 
-      if (idx < items.length - 1) {
-        item.style.marginRight = gap + 'px';
-      } else {
-        item.style.marginRight = '0px';
-      }
-    });
-  }
+ if (idx < items.length - 1) {
+ item.style.marginRight = gap + 'px';
+ } else {
+ item.style.marginRight = '0px';
+ }
+ });
+ }
 
-  function updatePosition(animate = true) {
-    const { wrapperW, slideW, gap } = getSlideDimensions();
-    const centerOffset = (wrapperW - slideW) / 2;
-    const itemLeft = currentTrackIndex * (slideW + gap);
-    const translateX = centerOffset - itemLeft;
+ function updatePosition(animate = true) {
+ const { wrapperW, slideW, gap } = getSlideDimensions();
+ const centerOffset = (wrapperW - slideW) / 2;
+ const itemLeft = currentTrackIndex * (slideW + gap);
+ const translateX = centerOffset - itemLeft;
 
-    if (animate) {
-      track.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
-    } else {
-      track.style.transition = 'none';
-    }
+ if (animate) {
+ track.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
+ } else {
+ track.style.transition = 'none';
+ }
 
-    track.style.transform = 'translateX(' + translateX + 'px)';
+ track.style.transform = 'translateX(' + translateX + 'px)';
 
-    let realIndex = 0;
-    if (currentTrackIndex === 0) {
-      realIndex = 4;
-    } else if (currentTrackIndex === totalRealSlides + 1) {
-      realIndex = 0;
-    } else {
-      realIndex = currentTrackIndex - 1;
-    }
+ let realIndex = 0;
+ if (currentTrackIndex === 0) {
+ realIndex = 4;
+ } else if (currentTrackIndex === totalRealSlides + 1) {
+ realIndex = 0;
+ } else {
+ realIndex = currentTrackIndex - 1;
+ }
 
-    items.forEach((item, idx) => {
-      if (idx === currentTrackIndex) {
-        item.classList.add('is-active');
-        item.classList.remove('is-peek');
-      } else {
-        item.classList.remove('is-active');
-        item.classList.add('is-peek');
-      }
-    });
+ items.forEach((item, idx) => {
+ if (idx === currentTrackIndex) {
+ item.classList.add('is-active');
+ item.classList.remove('is-peek');
+ } else {
+ item.classList.remove('is-active');
+ item.classList.add('is-peek');
+ }
+ });
 
-    dots.forEach((dot, dotIdx) => {
-      if (dotIdx === realIndex) {
-        dot.classList.add('active');
-      } else {
-        dot.classList.remove('active');
-      }
-    });
-  }
+ dots.forEach((dot, dotIdx) => {
+ if (dotIdx === realIndex) {
+ dot.classList.add('active');
+ } else {
+ dot.classList.remove('active');
+ }
+ });
+ }
 
-  function moveTo(index) {
-    if (isAnimating) return;
-    isAnimating = true;
-    currentTrackIndex = index;
-    updatePosition(true);
-  }
+ function moveTo(index) {
+ if (isAnimating) return;
+ isAnimating = true;
+ currentTrackIndex = index;
+ updatePosition(true);
+ }
 
-  track.addEventListener('transitionend', function () {
-    isAnimating = false;
-    if (currentTrackIndex === 0) {
-      currentTrackIndex = totalRealSlides;
-      updatePosition(false);
-    } else if (currentTrackIndex === totalRealSlides + 1) {
-      currentTrackIndex = 1;
-      updatePosition(false);
-    }
-  });
+ track.addEventListener('transitionend', function () {
+ isAnimating = false;
+ if (currentTrackIndex === 0) {
+ currentTrackIndex = totalRealSlides;
+ updatePosition(false);
+ } else if (currentTrackIndex === totalRealSlides + 1) {
+ currentTrackIndex = 1;
+ updatePosition(false);
+ }
+ });
 
-  window.moveHomeSlider = function (step) {
-    stopAutoPlay();
-    moveTo(currentTrackIndex + step);
-    startAutoPlay();
-  };
+ window.moveHomeSlider = function (step) {
+ stopAutoPlay();
+ moveTo(currentTrackIndex + step);
+ startAutoPlay();
+ };
 
-  window.goToHomeSlide = function (realIdx) {
-    stopAutoPlay();
-    moveTo(realIdx + 1);
-    startAutoPlay();
-  };
+ window.goToHomeSlide = function (realIdx) {
+ stopAutoPlay();
+ moveTo(realIdx + 1);
+ startAutoPlay();
+ };
 
-  items.forEach((item, idx) => {
-    item.addEventListener('click', function (e) {
-      if (idx !== currentTrackIndex) {
-        if (e.target.tagName !== 'A' && !e.target.closest('a')) {
-          e.preventDefault();
-          stopAutoPlay();
-          moveTo(idx);
-          startAutoPlay();
-        }
-      }
-    });
-  });
+ items.forEach((item, idx) => {
+ item.addEventListener('click', function (e) {
+ if (idx !== currentTrackIndex) {
+ if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+ e.preventDefault();
+ stopAutoPlay();
+ moveTo(idx);
+ startAutoPlay();
+ }
+ }
+ });
+ });
 
-  function startAutoPlay() {
-    stopAutoPlay();
-    autoPlayTimer = setInterval(function () {
-      moveTo(currentTrackIndex + 1);
-    }, 4500);
-  }
+ function startAutoPlay() {
+ stopAutoPlay();
+ autoPlayTimer = setInterval(function () {
+ moveTo(currentTrackIndex + 1);
+ }, 4500);
+ }
 
-  function stopAutoPlay() {
-    if (autoPlayTimer) {
-      clearInterval(autoPlayTimer);
-      autoPlayTimer = null;
-    }
-  }
+ function stopAutoPlay() {
+ if (autoPlayTimer) {
+ clearInterval(autoPlayTimer);
+ autoPlayTimer = null;
+ }
+ }
 
-  wrapper.addEventListener('mouseenter', stopAutoPlay);
-  wrapper.addEventListener('mouseleave', startAutoPlay);
+ wrapper.addEventListener('mouseenter', stopAutoPlay);
+ wrapper.addEventListener('mouseleave', startAutoPlay);
 
-  let touchStartX = 0;
-  let touchEndX = 0;
-  wrapper.addEventListener('touchstart', function (e) {
-    stopAutoPlay();
-    touchStartX = e.touches[0].clientX;
-  }, { passive: true });
+ let touchStartX = 0;
+ let touchEndX = 0;
+ wrapper.addEventListener('touchstart', function (e) {
+ stopAutoPlay();
+ touchStartX = e.touches[0].clientX;
+ }, { passive: true });
 
-  wrapper.addEventListener('touchend', function (e) {
-    touchEndX = e.changedTouches[0].clientX;
-    const diff = touchEndX - touchStartX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) {
-        moveTo(currentTrackIndex - 1);
-      } else {
-        moveTo(currentTrackIndex + 1);
-      }
-    }
-    startAutoPlay();
-  });
+ wrapper.addEventListener('touchend', function (e) {
+ touchEndX = e.changedTouches[0].clientX;
+ const diff = touchEndX - touchStartX;
+ if (Math.abs(diff) > 40) {
+ if (diff > 0) {
+ moveTo(currentTrackIndex - 1);
+ } else {
+ moveTo(currentTrackIndex + 1);
+ }
+ }
+ startAutoPlay();
+ });
 
-  let resizeTimer;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      applyDimensions();
-      updatePosition(false);
-    }, 100);
-  });
+ let resizeTimer;
+ window.addEventListener('resize', function () {
+ clearTimeout(resizeTimer);
+ resizeTimer = setTimeout(function () {
+ applyDimensions();
+ updatePosition(false);
+ }, 100);
+ });
 
-  applyDimensions();
-  updatePosition(false);
-  startAutoPlay();
+ applyDimensions();
+ updatePosition(false);
+ startAutoPlay();
 });
 
 /* ==========================================================================
-   اسکریپت اسلایدر خودکار و کنترل دکمه‌های کارتهای شرکت‌ها (چرخشی و لمسی)
-   ========================================================================== */
+ اسکریپت اسلایدر خودکار و کنترل دکمه‌های کارتهای شرکت‌ها (چرخشی و لمسی)
+ ========================================================================== */
 function slideCompanyRow(id, dir) {
-  const vp = document.getElementById('carousel-' + id);
-  if (!vp) return;
-  const slide = vp.querySelector('.company-carousel-slide');
-  const step = slide ? (slide.offsetWidth + 14) : 200;
-  const maxScroll = vp.scrollWidth - vp.clientWidth;
-  
-  if (maxScroll <= 5) return;
+ const vp = document.getElementById('carousel-' + id);
+ if (!vp) return;
+ const slide = vp.querySelector('.company-carousel-slide');
+ const step = slide ? (slide.offsetWidth + 14) : 200;
+ const maxScroll = vp.scrollWidth - vp.clientWidth;
+ 
+ if (maxScroll <= 5) return;
 
-  const isRTLNegative = (vp.scrollLeft <= 0);
-  const currentScroll = Math.abs(vp.scrollLeft);
+ const isRTLNegative = (vp.scrollLeft <= 0);
+ const currentScroll = Math.abs(vp.scrollLeft);
 
-  if (dir > 0) {
-    // بعدی (حرکت به چپ در راست‌چین)
-    if (currentScroll >= maxScroll - 20) {
-      vp.scrollTo({ left: 0, behavior: 'smooth' });
-    } else {
-      const scrollAmount = isRTLNegative ? -step : step;
-      vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  } else {
-    // قبلی (حرکت به راست در راست‌چین)
-    if (currentScroll <= 20) {
-      const endPos = isRTLNegative ? -maxScroll : maxScroll;
-      vp.scrollTo({ left: endPos, behavior: 'smooth' });
-    } else {
-      const scrollAmount = isRTLNegative ? step : -step;
-      vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  }
+ if (dir > 0) {
+ // بعدی (حرکت به چپ در راست‌چین)
+ if (currentScroll >= maxScroll - 20) {
+ vp.scrollTo({ left: 0, behavior: 'smooth' });
+ } else {
+ const scrollAmount = isRTLNegative ? -step : step;
+ vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+ }
+ } else {
+ // قبلی (حرکت به راست در راست‌چین)
+ if (currentScroll <= 20) {
+ const endPos = isRTLNegative ? -maxScroll : maxScroll;
+ vp.scrollTo({ left: endPos, behavior: 'smooth' });
+ } else {
+ const scrollAmount = isRTLNegative ? step : -step;
+ vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+ }
+ }
 }
 
 // راه‌اندازی چرخش خودکار کاروسل‌های شرکت‌ها با توقف موقت روی هاور یا لمس
 document.addEventListener('DOMContentLoaded', function () {
-  const companyWraps = document.querySelectorAll('.company-carousel-wrap');
-  
-  companyWraps.forEach(wrap => {
-    let autoTimer = null;
-    const carouselId = wrap.getAttribute('data-carousel');
-    
-    function startAutoScroll() {
-      if (autoTimer) clearInterval(autoTimer);
-      autoTimer = setInterval(() => {
-        // تنها در صورتی که کاروسل در معرض دید باشد (مثلاً تب فعال است)
-        if (wrap.offsetParent !== null) {
-          slideCompanyRow(carouselId, 1);
-        }
-      }, 3500);
-    }
-    
-    function stopAutoScroll() {
-      if (autoTimer) {
-        clearInterval(autoTimer);
-        autoTimer = null;
-      }
-    }
-    
-    wrap.addEventListener('mouseenter', stopAutoScroll);
-    wrap.addEventListener('mouseleave', startAutoScroll);
-    wrap.addEventListener('touchstart', stopAutoScroll, { passive: true });
-    wrap.addEventListener('touchend', function () {
-      setTimeout(startAutoScroll, 2000);
-    }, { passive: true });
+ const companyWraps = document.querySelectorAll('.company-carousel-wrap');
+ 
+ companyWraps.forEach(wrap => {
+ let autoTimer = null;
+ const carouselId = wrap.getAttribute('data-carousel');
+ 
+ function startAutoScroll() {
+ if (autoTimer) clearInterval(autoTimer);
+ autoTimer = setInterval(() => {
+ // تنها در صورتی که کاروسل در معرض دید باشد (مثلاً تب فعال است)
+ if (wrap.offsetParent !== null) {
+ slideCompanyRow(carouselId, 1);
+ }
+ }, 3500);
+ }
+ 
+ function stopAutoScroll() {
+ if (autoTimer) {
+ clearInterval(autoTimer);
+ autoTimer = null;
+ }
+ }
+ 
+ wrap.addEventListener('mouseenter', stopAutoScroll);
+ wrap.addEventListener('mouseleave', startAutoScroll);
+ wrap.addEventListener('touchstart', stopAutoScroll, { passive: true });
+ wrap.addEventListener('touchend', function () {
+ setTimeout(startAutoScroll, 2000);
+ }, { passive: true });
 
-    startAutoScroll();
-  });
+ startAutoScroll();
+ });
 });
 </script>
 @endsection

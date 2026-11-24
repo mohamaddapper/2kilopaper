@@ -5,10 +5,10 @@
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
     <div>
       <h1 style="margin:0 0 6px;font-size:21px;color:#0f172a">
-        ✏️ ویرایش سئو و محتوای دسته «{{ $category->name }}»
+        {!! svg_icon('edit', 15) !!} ویرایش سئو و محتوای دسته «{{ $category->name }}»
       </h1>
       <p style="margin:0;color:#64748b;font-size:13px">
-        شاخه: {{ $category->role_icon }} {{ $category->rootPillar()->name }} · آدرس: <code style="direction:ltr">{{ urldecode(parse_url($category->url, PHP_URL_PATH)) }}</code>
+        شاخه: {!! $category->role_icon !!} {{ $category->rootPillar()->name }} · آدرس: <code style="direction:ltr">{{ urldecode(parse_url($category->url, PHP_URL_PATH)) }}</code>
       </p>
     </div>
     <div style="display:flex;gap:8px">
@@ -54,7 +54,7 @@
     <div style="border-top:1px dashed #cbd5e1;padding-top:18px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div>
-          <label style="font-weight:800;font-size:14px;color:#0f172a">❓ سوالات متداول اختصاصی این دسته (FAQ Schema)</label>
+          <label style="font-weight:800;font-size:14px;color:#0f172a">{!! svg_icon('help', 15) !!} سوالات متداول اختصاصی این دسته (FAQ Schema)</label>
           <div style="font-size:12px;color:#64748b">درج سوال و پاسخ باعث نمایش FAQ در نتایج گوگل می‌شود.</div>
         </div>
         <button type="button" onclick="addFaqRow()" class="btn-action" style="background:#e0f2fe;color:#0369a1;font-weight:700;padding:7px 14px">+ افزودن سوال</button>
@@ -83,30 +83,30 @@
 <script>
 let faqIndex = {{ count(old('faqs', $category->faqs ?? [])) }};
 function addFaqRow() {
-  const html = `
-    <div class="faq-row" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <input type="text" name="faqs[${faqIndex}][q]" placeholder="سوال..." style="flex:1;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px">
-        <button type="button" onclick="this.closest('.faq-row').remove()" style="background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit">حذف</button>
-      </div>
-      <textarea name="faqs[${faqIndex}][a]" rows="2" placeholder="پاسخ..." style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px;box-sizing:border-box"></textarea>
-    </div>
-  `;
-  document.getElementById('faq_container').insertAdjacentHTML('beforeend', html);
-  faqIndex++;
+ const html = `
+ <div class="faq-row" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+ <input type="text" name="faqs[${faqIndex}][q]" placeholder="سوال..." style="flex:1;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px">
+ <button type="button" onclick="this.closest('.faq-row').remove()" style="background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit">حذف</button>
+ </div>
+ <textarea name="faqs[${faqIndex}][a]" rows="2" placeholder="پاسخ..." style="width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px;box-sizing:border-box"></textarea>
+ </div>
+ `;
+ document.getElementById('faq_container').insertAdjacentHTML('beforeend', html);
+ faqIndex++;
 }
 
 const metaInput = document.getElementById('seo_description');
 const metaCounter = document.getElementById('meta_counter');
 function updateMetaCounter() {
-  if (!metaInput || !metaCounter) return;
-  const len = metaInput.value.length;
-  metaCounter.textContent = len + ' / ۱۶۰ کاراکتر';
-  metaCounter.style.color = len > 165 ? '#dc2626' : (len >= 110 ? '#16a34a' : '#64748b');
+ if (!metaInput || !metaCounter) return;
+ const len = metaInput.value.length;
+ metaCounter.textContent = len + ' / ۱۶۰ کاراکتر';
+ metaCounter.style.color = len > 165 ? '#dc2626' : (len >= 110 ? '#16a34a' : '#64748b');
 }
 if (metaInput) {
-  metaInput.addEventListener('input', updateMetaCounter);
-  updateMetaCounter();
+ metaInput.addEventListener('input', updateMetaCounter);
+ updateMetaCounter();
 }
 </script>
 @endsection

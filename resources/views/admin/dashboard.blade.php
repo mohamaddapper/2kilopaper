@@ -5,12 +5,12 @@
 
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
     <div>
-      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">📊 پیشخوان مدیریت ارشد ۲ کیلو کاغذ</h1>
+      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">{!! svg_icon('bar-chart', 15) !!} پیشخوان مدیریت ارشد ۲ کیلو کاغذ</h1>
       <p style="margin:0;color:#64748b;font-size:13.5px">خلاصه وضعیت دایرکتوری شرکت‌ها، آگهی‌های استخدامی و رزومه‌های صنعتی</p>
     </div>
     <div style="display:flex;gap:8px">
       <a href="{{ route('admin.companies', ['status' => 'pending']) }}" class="btn small" style="background:#f59e0b;color:#000;font-weight:700">
-        ⏳ بررسی شرکت‌های جدید ({{ $stats['companies_pending'] }})
+        {!! svg_icon('clock', 15) !!} بررسی شرکت‌های جدید ({{ $stats['companies_pending'] }})
       </a>
       <a href="{{ route('admin.jobs') }}" class="btn small ghost">
         مدیریت آگهی‌ها
@@ -22,7 +22,7 @@
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:24px">
     
     <div class="stat-card" style="border-right:4px solid #f59e0b">
-      <div class="stat-icon" style="background:#fef3c7;color:#b45309">⏳</div>
+      <div class="stat-icon" style="background:#fef3c7;color:#b45309">{!! svg_icon('clock', 15) !!}</div>
       <div>
         <span style="font-size:12px;color:#64748b;display:block">در انتظار بررسی</span>
         <b style="font-size:22px;color:#b45309">{{ number_format($stats['companies_pending']) }}</b>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="stat-card" style="border-right:4px solid #0284c7">
-      <div class="stat-icon" style="background:#e0f2fe;color:#0284c7">🏢</div>
+      <div class="stat-icon" style="background:#e0f2fe;color:#0284c7">{!! svg_icon('building', 15) !!}</div>
       <div>
         <span style="font-size:12px;color:#64748b;display:block">کل شرکت‌ها</span>
         <b style="font-size:22px;color:#0f172a">{{ number_format($stats['companies_total']) }}</b>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="stat-card" style="border-right:4px solid #eab308">
-      <div class="stat-icon" style="background:#fef9c3;color:#854d0e">★</div>
+      <div class="stat-icon" style="background:#fef9c3;color:#854d0e">{!! svg_icon('star-filled', 15) !!}</div>
       <div>
         <span style="font-size:12px;color:#64748b;display:block">اشتراک‌های ویژه</span>
         <b style="font-size:22px;color:#854d0e">{{ number_format($stats['companies_gold'] + $stats['companies_silver'] + $stats['companies_bronze']) }}</b>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="stat-card" style="border-right:4px solid #10b981">
-      <div class="stat-icon" style="background:#d1fae5;color:#047857">💼</div>
+      <div class="stat-icon" style="background:#d1fae5;color:#047857">{!! svg_icon('briefcase', 15) !!}</div>
       <div>
         <span style="font-size:12px;color:#64748b;display:block">آگهی‌های استخدامی</span>
         <b style="font-size:22px;color:#047857">{{ number_format($stats['jobs_active']) }}</b>
@@ -57,7 +57,7 @@
     </div>
 
     <div class="stat-card" style="border-right:4px solid #6366f1">
-      <div class="stat-icon" style="background:#e0e7ff;color:#4338ca">👥</div>
+      <div class="stat-icon" style="background:#e0e7ff;color:#4338ca">{!! svg_icon('users', 15) !!}</div>
       <div>
         <span style="font-size:12px;color:#64748b;display:block">رزومه‌ها و متقاضیان</span>
         <b style="font-size:22px;color:#4338ca">{{ number_format($stats['applications_total']) }}</b>
@@ -66,7 +66,7 @@
     </div>
 
     <div class="stat-card" style="border-right:4px solid #8b5cf6">
-      <div class="stat-icon" style="background:#ede9fe;color:#6d28d9">👤</div>
+      <div class="stat-icon" style="background:#ede9fe;color:#6d28d9">{!! svg_icon('user', 15) !!}</div>
       <div>
         <span style="font-size:12px;color:#64748b;display:block">کاربران عضو سامانه</span>
         <b style="font-size:22px;color:#6d28d9">{{ number_format($stats['users_total']) }}</b>
@@ -79,7 +79,7 @@
   <div class="admin-table-card">
     <div style="padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
       <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:18px">⏳</span>
+        <span style="font-size:18px">{!! svg_icon('clock', 15) !!}</span>
         <h3 style="margin:0;font-size:16px;color:#0f172a">شرکت‌های در انتظار بررسی و تأیید</h3>
         <span class="badge" style="background:#fef3c7;color:#b45309;font-size:11.5px">{{ $pendingCompanies->count() }} مورد</span>
       </div>
@@ -128,13 +128,13 @@
                   <form method="post" action="{{ route('admin.companies.approve', $c) }}" style="margin:0">
                     @csrf
                     <button type="submit" class="btn-action btn-approve" onclick="return confirm('آیا از تأیید و انتشار این شرکت اطمینان دارید؟')">
-                      ✓ تأیید و انتشار
+                      {!! svg_icon('check', 15) !!} تأیید و انتشار
                     </button>
                   </form>
                   <form method="post" action="{{ route('admin.companies.reject', $c) }}" style="margin:0">
                     @csrf
                     <button type="submit" class="btn-action btn-reject" onclick="return confirm('شرکت رد/معلق شود؟')">
-                      ✕ رد
+                      {!! svg_icon('x', 15) !!} رد
                     </button>
                   </form>
                   <a href="{{ $c->url }}" target="_blank" class="btn-action btn-view">
@@ -148,7 +148,7 @@
       </table>
     @else
       <div style="padding:32px;text-align:center;color:#64748b">
-        <span style="font-size:32px;display:block;margin-bottom:8px">🎉</span>
+        <span style="font-size:32px;display:block;margin-bottom:8px">{!! svg_icon('sparkles', 15) !!}</span>
         <b>عالیه! در حال حاضر هیچ شرکتی در صف انتظار بررسی وجود ندارد.</b>
       </div>
     @endif
@@ -160,7 +160,7 @@
     <!-- آخرین آگهی‌های استخدام -->
     <div class="admin-table-card">
       <div style="padding:14px 18px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0;font-size:15px;color:#0f172a">💼 آخرین فرصت‌های شغلی ثبت‌شده</h3>
+        <h3 style="margin:0;font-size:15px;color:#0f172a">{!! svg_icon('briefcase', 15) !!} آخرین فرصت‌های شغلی ثبت‌شده</h3>
         <a href="{{ route('admin.jobs') }}" style="font-size:12px;color:var(--admin-primary);text-decoration:none">مشاهده همه</a>
       </div>
       <table class="admin-table">
@@ -194,7 +194,7 @@
     <!-- آخرین متقاضیان و رزومه‌ها -->
     <div class="admin-table-card">
       <div style="padding:14px 18px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0;font-size:15px;color:#0f172a">👥 آخرین متقاضیان و رزومه‌های کارجو</h3>
+        <h3 style="margin:0;font-size:15px;color:#0f172a">{!! svg_icon('users', 15) !!} آخرین متقاضیان و رزومه‌های کارجو</h3>
         <a href="{{ route('admin.applications') }}" style="font-size:12px;color:var(--admin-primary);text-decoration:none">مشاهده همه</a>
       </div>
       <table class="admin-table">
@@ -210,7 +210,7 @@
               <td style="text-align:left">
                 @if($app->resume_file)
                   <a href="{{ asset($app->resume_file) }}" target="_blank" class="btn-action btn-view" style="font-size:11px">
-                    دانلود PDF 📥
+                    دانلود PDF {!! svg_icon('download', 15) !!}
                   </a>
                 @else
                   <span style="font-size:11px;color:#94a3b8">بدون فایل</span>

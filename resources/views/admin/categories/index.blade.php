@@ -4,7 +4,7 @@
 <div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
     <div>
-      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">🏷️ مدیریت دسته‌بندی‌ها و سئو (SEO)</h1>
+      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">{!! svg_icon('tag', 15) !!} مدیریت دسته‌بندی‌ها و سئو (SEO)</h1>
       <p style="margin:0;color:#64748b;font-size:13.5px">ویرایش عنوان سئو، متا دیسکریپشن، متن تخصصی و سوالات متداول برای جذب حداکثری ورودی از گوگل</p>
     </div>
   </div>
@@ -43,7 +43,7 @@
               </div>
             </td>
             <td style="padding:12px 14px;color:#475569">
-              {{ $cat->role_icon }} {{ $cat->rootPillar()->name }}
+              {!! $cat->role_icon !!} {{ $cat->rootPillar()->name }}
             </td>
             <td style="padding:12px 14px">
               <span style="background:#e0f2fe;color:#0369a1;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:700">
@@ -53,22 +53,22 @@
             <td style="padding:12px 14px">
               <div style="display:flex;gap:6px;flex-wrap:wrap">
                 @if($cat->seo_title)
-                  <span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:11.5px;font-weight:700">✓ Title</span>
+                  <span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:11.5px;font-weight:700">{!! svg_icon('check', 15) !!} Title</span>
                 @else
                   <span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:8px;font-size:11.5px">خودکار</span>
                 @endif
                 @if($cat->seo_description)
-                  <span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:11.5px;font-weight:700">✓ Meta</span>
+                  <span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:8px;font-size:11.5px;font-weight:700">{!! svg_icon('check', 15) !!} Meta</span>
                 @endif
                 @if(!empty($cat->faqs))
-                  <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:8px;font-size:11.5px;font-weight:700">✓ {{ count($cat->faqs) }} FAQ</span>
+                  <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:8px;font-size:11.5px;font-weight:700">{!! svg_icon('check', 15) !!} {{ count($cat->faqs) }} FAQ</span>
                 @endif
               </div>
             </td>
             <td style="padding:12px 14px;text-align:left">
               <div style="display:inline-flex;gap:6px">
                 <a href="{{ $cat->url }}" target="_blank" class="btn-action btn-view">مشاهده ↗</a>
-                <a href="{{ route('admin.categories.edit', $cat) }}" class="btn-action" style="background:#0284c7;color:#fff;font-weight:700">✏️ ویرایش سئو</a>
+                <a href="{{ route('admin.categories.edit', $cat) }}" class="btn-action" style="background:#0284c7;color:#fff;font-weight:700">{!! svg_icon('edit', 15) !!} ویرایش سئو</a>
               </div>
             </td>
           </tr>

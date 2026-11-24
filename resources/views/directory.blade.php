@@ -1,14 +1,14 @@
 @php
-  $pageTitle = 'دایرکتوری شرکت‌ها';
-  if (request('featured')) {
-      $pageTitle = 'شرکت‌های ویژه';
-  } elseif (request('cat') && $selectedCat = $categories->flatMap(fn($c) => collect([$c])->concat($c->children))->firstWhere('id', request('cat'))) {
-      $pageTitle = 'دسته ' . $selectedCat->name;
-  } elseif (request('province') && $selectedProv = $provinces->firstWhere('id', request('province'))) {
-      $pageTitle = 'شرکت‌های استان ' . $selectedProv->name;
-  } elseif (request('q')) {
-      $pageTitle = 'جستجو برای "' . request('q') . '"';
-  }
+ $pageTitle = 'دایرکتوری شرکت‌ها';
+ if (request('featured')) {
+ $pageTitle = 'شرکت‌های ویژه';
+ } elseif (request('cat') && $selectedCat = $categories->flatMap(fn($c) => collect([$c])->concat($c->children))->firstWhere('id', request('cat'))) {
+ $pageTitle = 'دسته ' . $selectedCat->name;
+ } elseif (request('province') && $selectedProv = $provinces->firstWhere('id', request('province'))) {
+ $pageTitle = 'شرکت‌های استان ' . $selectedProv->name;
+ } elseif (request('q')) {
+ $pageTitle = 'جستجو برای "' . request('q') . '"';
+ }
 @endphp
 
 @extends('layouts.app', ['title' => $pageTitle])
@@ -19,19 +19,19 @@
   <div>
     <h1 style="margin:0 0 6px;font-size:24px;font-weight:900;display:flex;align-items:center;gap:8px;color:#0f172a">
       @if(request('featured'))
-        <span style="color:#f59e0b">★</span>
+        <span style="color:#f59e0b">{!! svg_icon('star-filled', 15) !!}</span>
         <span>شرکت‌های ویژه</span>
       @elseif(request('cat') && isset($selectedCat))
-        <span>📦</span>
+        <span>{!! svg_icon('box', 15) !!}</span>
         <span>{{ $selectedCat->name }}</span>
       @elseif(request('province') && isset($selectedProv))
-        <span>📍</span>
+        <span>{!! svg_icon('map-pin', 15) !!}</span>
         <span>کارخانجات و شرکت‌های استان {{ $selectedProv->name }}</span>
       @elseif(request('q'))
-        <span>🔍</span>
+        <span>{!! svg_icon('search', 15) !!}</span>
         <span>نتایج جستجو: «{{ request('q') }}»</span>
       @else
-        <span>🏭</span>
+        <span>{!! svg_icon('factory', 15) !!}</span>
         <span>دایرکتوری کارخانجات و تولیدکنندگان</span>
       @endif
     </h1>
@@ -48,7 +48,7 @@
       </a>
     @else
       <a href="{{ route('directory', ['featured' => 1]) }}" class="btn small" style="background:#fef3c7;color:#92400e;border:1.5px solid #fcd34d;font-weight:800;display:inline-flex;align-items:center;gap:6px">
-        <span style="color:#f59e0b">★</span>
+        <span style="color:#f59e0b">{!! svg_icon('star-filled', 15) !!}</span>
         <span>مشاهده شرکت‌های ویژه</span>
       </a>
     @endif
@@ -102,7 +102,7 @@
     
     @if(request()->hasAny(['q', 'cat', 'province', 'city', 'featured']))
       <a href="{{ route('directory') }}" class="btn ghost small" style="color:#ef4444!important;border-color:#fecaca!important;background:#fff5f5" title="پاکسازی فیلترها">
-        ✕
+        {!! svg_icon('x', 15) !!}
       </a>
     @endif
   </div>
@@ -114,7 +114,7 @@
     @include('partials.card', ['company' => $company])
   @empty
     <div style="grid-column:1/-1;text-align:center;padding:50px 20px;background:#ffffff;border:1px dashed #cbd5e1;border-radius:14px;margin:10px 0">
-      <span style="font-size:48px;display:block;margin-bottom:12px">🔍</span>
+      <span style="font-size:48px;display:block;margin-bottom:12px">{!! svg_icon('search', 15) !!}</span>
       <h3 style="margin:0 0 8px;font-size:17px;font-weight:800;color:#0f172a">شرکتی با این مشخصات یافت نشد</h3>
       <p style="margin:0 0 18px;font-size:13.5px;color:#64748b">عبارت جستجو یا فیلتر دسته‌بندی و شهر را تغییر دهید تا نتایج بیشتری مشاهده کنید.</p>
       <a href="{{ route('directory') }}" class="btn ghost small">مشاهده همه شرکت‌های فعال</a>
@@ -145,7 +145,7 @@
 
 <!-- پیام رسیدن به انتهای لیست -->
 <div id="infiniteScrollEnd" style="@if(!$companies->hasMorePages() && $companies->count() > 0) display:block; @else display:none; @endif text-align:center;padding:32px 0 20px;color:#94a3b8;font-size:13px;font-weight:700">
-  ✓ به انتهای فهرست شرکت‌ها رسیدید (مجموع {{ number_format($companies->total()) }} شرکت)
+  {!! svg_icon('check', 15) !!} به انتهای فهرست شرکت‌ها رسیدید (مجموع {{ number_format($companies->total()) }} شرکت)
 </div>
 
 <!-- پیوند صفحه‌بندی سنتی جهت ربات‌ها و سئو در صورت عدم اجرای جاوااسکریپت -->
@@ -262,102 +262,102 @@
 
 <script>
 /* ==========================================================================
-   اسکریپت بارگذاری خودکار نامحدود ۱۸ به ۱۸ شرکت‌ها (Infinite Scroll)
-   ========================================================================== */
+ اسکریپت بارگذاری خودکار نامحدود ۱۸ به ۱۸ شرکت‌ها (Infinite Scroll)
+ ========================================================================== */
 (function() {
-  let nextPageUrl = @json($companies->nextPageUrl());
-  let hasMorePages = @json($companies->hasMorePages());
-  let isLoading = false;
+ let nextPageUrl = @json($companies->nextPageUrl());
+ let hasMorePages = @json($companies->hasMorePages());
+ let isLoading = false;
 
-  const sentinel = document.getElementById('infiniteScrollSentinel');
-  const loadingEl = document.getElementById('infiniteLoadingIndicator');
-  const manualWrap = document.getElementById('manualLoadMoreWrap');
-  const loadBtn = document.getElementById('loadMoreBtn');
-  const endEl = document.getElementById('infiniteScrollEnd');
-  const grid = document.getElementById('directoryCompaniesGrid');
+ const sentinel = document.getElementById('infiniteScrollSentinel');
+ const loadingEl = document.getElementById('infiniteLoadingIndicator');
+ const manualWrap = document.getElementById('manualLoadMoreWrap');
+ const loadBtn = document.getElementById('loadMoreBtn');
+ const endEl = document.getElementById('infiniteScrollEnd');
+ const grid = document.getElementById('directoryCompaniesGrid');
 
-  window.loadNextDirectoryPage = function() {
-    if (!hasMorePages || isLoading || !nextPageUrl) return;
+ window.loadNextDirectoryPage = function() {
+ if (!hasMorePages || isLoading || !nextPageUrl) return;
 
-    isLoading = true;
-    if (loadingEl) loadingEl.style.display = 'block';
-    if (loadBtn) {
-      loadBtn.disabled = true;
-      loadBtn.style.opacity = '0.6';
-      loadBtn.innerHTML = 'در حال بارگذاری...';
-    }
+ isLoading = true;
+ if (loadingEl) loadingEl.style.display = 'block';
+ if (loadBtn) {
+ loadBtn.disabled = true;
+ loadBtn.style.opacity = '0.6';
+ loadBtn.innerHTML = 'در حال بارگذاری...';
+ }
 
-    fetch(nextPageUrl, {
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json'
-      }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error('خطا در بارگذاری اطلاعات');
-      return res.json();
-    })
-    .then(data => {
-      if (data.html && grid) {
-        // ایجاد المان موقت و الحاق روان به شبکه
-        const temp = document.createElement('div');
-        temp.innerHTML = data.html;
-        while (temp.firstChild) {
-          grid.appendChild(temp.firstChild);
-        }
-      }
+ fetch(nextPageUrl, {
+ headers: {
+ 'X-Requested-With': 'XMLHttpRequest',
+ 'Accept': 'application/json'
+ }
+ })
+ .then(res => {
+ if (!res.ok) throw new Error('خطا در بارگذاری اطلاعات');
+ return res.json();
+ })
+ .then(data => {
+ if (data.html && grid) {
+ // ایجاد المان موقت و الحاق روان به شبکه
+ const temp = document.createElement('div');
+ temp.innerHTML = data.html;
+ while (temp.firstChild) {
+ grid.appendChild(temp.firstChild);
+ }
+ }
 
-      hasMorePages = Boolean(data.has_more);
-      nextPageUrl = data.next_page_url;
+ hasMorePages = Boolean(data.has_more);
+ nextPageUrl = data.next_page_url;
 
-      // به‌روزرسانی پارامتر صفحه در مرورگر بدون رفرش (History API)
-      if (data.current_page) {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('page', data.current_page);
-        window.history.replaceState({}, '', currentUrl.toString());
-      }
+ // به‌روزرسانی پارامتر صفحه در مرورگر بدون رفرش (History API)
+ if (data.current_page) {
+ const currentUrl = new URL(window.location.href);
+ currentUrl.searchParams.set('page', data.current_page);
+ window.history.replaceState({}, '', currentUrl.toString());
+ }
 
-      if (!hasMorePages) {
-        if (manualWrap) manualWrap.style.display = 'none';
-        if (endEl) endEl.style.display = 'block';
-        if (observer && sentinel) observer.unobserve(sentinel);
-      } else {
-        if (loadBtn) {
-          loadBtn.disabled = false;
-          loadBtn.style.opacity = '1';
-          loadBtn.innerHTML = '<span>مشاهده شرکت‌های بیشتر</span> <span style="font-size:16px">↓</span>';
-        }
-      }
-    })
-    .catch(err => {
-      console.error('Infinite scroll error:', err);
-      if (loadBtn) {
-        loadBtn.disabled = false;
-        loadBtn.style.opacity = '1';
-        loadBtn.innerHTML = 'خطا در بارگذاری · کلیک جهت تلاش مجدد';
-      }
-    })
-    .finally(() => {
-      isLoading = false;
-      if (loadingEl) loadingEl.style.display = 'none';
-    });
-  };
+ if (!hasMorePages) {
+ if (manualWrap) manualWrap.style.display = 'none';
+ if (endEl) endEl.style.display = 'block';
+ if (observer && sentinel) observer.unobserve(sentinel);
+ } else {
+ if (loadBtn) {
+ loadBtn.disabled = false;
+ loadBtn.style.opacity = '1';
+ loadBtn.innerHTML = '<span>مشاهده شرکت‌های بیشتر</span> <span style="font-size:16px">↓</span>';
+ }
+ }
+ })
+ .catch(err => {
+ console.error('Infinite scroll error:', err);
+ if (loadBtn) {
+ loadBtn.disabled = false;
+ loadBtn.style.opacity = '1';
+ loadBtn.innerHTML = 'خطا در بارگذاری · کلیک جهت تلاش مجدد';
+ }
+ })
+ .finally(() => {
+ isLoading = false;
+ if (loadingEl) loadingEl.style.display = 'none';
+ });
+ };
 
-  // نظارت بر رسیدن کاربر به انتهای لیست با IntersectionObserver
-  let observer = null;
-  if ('IntersectionObserver' in window && sentinel) {
-    observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && hasMorePages && !isLoading) {
-          window.loadNextDirectoryPage();
-        }
-      });
-    }, {
-      rootMargin: '350px 0px' // ۳۵۰ پیکسل قبل از انتهای صفحه بارگذاری آغاز می‌شود
-    });
+ // نظارت بر رسیدن کاربر به انتهای لیست با IntersectionObserver
+ let observer = null;
+ if ('IntersectionObserver' in window && sentinel) {
+ observer = new IntersectionObserver(entries => {
+ entries.forEach(entry => {
+ if (entry.isIntersecting && hasMorePages && !isLoading) {
+ window.loadNextDirectoryPage();
+ }
+ });
+ }, {
+ rootMargin: '350px 0px' // ۳۵۰ پیکسل قبل از انتهای صفحه بارگذاری آغاز می‌شود
+ });
 
-    observer.observe(sentinel);
-  }
+ observer.observe(sentinel);
+ }
 })();
 </script>
 @endsection

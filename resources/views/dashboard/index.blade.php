@@ -42,10 +42,10 @@
       @if(auth()->user()->isAdmin())
         <hr style="margin:10px 0;border:none;border-top:1px solid #e2e8f0">
         <a href="{{ route('admin.dashboard') }}" class="dashboard-menu-link" style="background:#eff6ff;color:#0369a1;font-weight:700">
-          <span>👑 پنل مدیریت کل سایت</span>
+          <span>{!! svg_icon('crown', 15) !!} پنل مدیریت کل سایت</span>
         </a>
         <a href="{{ route('admin.companies') }}" class="dashboard-menu-link" style="background:#f0fdf4;color:#15803d;font-weight:700">
-          <span>🏢 مدیریت و ویرایش ۹۱۹ شرکت</span>
+          <span>{!! svg_icon('building', 15) !!} مدیریت و ویرایش ۹۱۹ شرکت</span>
         </a>
       @endif
     </nav>
@@ -64,8 +64,8 @@
 
       <div class="dash-alert dash-alert-success">
         @php
-          $approvedCompany = $companies->where('status', 'approved')->first();
-        @endphp
+ $approvedCompany = $companies->where('status', 'approved')->first();
+ @endphp
         @if($approvedCompany)
           شرکت «{{ $approvedCompany->name }}» تأیید و منتشر شد.
         @else
@@ -75,8 +75,8 @@
 
       <div class="dash-alert dash-alert-danger">
         @php
-          $rejectedCompany = $companies->where('status', 'rejected')->first();
-        @endphp
+ $rejectedCompany = $companies->where('status', 'rejected')->first();
+ @endphp
         @if($rejectedCompany)
           شرکت «{{ $rejectedCompany->name }}»: لوگو نامناسب است، لطفاً ویرایش کنید.
         @else
@@ -229,7 +229,7 @@
         <h2 style="margin:0;font-size:18px">شرکت‌های من</h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           @if(auth()->user()->isAdmin())
-            <a class="btn" href="{{ route('admin.companies') }}" style="background:#0284c7;font-weight:700">🏢 مدیریت و ویرایش تمام شرکت‌ها</a>
+            <a class="btn" href="{{ route('admin.companies') }}" style="background:#0284c7;font-weight:700">{!! svg_icon('building', 15) !!} مدیریت و ویرایش تمام شرکت‌ها</a>
           @endif
           <a class="btn" href="{{ route('companies.create') }}">+ ثبت شرکت جدید</a>
         </div>
@@ -319,7 +319,7 @@
                   </td>
                   <td style="text-align:center">
                     <a href="{{ route('employer.jobs.applications', $job) }}" class="badge ok" style="padding:4px 10px;text-decoration:none">
-                      👥 {{ $job->applications->count() }} رزومه
+                      {!! svg_icon('users', 15) !!} {{ $job->applications->count() }} رزومه
                     </a>
                   </td>
                   <td style="text-align:center">
@@ -349,7 +349,7 @@
           </table>
         @else
           <div style="padding:40px;text-align:center;color:var(--muted)">
-            <span style="font-size:36px;display:block;margin-bottom:8px">📢</span>
+            <span style="font-size:36px;display:block;margin-bottom:8px">{!! svg_icon('megaphone', 15) !!}</span>
             <p style="margin:0 0 14px;font-size:14.5px">هنوز هیچ آگهی استخدامی ثبت نکرده‌اید.</p>
             <a href="{{ route('employer.jobs.create') }}" class="btn">+ درج اولین آگهی استخدام</a>
           </div>
@@ -382,7 +382,7 @@
                 <tr>
                   <td>
                     <b>{{ $app->full_name }}</b>
-                    <span style="display:block;font-size:11.5px;color:var(--muted)">{{ $app->created_at->diffForHumans() }} · 👁️ {{ number_format($app->views_count ?? 0) }} بازدید</span>
+                    <span style="display:block;font-size:11.5px;color:var(--muted)">{{ $app->created_at->diffForHumans() }} · {!! svg_icon('eye', 15) !!} {{ number_format($app->views_count ?? 0) }} بازدید</span>
                   </td>
                   <td>
                     <a href="{{ route('jobs.show', $app->jobPosting) }}" target="_blank" style="color:var(--primary);text-decoration:none">
@@ -419,7 +419,7 @@
           </table>
         @else
           <div style="padding:40px;text-align:center;color:var(--muted)">
-            <span style="font-size:36px;display:block;margin-bottom:8px">📭</span>
+            <span style="font-size:36px;display:block;margin-bottom:8px">{!! svg_icon('inbox', 15) !!}</span>
             <p style="margin:0 0 10px;font-size:14.5px">هنوز رزومه‌ای برای آگهی‌های شما ثبت نشده است.</p>
             <p style="margin:0;font-size:13px">با درج آگهی‌های جدید، رزومه‌های کارجویان در این بخش نمایش داده خواهد شد.</p>
           </div>
@@ -488,11 +488,11 @@
                 <div style="font-size:12.5px;color:var(--muted);margin-top:4px">
                   وضعیت فعلی:
                   @if($c->tier === 'gold')
-                    <span class="badge gold" style="font-size:11px">★ اشتراک طلایی (۱ ساله)</span>
+                    <span class="badge gold" style="font-size:11px">{!! svg_icon('star-filled', 15) !!} اشتراک طلایی (۱ ساله)</span>
                   @elseif($c->tier === 'silver')
-                    <span class="badge silver" style="font-size:11px">★ اشتراک نقره‌ای (۶ ماهه)</span>
+                    <span class="badge silver" style="font-size:11px">{!! svg_icon('star-filled', 15) !!} اشتراک نقره‌ای (۶ ماهه)</span>
                   @elseif($c->tier === 'bronze')
-                    <span class="badge bronze" style="font-size:11px">★ اشتراک برنزی (۳ ماهه)</span>
+                    <span class="badge bronze" style="font-size:11px">{!! svg_icon('star-filled', 15) !!} اشتراک برنزی (۳ ماهه)</span>
                   @else
                     <span class="badge" style="background:#f1f5f9;color:#64748b;font-size:11px">عادی (رایگان)</span>
                   @endif
@@ -525,11 +525,11 @@
               ۳/۰۰۰/۰۰۰ تومان
             </div>
             <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
-              <li>✓ درج تصاویر و گالری محصولات</li>
-              <li>✓ درج آگهی استخدام نامحدود</li>
-              <li>✓ افزودن کاتالوگ محصولات (PDF)</li>
-              <li>✓ حذف تبلیغات رقبا از صفحه شما</li>
-              <li>✓ جایگاه بالاتر از شرکت‌های عادی</li>
+              <li>{!! svg_icon('check', 15) !!} درج تصاویر و گالری محصولات</li>
+              <li>{!! svg_icon('check', 15) !!} درج آگهی استخدام نامحدود</li>
+              <li>{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
+              <li>{!! svg_icon('check', 15) !!} حذف تبلیغات رقبا از صفحه شما</li>
+              <li>{!! svg_icon('check', 15) !!} جایگاه بالاتر از شرکت‌های عادی</li>
             </ul>
           </div>
           <div style="margin-top:16px">
@@ -545,11 +545,11 @@
               ۴/۰۰۰/۰۰۰ تومان
             </div>
             <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
-              <li>✓ درج تصاویر و گالری محصولات</li>
-              <li>✓ درج آگهی استخدام نامحدود</li>
-              <li>✓ افزودن کاتالوگ محصولات (PDF)</li>
-              <li>✓ حذف تبلیغات رقبا از صفحه شما</li>
-              <li>✓ جایگاه بالاتر از شرکت‌های عادی</li>
+              <li>{!! svg_icon('check', 15) !!} درج تصاویر و گالری محصولات</li>
+              <li>{!! svg_icon('check', 15) !!} درج آگهی استخدام نامحدود</li>
+              <li>{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
+              <li>{!! svg_icon('check', 15) !!} حذف تبلیغات رقبا از صفحه شما</li>
+              <li>{!! svg_icon('check', 15) !!} جایگاه بالاتر از شرکت‌های عادی</li>
             </ul>
           </div>
           <div style="margin-top:16px">
@@ -559,17 +559,17 @@
 
         <div class="card" style="padding:20px;background:#fefce8;border-radius:12px;border:2px solid #eab308;display:flex;flex-direction:column;justify-content:space-between">
           <div>
-            <span style="font-size:12px;color:#854d0e;font-weight:700">★ کامل‌ترین و به‌صرفه‌ترین</span>
+            <span style="font-size:12px;color:#854d0e;font-weight:700">{!! svg_icon('star-filled', 15) !!} کامل‌ترین و به‌صرفه‌ترین</span>
             <h4 style="margin:4px 0 10px;font-size:16px;color:#713f12">اشتراک ۱ ساله (طلایی)</h4>
             <div style="font-size:20px;font-weight:800;color:#854d0e;margin-bottom:12px">
               ۵/۰۰۰/۰۰۰ تومان
             </div>
             <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#713f12">
-              <li>✓ تمام امکانات گالری، کاتالوگ و استخدام</li>
-              <li>✓ درج ویدیوی معرفی کالا و خدمات</li>
-              <li>✓ اطلاع‌رسانی پیامکی اختصاصی به مدیر</li>
-              <li>✓ حذف کامل تبلیغات رقبا</li>
-              <li>★ بالاترین اولویت در نتایج و نشان طلایی</li>
+              <li>{!! svg_icon('check', 15) !!} تمام امکانات گالری، کاتالوگ و استخدام</li>
+              <li>{!! svg_icon('check', 15) !!} درج ویدیوی معرفی کالا و خدمات</li>
+              <li>{!! svg_icon('check', 15) !!} اطلاع‌رسانی پیامکی اختصاصی به مدیر</li>
+              <li>{!! svg_icon('check', 15) !!} حذف کامل تبلیغات رقبا</li>
+              <li>{!! svg_icon('star-filled', 15) !!} بالاترین اولویت در نتایج و نشان طلایی</li>
             </ul>
           </div>
           <div style="margin-top:16px">
@@ -622,11 +622,11 @@
     <div id="tab-saved" class="dashboard-tab-content" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
         <div>
-          <h2 style="margin:0 0 6px;font-size:18px;color:#1e293b">⭐ شرکت‌های ذخیره‌شده و برگزیده</h2>
+          <h2 style="margin:0 0 6px;font-size:18px;color:#1e293b">{!! svg_icon('star-filled', 15) !!} شرکت‌های ذخیره‌شده و برگزیده</h2>
           <p style="margin:0;font-size:13px;color:var(--muted)">شرکت‌ها و کارخانجاتی که برای دسترسی سریع به میز کار خود اضافه کرده‌اید</p>
         </div>
         <a href="{{ route('directory') }}" class="btn ghost small" style="font-size:13px;padding:6px 14px">
-          🔍 جستجو در دایرکتوری شرکت‌ها
+          {!! svg_icon('search', 15) !!} جستجو در دایرکتوری شرکت‌ها
         </a>
       </div>
 
@@ -656,7 +656,7 @@
 
                   @if($savedC->phone)
                     <div style="font-size:12.5px;color:#475569;margin-bottom:12px;display:flex;align-items:center;gap:6px">
-                      <span>📞</span>
+                      <span>{!! svg_icon('phone', 15) !!}</span>
                       <span style="direction:ltr">{{ explode(';', $savedC->phone)[0] }}</span>
                     </div>
                   @endif
@@ -674,7 +674,7 @@
             @endforeach
           </div>
           <div id="saved-empty-state" style="display:none;padding:40px 20px;text-align:center;color:var(--muted)">
-            <div style="font-size:42px;margin-bottom:10px">📑</div>
+            <div style="font-size:42px;margin-bottom:10px">{!! svg_icon('file-text', 15) !!}</div>
             <p style="margin:0 0 10px;font-size:15px;font-weight:700;color:#334155">هنوز هیچ شرکتی را ذخیره نکرده‌اید</p>
             <p style="margin:0 0 18px;font-size:13.5px;color:#64748b;max-width:480px;margin-left:auto;margin-right:auto">
               هنگام مرور دایرکتوری و مشاهده صفحه هر شرکت، با کلیک روی دکمه «ذخیره در میز کار» می‌توانید شرکت‌های مورد علاقه یا همکاران تجاری خود را اینجا ذخیره کنید.
@@ -685,7 +685,7 @@
           </div>
         @else
           <div id="saved-empty-state" style="padding:40px 20px;text-align:center;color:var(--muted)">
-            <div style="font-size:42px;margin-bottom:10px">📑</div>
+            <div style="font-size:42px;margin-bottom:10px">{!! svg_icon('file-text', 15) !!}</div>
             <p style="margin:0 0 10px;font-size:15px;font-weight:700;color:#334155">هنوز هیچ شرکتی را ذخیره نکرده‌اید</p>
             <p style="margin:0 0 18px;font-size:13.5px;color:#64748b;max-width:480px;margin-left:auto;margin-right:auto">
               هنگام مرور دایرکتوری و مشاهده صفحه هر شرکت، با کلیک روی دکمه «ذخیره در میز کار» می‌توانید شرکت‌های مورد علاقه یا همکاران تجاری خود را اینجا ذخیره کنید.
@@ -703,68 +703,68 @@
 
 <script>
 function switchTab(tabId) {
-  // Update sidebar active classes
-  document.querySelectorAll('.dashboard-menu-link').forEach(link => {
-    link.classList.remove('active');
-  });
-  const currentLink = document.getElementById('nav-' + tabId);
-  if (currentLink) currentLink.classList.add('active');
+ // Update sidebar active classes
+ document.querySelectorAll('.dashboard-menu-link').forEach(link => {
+ link.classList.remove('active');
+ });
+ const currentLink = document.getElementById('nav-' + tabId);
+ if (currentLink) currentLink.classList.add('active');
 
-  // Switch tab content
-  document.querySelectorAll('.dashboard-tab-content').forEach(content => {
-    content.style.display = 'none';
-  });
-  const target = document.getElementById('tab-' + tabId);
-  if (target) {
-    target.style.display = 'block';
-  }
+ // Switch tab content
+ document.querySelectorAll('.dashboard-tab-content').forEach(content => {
+ content.style.display = 'none';
+ });
+ const target = document.getElementById('tab-' + tabId);
+ if (target) {
+ target.style.display = 'block';
+ }
 
-  // Update hash in URL
-  if (history.pushState) {
-    history.pushState(null, null, '#' + tabId);
-  }
+ // Update hash in URL
+ if (history.pushState) {
+ history.pushState(null, null, '#' + tabId);
+ }
 }
 
 // Check URL hash on page load
 document.addEventListener('DOMContentLoaded', function() {
-  const hash = window.location.hash.replace('#', '');
-  if (hash && document.getElementById('tab-' + hash)) {
-    switchTab(hash);
-  }
+ const hash = window.location.hash.replace('#', '');
+ if (hash && document.getElementById('tab-' + hash)) {
+ switchTab(hash);
+ }
 });
 
 function removeSavedCompany(id) {
-  if (!confirm('آیا مایل به حذف این شرکت از لیست ذخیره‌های میز کار هستید؟')) return;
+ if (!confirm('آیا مایل به حذف این شرکت از لیست ذخیره‌های میز کار هستید؟')) return;
 
-  fetch("/companies/" + id + "/bookmark", {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': '{{ csrf_token() }}',
-      'Accept': 'application/json'
-    }
-  })
-  .then(res => res.json())
-  .then(data => {
-    const card = document.getElementById('saved-card-' + id);
-    if (card) {
-      card.remove();
-    }
-    const badge = document.getElementById('saved-badge-count');
-    if (badge) {
-      const current = parseInt(badge.textContent) || 1;
-      const next = Math.max(0, current - 1);
-      badge.textContent = next;
-      if (next === 0) badge.style.display = 'none';
-    }
-    const grid = document.getElementById('saved-companies-grid');
-    if (grid && grid.querySelectorAll('[id^="saved-card-"]').length === 0) {
-      grid.style.display = 'none';
-      const emptyState = document.getElementById('saved-empty-state');
-      if (emptyState) emptyState.style.display = 'block';
-    }
-  })
-  .catch(err => console.error('Error removing bookmark:', err));
+ fetch("/companies/" + id + "/bookmark", {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+ 'Accept': 'application/json'
+ }
+ })
+ .then(res => res.json())
+ .then(data => {
+ const card = document.getElementById('saved-card-' + id);
+ if (card) {
+ card.remove();
+ }
+ const badge = document.getElementById('saved-badge-count');
+ if (badge) {
+ const current = parseInt(badge.textContent) || 1;
+ const next = Math.max(0, current - 1);
+ badge.textContent = next;
+ if (next === 0) badge.style.display = 'none';
+ }
+ const grid = document.getElementById('saved-companies-grid');
+ if (grid && grid.querySelectorAll('[id^="saved-card-"]').length === 0) {
+ grid.style.display = 'none';
+ const emptyState = document.getElementById('saved-empty-state');
+ if (emptyState) emptyState.style.display = 'block';
+ }
+ })
+ .catch(err => console.error('Error removing bookmark:', err));
 }
 </script>
 @endsection

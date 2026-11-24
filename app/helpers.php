@@ -1,4 +1,18 @@
 <?php
+if (!function_exists('svg_icon')) {
+    function svg_icon(string $name, int $size = 16, string $class = ''): string
+    {
+        return \App\Support\Icons::get($name, $size, $class);
+    }
+}
+
+if (!function_exists('emoji_to_svg')) {
+    function emoji_to_svg(?string $emoji, int $size = 16, string $class = ''): string
+    {
+        return \App\Support\Icons::fromEmoji($emoji, $size, $class);
+    }
+}
+
 if (!function_exists('company_url')) {
     function company_url($company): string
     {

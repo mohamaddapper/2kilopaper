@@ -5,7 +5,7 @@
   
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
     <div>
-      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">🏢 دایرکتوری و مدیریت شرکت‌های صنعتی</h1>
+      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">{!! svg_icon('building', 15) !!} دایرکتوری و مدیریت شرکت‌های صنعتی</h1>
       <p style="margin:0;color:#64748b;font-size:13.5px">تأیید صلاحیت، مدیریت اشتراک‌های طلایی/نقره‌ای و نظارت بر کارخانجات</p>
     </div>
     <div style="display:flex;gap:8px">
@@ -23,16 +23,16 @@
 
       <select name="status" style="border:1px solid #cbd5e1">
         <option value="all">همه وضعیت‌ها</option>
-        <option value="pending" @selected(request('status') === 'pending')>⏳ در انتظار بررسی</option>
-        <option value="approved" @selected(request('status') === 'approved')>✓ تأیید و منتشرشده</option>
-        <option value="rejected" @selected(request('status') === 'rejected')>✕ رد/معلق‌شده</option>
+        <option value="pending" @selected(request('status') === 'pending')> در انتظار بررسی</option>
+        <option value="approved" @selected(request('status') === 'approved')> تأیید و منتشرشده</option>
+        <option value="rejected" @selected(request('status') === 'rejected')> رد/معلق‌شده</option>
       </select>
 
       <select name="tier" style="border:1px solid #cbd5e1">
         <option value="all">همه پلن‌ها</option>
-        <option value="gold" @selected(request('tier') === 'gold')>★ اشتراک طلایی</option>
-        <option value="silver" @selected(request('tier') === 'silver')>★ اشتراک نقره‌ای</option>
-        <option value="bronze" @selected(request('tier') === 'bronze')>★ اشتراک برنزی</option>
+        <option value="gold" @selected(request('tier') === 'gold')> اشتراک طلایی</option>
+        <option value="silver" @selected(request('tier') === 'silver')> اشتراک نقره‌ای</option>
+        <option value="bronze" @selected(request('tier') === 'bronze')> اشتراک برنزی</option>
         <option value="normal" @selected(request('tier') === 'normal')>پلن عادی (رایگان)</option>
       </select>
 
@@ -52,7 +52,7 @@
     @if(request()->hasAny(['q', 'status', 'tier', 'cat']))
       <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;color:#64748b">فیلترهای فعال:</span>
-        <a href="{{ route('admin.companies') }}" style="color:#ef4444;font-size:12px;text-decoration:none;font-weight:600">✕ پاک‌سازی همه فیلترها</a>
+        <a href="{{ route('admin.companies') }}" style="color:#ef4444;font-size:12px;text-decoration:none;font-weight:600">{!! svg_icon('x', 15) !!} پاک‌سازی همه فیلترها</a>
       </div>
     @endif
   </form>
@@ -97,7 +97,7 @@
                 {{ $c->category->name ?? '—' }}
               </span>
               <span style="display:block;font-size:12px;color:#64748b;margin-top:3px">
-                📍 {{ $c->city->name ?? 'نامشخص' }}
+                {!! svg_icon('map-pin', 15) !!} {{ $c->city->name ?? 'نامشخص' }}
               </span>
             </td>
 
@@ -108,11 +108,11 @@
 
             <td>
               @if($c->tier === 'gold')
-                <span class="badge gold" style="font-size:11.5px">★ ویژه طلایی</span>
+                <span class="badge gold" style="font-size:11.5px">{!! svg_icon('star-filled', 15) !!} ویژه طلایی</span>
               @elseif($c->tier === 'silver')
-                <span class="badge silver" style="font-size:11.5px">★ ویژه نقره‌ای</span>
+                <span class="badge silver" style="font-size:11.5px">{!! svg_icon('star-filled', 15) !!} ویژه نقره‌ای</span>
               @elseif($c->tier === 'bronze')
-                <span class="badge bronze" style="font-size:11.5px">★ ویژه برنزی</span>
+                <span class="badge bronze" style="font-size:11.5px">{!! svg_icon('star-filled', 15) !!} ویژه برنزی</span>
               @else
                 <span style="font-size:12px;color:#94a3b8">عادی</span>
               @endif
@@ -126,16 +126,16 @@
 
             <td style="text-align:center">
               @if($c->status === 'approved')
-                <span class="badge ok" style="font-size:12px">✓ منتشرشده</span>
+                <span class="badge ok" style="font-size:12px">{!! svg_icon('check', 15) !!} منتشرشده</span>
               @elseif($c->status === 'pending')
-                <span class="badge" style="background:#fef3c7;color:#b45309;font-size:12px">⏳ در انتظار تأیید</span>
+                <span class="badge" style="background:#fef3c7;color:#b45309;font-size:12px">{!! svg_icon('clock', 15) !!} در انتظار تأیید</span>
               @else
-                <span class="badge bad" style="font-size:12px">✕ معلق / رد</span>
+                <span class="badge bad" style="font-size:12px">{!! svg_icon('x', 15) !!} معلق / رد</span>
               @endif
             </td>
 
             <td style="text-align:center;font-size:13px;color:#475569">
-              👁️ {{ number_format($c->views_count ?? 0) }}
+              {!! svg_icon('eye', 15) !!} {{ number_format($c->views_count ?? 0) }}
             </td>
 
             <td style="text-align:left">
@@ -143,20 +143,20 @@
                 @if($c->status !== 'approved')
                   <form method="post" action="{{ route('admin.companies.approve', $c) }}" style="margin:0">
                     @csrf
-                    <button type="submit" class="btn-action btn-approve" title="تأیید و انتشار در سایت">✓ تأیید</button>
+                    <button type="submit" class="btn-action btn-approve" title="تأیید و انتشار در سایت">{!! svg_icon('check', 15) !!} تأیید</button>
                   </form>
                 @endif
 
                 @if($c->status !== 'rejected')
                   <form method="post" action="{{ route('admin.companies.reject', $c) }}" style="margin:0">
                     @csrf
-                    <button type="submit" class="btn-action btn-reject" title="رد یا تعلیق">✕ رد</button>
+                    <button type="submit" class="btn-action btn-reject" title="رد یا تعلیق">{!! svg_icon('x', 15) !!} رد</button>
                   </form>
                 @endif
 
                 <!-- دکمه ارتقای پلن -->
                 <button type="button" class="btn-action btn-tier" onclick="openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}')">
-                  ★ تغییر اشتراک
+                  {!! svg_icon('star-filled', 15) !!} تغییر اشتراک
                 </button>
 
                 <a href="{{ $c->url }}" target="_blank" class="btn-action btn-view">
@@ -164,13 +164,13 @@
                 </a>
 
                 <a href="{{ route('companies.edit', $c) }}" target="_blank" class="btn-action" style="background:#0284c7;color:#fff;font-weight:700" title="ویرایش کامل مشخصات شرکت">
-                  ✏️ ویرایش
+                  {!! svg_icon('edit', 15) !!} ویرایش
                 </a>
 
                 <form method="post" action="{{ route('admin.companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn-action btn-reject" style="background:#fee2e2;color:#991b1b;border-color:#fecaca" title="حذف شرکت">🗑️</button>
+                  <button type="submit" class="btn-action btn-reject" style="background:#fee2e2;color:#991b1b;border-color:#fecaca" title="حذف شرکت">{!! svg_icon('trash', 15) !!}</button>
                 </form>
               </div>
             </td>
@@ -204,9 +204,9 @@
         <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">سطح اشتراک:</label>
         <select name="tier" id="selectTier" style="width:100%;border:1px solid #cbd5e1">
           <option value="">عادی (رایگان)</option>
-          <option value="gold">★ اشتراک طلایی (بالاترین اولویت)</option>
-          <option value="silver">★ اشتراک نقره‌ای</option>
-          <option value="bronze">★ اشتراک برنزی</option>
+          <option value="gold"> اشتراک طلایی (بالاترین اولویت)</option>
+          <option value="silver"> اشتراک نقره‌ای</option>
+          <option value="bronze"> اشتراک برنزی</option>
         </select>
       </div>
 
@@ -232,20 +232,20 @@
 @push('scripts')
 <script>
 function openTierModal(companyId, companyName, currentTier) {
-  const modal = document.getElementById('tierModal');
-  const title = document.getElementById('modalCompanyName');
-  const form = document.getElementById('tierForm');
-  const select = document.getElementById('selectTier');
+ const modal = document.getElementById('tierModal');
+ const title = document.getElementById('modalCompanyName');
+ const form = document.getElementById('tierForm');
+ const select = document.getElementById('selectTier');
 
-  title.textContent = 'تعیین سطح اشتراک: ' + companyName;
-  form.action = '{{ url("/admin/companies") }}/' + companyId + '/tier';
-  select.value = currentTier || '';
-  
-  modal.style.display = 'flex';
+ title.textContent = 'تعیین سطح اشتراک: ' + companyName;
+ form.action = '{{ url("/admin/companies") }}/' + companyId + '/tier';
+ select.value = currentTier || '';
+ 
+ modal.style.display = 'flex';
 }
 
 function closeTierModal() {
-  document.getElementById('tierModal').style.display = 'none';
+ document.getElementById('tierModal').style.display = 'none';
 }
 </script>
 @endpush

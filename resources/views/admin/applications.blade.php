@@ -5,7 +5,7 @@
   
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
     <div>
-      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">👥 بانک جامع متقاضیان و رزومه‌های کارجو</h1>
+      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">{!! svg_icon('users', 15) !!} بانک جامع متقاضیان و رزومه‌های کارجو</h1>
       <p style="margin:0;color:#64748b;font-size:13.5px">نظارت بر درخواست‌های کارجویان، رزومه‌های ارسالی به کارخانجات و ارتباطات استخدامی</p>
     </div>
   </div>
@@ -85,7 +85,7 @@
             <td style="text-align:center">
               @if($app->resume_file)
                 <a href="{{ asset($app->resume_file) }}" target="_blank" class="btn-action btn-view" style="font-size:11.5px">
-                  📥 دانلود PDF
+                  {!! svg_icon('download', 15) !!} دانلود PDF
                 </a>
               @else
                 <span style="font-size:11.5px;color:#94a3b8">بدون فایل</span>

@@ -44,11 +44,11 @@ class Category extends Model
     public static function roleMap(): array
     {
         return [
-            'factories' => ['slug' => 'تولیدکننده', 'plural' => 'تولیدکنندگان', 'icon' => '🏭'],
-            'importers' => ['slug' => 'واردکننده', 'plural' => 'واردکنندگان', 'icon' => '🚢'],
-            'stores' => ['slug' => 'فروشنده', 'plural' => 'فروشندگان', 'icon' => '🏪'],
-            'printing-services' => ['slug' => 'چاپخانه', 'plural' => 'چاپخانه‌ها و مجتمع‌های چاپ', 'icon' => '🖨️'],
-            'service-providers' => ['slug' => 'خدمات‌دهنده', 'plural' => 'خدمات‌دهندگان فنی و تکمیلی', 'icon' => '⚙️'],
+            'factories' => ['slug' => 'تولیدکننده', 'plural' => 'تولیدکنندگان', 'icon' => svg_icon('factory', 15)],
+            'importers' => ['slug' => 'واردکننده', 'plural' => 'واردکنندگان', 'icon' => svg_icon('ship', 15)],
+            'stores' => ['slug' => 'فروشنده', 'plural' => 'فروشندگان', 'icon' => svg_icon('store', 15)],
+            'printing-services' => ['slug' => 'چاپخانه', 'plural' => 'چاپخانه‌ها و مجتمع‌های چاپ', 'icon' => svg_icon('printer', 15)],
+            'service-providers' => ['slug' => 'خدمات‌دهنده', 'plural' => 'خدمات‌دهندگان فنی و تکمیلی', 'icon' => svg_icon('settings', 15)],
         ];
     }
 
@@ -78,7 +78,7 @@ class Category extends Model
     public function getRoleIconAttribute(): string
     {
         $root = $this->rootPillar();
-        return static::roleMap()[$root->slug]['icon'] ?? '📦';
+        return static::roleMap()[$root->slug]['icon'] ?? svg_icon('box', 15);
     }
 
     public function getUrlAttribute(): string

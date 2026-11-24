@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'درباره ما',
-  'description' => 'درباره ۲ کیلو کاغذ؛ مرکز و مرجع تخصصی صنعت کاغذ، مقوا، کارتن، چاپ و بسته‌بندی ایران'
+ 'title' => 'درباره ما',
+ 'description' => 'درباره ۲ کیلو کاغذ؛ مرکز و مرجع تخصصی صنعت کاغذ، مقوا، کارتن، چاپ و بسته‌بندی ایران'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- بنر معرفی بالای صفحه -->
   <div class="about-hero">
     <div class="about-hero-badge">
-      <span>🏢</span>
+      <span>{!! svg_icon('building', 15) !!}</span>
       <span>شناسنامه و رسالت مجموعه</span>
     </div>
     <h1 class="about-hero-title">مرکز صنعت کاغذ، چاپ و بسته‌بندی ایران</h1>
@@ -38,37 +38,37 @@
     
     <div class="audience-grid">
       <div class="audience-card">
-        <div class="aud-icon">🏭</div>
+        <div class="aud-icon">{!! svg_icon('factory', 15) !!}</div>
         <h4>تولید و واردات مواد اولیه</h4>
         <p>تولیدکنندگان و بازرگانان انواع خمیر کاغذ، کاغذ تست‌لاینر، فلوتینگ، وایت‌تاپ، مقوای ایندربرد، فیلم، فویل و مرکب چاپ.</p>
       </div>
 
       <div class="audience-card">
-        <div class="aud-icon">🖨️</div>
+        <div class="aud-icon">{!! svg_icon('printer', 15) !!}</div>
         <h4>چاپخانه‌های تخصصی</h4>
         <p>مراکز چاپ در شاخه‌های چاپ افست، فلکسوگرافی، روتوگراور، چاپ دیجیتال، لیبل، جعبه‌های دارویی، آرایشی و غذایی.</p>
       </div>
 
       <div class="audience-card">
-        <div class="aud-icon">📦</div>
+        <div class="aud-icon">{!! svg_icon('box', 15) !!}</div>
         <h4>کارتن‌سازی و جعبه‌سازی</h4>
         <p>واحدهای تولید ورق کارتن سه لا و پنج لا، کارتن لمینتی، دایکاتی، کارتن‌های پستی و جعبه‌های هاردباکس لوکس.</p>
       </div>
 
       <div class="audience-card">
-        <div class="aud-icon">✂️</div>
+        <div class="aud-icon">{!! svg_icon('scissors', 15) !!}</div>
         <h4>خدمات پس از چاپ</h4>
         <p>کارگاه‌های تخصصی دایکات، لترپرس، سلفون‌کشی مات و براق، طلاکوب، برجسته‌کاری، لمینت گرم و سرد و یووی موضعی.</p>
       </div>
 
       <div class="audience-card">
-        <div class="aud-icon">⚙️</div>
+        <div class="aud-icon">{!! svg_icon('settings', 15) !!}</div>
         <h4>ماشین‌آلات و قطعات</h4>
         <p>سازندگان، واردکنندگان و ارائه‌دهندگان ماشین‌آلات خطوط تولید کاغذ، دستگاه‌های چاپ، تیغه‌ها و خدمات فنی مهندسی.</p>
       </div>
 
       <div class="audience-card">
-        <div class="aud-icon">♻️</div>
+        <div class="aud-icon">{!! svg_icon('recycle', 15) !!}</div>
         <h4>بار آخال و ضایعات بازیافتی</h4>
         <p>خریداران و فروشندگان بارهای ضایعات کاغذ و کارتن (آخال) جهت تامین خوراک پایدار کارخانجات بازیافت کشور.</p>
       </div>
@@ -81,7 +81,7 @@
     
     <div class="features-list">
       <div class="feat-row">
-        <div class="f-num">★</div>
+        <div class="f-num">{!! svg_icon('star-filled', 15) !!}</div>
         <div class="f-text">
           <strong>پوشش ۳۶۰ درجه صنعت:</strong>
           <span>از تامین الیاف و مواد خام تا طراحی، چاپ، بسته‌بندی، انبارش و بازیافت در یک زنجیره یکپارچه.</span>
@@ -89,7 +89,7 @@
       </div>
 
       <div class="feat-row">
-        <div class="f-num">★</div>
+        <div class="f-num">{!! svg_icon('star-filled', 15) !!}</div>
         <div class="f-text">
           <strong>دسته‌بندی هوشمند و تخصصی:</strong>
           <span>امکان تفکیک بر اساس نوع محصول، شیوه چاپ، استان و شهر جهت جلوگیری از سردرگمی مشتریان.</span>
@@ -97,7 +97,7 @@
       </div>
 
       <div class="feat-row">
-        <div class="f-num">★</div>
+        <div class="f-num">{!! svg_icon('star-filled', 15) !!}</div>
         <div class="f-text">
           <strong>ارتباط مستقیم و حذف واسطه‌ها:</strong>
           <span>دسترسی مستقیم خریداران به تلفن‌ها، آدرس کارخانه و شبکه‌های ارتباطی مدیران بدون پرداخت کارمزد.</span>
@@ -105,7 +105,7 @@
       </div>
 
       <div class="feat-row">
-        <div class="f-num">★</div>
+        <div class="f-num">{!! svg_icon('star-filled', 15) !!}</div>
         <div class="f-text">
           <strong>کاریابی تخصصی درون‌صنعتی:</strong>
           <span>پیوند میان کارجویان ماهر (اپراتور چاپ، قالب‌ساز، طراح کارتن) و کارفرمایان تولیدی.</span>

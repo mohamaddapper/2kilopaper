@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'تماس با ما',
-  'description' => 'راه‌های ارتباطی، آدرس دفتر مرکزی، شماره تماس پشتیبانی و فرم ارسال پیام به ۲ کیلو کاغذ'
+ 'title' => 'تماس با ما',
+ 'description' => 'راه‌های ارتباطی، آدرس دفتر مرکزی، شماره تماس پشتیبانی و فرم ارسال پیام به ۲ کیلو کاغذ'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- هدر صفحه تماس با ما -->
   <div class="contact-hero">
     <div class="contact-badge">
-      <span>✉️</span>
+      <span>{!! svg_icon('mail', 15) !!}</span>
       <span>صدای شما شنیده می‌شود</span>
     </div>
     <h1 class="contact-hero-title">راه‌های ارتباط با ۲ کیلو کاغذ</h1>
@@ -70,7 +70,7 @@
           <!-- بله -->
           <a href="https://ble.ir/dokilopaper" target="_blank" rel="noopener" class="channel-pill channel-bale">
             <span class="ch-badge">پیشنهادی</span>
-            <span class="ch-icon">💬</span>
+            <span class="ch-icon">{!! svg_icon('message', 15) !!}</span>
             <div class="ch-info">
               <strong>پیام‌رسان بله</strong>
               <span>ble.ir/dokilopaper</span>
@@ -80,7 +80,7 @@
 
           <!-- تلگرام -->
           <a href="https://t.me/dokilopaper" target="_blank" rel="noopener" class="channel-pill channel-tg">
-            <span class="ch-icon">✈️</span>
+            <span class="ch-icon">{!! svg_icon('send', 15) !!}</span>
             <div class="ch-info">
               <strong>کانال و پشتیبانی تلگرام</strong>
               <span>t.me/dokilopaper</span>
@@ -90,7 +90,7 @@
 
           <!-- اینستاگرام -->
           <a href="https://instagram.com/2kilopaper" target="_blank" rel="noopener" class="channel-pill channel-ig">
-            <span class="ch-icon">📷</span>
+            <span class="ch-icon">{!! svg_icon('camera', 15) !!}</span>
             <div class="ch-info">
               <strong>صفحه رسمی اینستاگرام</strong>
               <span>@2kilopaper</span>
@@ -121,7 +121,7 @@
 
         @if (session('ok'))
           <div class="alert-box success">
-            <span>✓</span>
+            <span>{!! svg_icon('check', 15) !!}</span>
             <span>{{ session('ok') }}</span>
           </div>
         @endif

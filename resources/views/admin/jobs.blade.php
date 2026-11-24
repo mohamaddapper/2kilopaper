@@ -5,7 +5,7 @@
   
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
     <div>
-      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">💼 مدیریت فرصت‌های شغلی و استخدام</h1>
+      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">{!! svg_icon('briefcase', 15) !!} مدیریت فرصت‌های شغلی و استخدام</h1>
       <p style="margin:0;color:#64748b;font-size:13.5px">نظارت بر آگهی‌های کارخانجات، اعطای نشان فوری و مدیریت وضعیت انتشار</p>
     </div>
     <div style="display:flex;gap:8px">
@@ -23,13 +23,13 @@
 
       <select name="status" style="border:1px solid #cbd5e1">
         <option value="all">همه وضعیت‌ها</option>
-        <option value="active" @selected(request('status') === 'active')>✓ آگهی‌های فعال</option>
-        <option value="closed" @selected(request('status') === 'closed')>✕ متوقف / منقضی</option>
+        <option value="active" @selected(request('status') === 'active')> آگهی‌های فعال</option>
+        <option value="closed" @selected(request('status') === 'closed')> متوقف / منقضی</option>
       </select>
 
       <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;user-select:none;font-size:13px;font-weight:600">
         <input type="checkbox" name="immediate" value="1" @checked(request('immediate')) style="width:16px!important;height:16px!important;accent-color:#ef4444">
-        <span>⚡ فقط آگهی‌های فوری</span>
+        <span>{!! svg_icon('zap', 15) !!} فقط آگهی‌های فوری</span>
       </label>
 
       <button type="submit" class="btn" style="background:var(--admin-primary);padding:9px 20px">اعمال فیلتر</button>
@@ -86,7 +86,7 @@
               <form method="post" action="{{ route('admin.jobs.immediate', $j) }}" style="margin:0">
                 @csrf
                 <button type="submit" class="btn-action" style="background:{{ $j->is_immediate ? '#fee2e2' : '#f1f5f9' }};color:{{ $j->is_immediate ? '#dc2626' : '#64748b' }}" title="تغییر وضعیت نشان فوری">
-                  {{ $j->is_immediate ? '⚡ فوری' : 'عادی' }}
+                  {{ $j->is_immediate ? ' فوری' : 'عادی' }}
                 </button>
               </form>
             </td>
@@ -95,13 +95,13 @@
               <form method="post" action="{{ route('admin.jobs.toggle', $j) }}" style="margin:0">
                 @csrf
                 <button type="submit" class="btn-action {{ $j->status === 'active' ? 'btn-approve' : 'btn-reject' }}">
-                  {{ $j->status === 'active' ? '✓ فعال' : 'متوقف' }}
+                  {{ $j->status === 'active' ? ' فعال' : 'متوقف' }}
                 </button>
               </form>
             </td>
 
             <td style="text-align:center;font-size:13px;color:#475569">
-              👁️ {{ number_format($j->views_count ?? 0) }}
+              {!! svg_icon('eye', 15) !!} {{ number_format($j->views_count ?? 0) }}
             </td>
 
             <td style="text-align:left">
@@ -110,7 +110,7 @@
                   نمایش ↗
                 </a>
                 <a href="{{ route('employer.jobs.edit', $j) }}" target="_blank" class="btn-action" style="background:#f1f5f9;color:#334155">
-                  ✏️ ویرایش
+                  {!! svg_icon('edit', 15) !!} ویرایش
                 </a>
                 <form method="post" action="{{ route('admin.jobs.destroy', $j) }}" style="margin:0" onsubmit="return confirm('آیا از حذف این آگهی اطمینان دارید؟')">
                   @csrf

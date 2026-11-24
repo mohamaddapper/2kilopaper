@@ -1,51 +1,51 @@
 @php
-  $tier = $company->activeTier();
-  $tierTitles = [
-      'gold' => 'طلایی',
-      'silver' => 'نقره‌ای',
-      'bronze' => 'برنزی',
-  ];
-  $tierStyles = [
-      'gold' => [
-          'border' => '1.5px solid #f59e0b',
-          'badge_bg' => '#fef3c7',
-          'badge_text' => '#92400e',
-          'badge_border' => '#fcd34d',
-          'shadow' => '0 4px 16px rgba(245, 158, 11, 0.12)',
-      ],
-      'silver' => [
-          'border' => '1.5px solid #94a3b8',
-          'badge_bg' => '#f1f5f9',
-          'badge_text' => '#334155',
-          'badge_border' => '#cbd5e1',
-          'shadow' => '0 4px 16px rgba(100, 116, 139, 0.1)',
-      ],
-      'bronze' => [
-          'border' => '1.5px solid #d97706',
-          'badge_bg' => '#ffedd5',
-          'badge_text' => '#9a3412',
-          'badge_border' => '#fed7aa',
-          'shadow' => '0 4px 16px rgba(217, 119, 6, 0.1)',
-      ],
-  ];
-  $currentTier = $tier ? ($tierStyles[$tier] ?? null) : null;
+ $tier = $company->activeTier();
+ $tierTitles = [
+ 'gold' => 'طلایی',
+ 'silver' => 'نقره‌ای',
+ 'bronze' => 'برنزی',
+ ];
+ $tierStyles = [
+ 'gold' => [
+ 'border' => '1.5px solid #f59e0b',
+ 'badge_bg' => '#fef3c7',
+ 'badge_text' => '#92400e',
+ 'badge_border' => '#fcd34d',
+ 'shadow' => '0 4px 16px rgba(245, 158, 11, 0.12)',
+ ],
+ 'silver' => [
+ 'border' => '1.5px solid #94a3b8',
+ 'badge_bg' => '#f1f5f9',
+ 'badge_text' => '#334155',
+ 'badge_border' => '#cbd5e1',
+ 'shadow' => '0 4px 16px rgba(100, 116, 139, 0.1)',
+ ],
+ 'bronze' => [
+ 'border' => '1.5px solid #d97706',
+ 'badge_bg' => '#ffedd5',
+ 'badge_text' => '#9a3412',
+ 'badge_border' => '#fed7aa',
+ 'shadow' => '0 4px 16px rgba(217, 119, 6, 0.1)',
+ ],
+ ];
+ $currentTier = $tier ? ($tierStyles[$tier] ?? null) : null;
 
-  // دسته‌بندی‌ها و ۲ زمینه فعالیت اول شرکت
-  $categoriesText = '';
-  if ($company->categories && $company->categories->count()) {
-      $categoriesText = $company->categories->pluck('name')->take(2)->join('، ');
-  } elseif (!empty($company->services) && is_array($company->services)) {
-      $categoriesText = implode('، ', array_slice($company->services, 0, 2));
-  } else {
-      $categoriesText = $company->category->name ?? 'صنایع کاغذ و بسته‌بندی';
-  }
+ // دسته‌بندی‌ها و ۲ زمینه فعالیت اول شرکت
+ $categoriesText = '';
+ if ($company->categories && $company->categories->count()) {
+ $categoriesText = $company->categories->pluck('name')->take(2)->join('، ');
+ } elseif (!empty($company->services) && is_array($company->services)) {
+ $categoriesText = implode('، ', array_slice($company->services, 0, 2));
+ } else {
+ $categoriesText = $company->category->name ?? 'صنایع کاغذ و بسته‌بندی';
+ }
 
-  // بررسی وضعیت استخدام
-  $isHiring = $company->relationLoaded('jobPostings') ? ($company->jobPostings->where('status', 'active')->count() > 0) : false;
+ // بررسی وضعیت استخدام
+ $isHiring = $company->relationLoaded('jobPostings') ? ($company->jobPostings->where('status', 'active')->count() > 0) : false;
 
-  // آمار بازدید و علاقه‌مندی
-  $likesCount = $company->relationLoaded('bookmarks') ? $company->bookmarks->count() : ($company->bookmarks_count ?? 0);
-  $viewsCount = $company->views_count ?? 0;
+ // آمار بازدید و علاقه‌مندی
+ $likesCount = $company->relationLoaded('bookmarks') ? $company->bookmarks->count() : ($company->bookmarks_count ?? 0);
+ $viewsCount = $company->views_count ?? 0;
 @endphp
 
 <a href="{{ $company->url }}" class="card company-card @if($tier) tier-card tier-{{ $tier }} @endif" style="color:inherit;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;position:relative;background:#fff;border-radius:14px;padding:0!important;overflow:hidden!important;transition:all 0.25s ease;@if($currentTier) border:{{ $currentTier['border'] }};box-shadow:{{ $currentTier['shadow'] }}; @else border:1px solid #e2e8f0; @endif">
@@ -53,11 +53,11 @@
   <!-- بخش بالای کارت: کادر مربعی بزرگ لوگو چسبیده به اطراف -->
   <div style="width:100%;aspect-ratio:1/1;position:relative;background:#ffffff;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0!important;box-sizing:border-box">
     
-    <!-- نشان سطح اشتراک (★ طلایی، نقره‌ای، برنزی) در گوشه چپ -->
+    <!-- نشان سطح اشتراک ( طلایی، نقره‌ای، برنزی) در گوشه چپ -->
     @if($tier && isset($tierTitles[$tier]))
       <div style="position:absolute;left:10px;top:10px;z-index:3">
         <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:{{ $currentTier['badge_bg'] }};color:{{ $currentTier['badge_text'] }};border:1px solid {{ $currentTier['badge_border'] }};white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
-          ★ {{ $tierTitles[$tier] }}
+          {!! svg_icon('star-filled', 15) !!} {{ $tierTitles[$tier] }}
         </span>
       </div>
     @endif

@@ -6,7 +6,7 @@
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
     <div>
       <h1 style="margin:0 0 6px;font-size:22px;color:var(--text)">
-        {{ $job->exists ? '✏️ ویرایش آگهی استخدام' : '📢 درج آگهی استخدام جدید' }}
+        {{ $job->exists ? ' ویرایش آگهی استخدام' : ' درج آگهی استخدام جدید' }}
       </h1>
       <p style="margin:0;color:var(--muted);font-size:13.5px">اطلاعات شغل، شرایط کارخانه یا دفتر و تسهیلات رفاهی را مشخص کنید.</p>
     </div>
@@ -50,8 +50,8 @@
             <option value="">-- بدون انتساب به شرکت (آگهی مستقل) --</option>
             @foreach($companies as $c)
               <option value="{{ $c->id }}" @selected(old('company_id', $job->company_id) == $c->id)>
-                {{ $c->name }}
-              </option>
+ {{ $c->name }}
+ </option>
             @endforeach
           </select>
         </div>
@@ -99,7 +99,7 @@
         <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;user-select:none">
           <input type="checkbox" name="is_immediate" value="1" @checked(old('is_immediate', $job->is_immediate)) style="width:18px!important;height:18px!important;accent-color:#d97706;cursor:pointer;margin:0">
           <div>
-            <span style="font-size:13.5px;font-weight:700;color:#92400e;display:block">⚡ نیاز فوری به جذب نیرو (نشان آگهی فوری)</span>
+            <span style="font-size:13.5px;font-weight:700;color:#92400e;display:block">{!! svg_icon('zap', 15) !!} نیاز فوری به جذب نیرو (نشان آگهی فوری)</span>
             <span style="font-size:12px;color:#b45309;display:block;margin-top:2px">این آگهی با برچسب برجسته قرمز «فوری» در صدر فرصت‌های شغلی نمایش داده می‌شود.</span>
           </div>
         </label>
@@ -165,7 +165,7 @@
         <div id="salary_min_box">
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">حداقل حقوق (تومان)</label>
           <input type="text" inputmode="numeric" name="salary_min" id="salary_min_input" class="salary-number-format"
-                 value="{{ old('salary_min', $job->salary_min ? number_format((int)$job->salary_min) : '') }}"
+ value="{{ old('salary_min', $job->salary_min ? number_format((int)$job->salary_min) : '') }}"
                  placeholder="مثال: ۱۵,۰۰۰,۰۰۰"
                  autocomplete="off"
                  style="width:100%;border:1px solid var(--border);padding:9px 12px;font-size:14px;border-radius:8px">
@@ -175,7 +175,7 @@
         <div id="salary_max_box">
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">حداکثر حقوق (تومان)</label>
           <input type="text" inputmode="numeric" name="salary_max" id="salary_max_input" class="salary-number-format"
-                 value="{{ old('salary_max', $job->salary_max ? number_format((int)$job->salary_max) : '') }}"
+ value="{{ old('salary_max', $job->salary_max ? number_format((int)$job->salary_max) : '') }}"
                  placeholder="مثال: ۲۵,۰۰۰,۰۰۰"
                  autocomplete="off"
                  style="width:100%;border:1px solid var(--border);padding:9px 12px;font-size:14px;border-radius:8px">
@@ -189,37 +189,37 @@
       </label>
 
       @php
-        $benefits = $job->benefits ?? [];
-      @endphp
+ $benefits = $job->benefits ?? [];
+ @endphp
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
           <input type="checkbox" name="benefits[has_service]" id="chk_service" value="1" @checked(!empty($benefits['has_service'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
-          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🚌 سرویس رفت‌وآمد</span>
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">{!! svg_icon('bus', 15) !!} سرویس رفت‌وآمد</span>
         </label>
 
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
           <input type="checkbox" name="benefits[has_meal]" value="1" @checked(!empty($benefits['has_meal'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
-          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🍽️ وعده غذایی (ناهار / صبحانه)</span>
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">{!! svg_icon('utensils', 15) !!} وعده غذایی (ناهار / صبحانه)</span>
         </label>
 
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
           <input type="checkbox" name="benefits[has_accommodation]" value="1" @checked(!empty($benefits['has_accommodation'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
-          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🛏️ خوابگاه / اسکان پرسنل</span>
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">{!! svg_icon('bed', 15) !!} خوابگاه / اسکان پرسنل</span>
         </label>
 
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
           <input type="checkbox" name="benefits[has_insurance]" value="1" @checked(!empty($benefits['has_insurance']) || !$job->exists) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
-          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🛡️ بیمه تأمین اجتماعی</span>
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">{!! svg_icon('shield', 15) !!} بیمه تأمین اجتماعی</span>
         </label>
 
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
           <input type="checkbox" name="benefits[has_supplementary_insurance]" value="1" @checked(!empty($benefits['has_supplementary_insurance'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
-          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">🏥 بیمه تکمیلی درمان</span>
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">{!! svg_icon('heart-pulse', 15) !!} بیمه تکمیلی درمان</span>
         </label>
 
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;user-select:none">
           <input type="checkbox" name="benefits[has_bonus]" value="1" @checked(!empty($benefits['has_bonus'])) style="width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;cursor:pointer">
-          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">💰 پاداش تولید / آکورد / پورسانت</span>
+          <span style="font-size:13.5px;font-weight:600;white-space:nowrap;color:#1e293b">{!! svg_icon('wallet', 15) !!} پاداش تولید / آکورد / پورسانت</span>
         </label>
       </div>
 
@@ -310,7 +310,7 @@
 
     <div style="display:flex;gap:12px;align-items:center;margin-top:10px">
       <button type="submit" class="btn" style="padding:12px 36px;font-size:16px;font-weight:700">
-        {{ $job->exists ? 'ذخیره تغییرات آگهی' : '🚀 انتشار آگهی استخدام' }}
+        {{ $job->exists ? 'ذخیره تغییرات آگهی' : ' انتشار آگهی استخدام' }}
       </button>
       <a href="{{ route('dashboard') }}#jobs" class="btn ghost">انصراف</a>
     </div>
@@ -323,99 +323,99 @@ const locationsTree = @json($locationsTree);
 const currentCityId = '{{ old("city_id", $job->city_id) }}';
 
 function updateCities() {
-  const provSelect = document.getElementById('job_province');
-  const citySelect = document.getElementById('job_city');
-  if (!provSelect || !citySelect) return;
+ const provSelect = document.getElementById('job_province');
+ const citySelect = document.getElementById('job_city');
+ if (!provSelect || !citySelect) return;
 
-  const provId = provSelect.value;
-  citySelect.innerHTML = '<option value="">انتخاب شهر...</option>';
+ const provId = provSelect.value;
+ citySelect.innerHTML = '<option value="">انتخاب شهر...</option>';
 
-  if (!provId) return;
+ if (!provId) return;
 
-  const foundProv = locationsTree.find(p => String(p.id) === String(provId));
-  if (foundProv && foundProv.cities) {
-    foundProv.cities.forEach(city => {
-      const opt = document.createElement('option');
-      opt.value = city.id;
-      opt.textContent = city.name;
-      if (String(city.id) === String(currentCityId)) {
-        opt.selected = true;
-      }
-      citySelect.appendChild(opt);
-    });
-  }
+ const foundProv = locationsTree.find(p => String(p.id) === String(provId));
+ if (foundProv && foundProv.cities) {
+ foundProv.cities.forEach(city => {
+ const opt = document.createElement('option');
+ opt.value = city.id;
+ opt.textContent = city.name;
+ if (String(city.id) === String(currentCityId)) {
+ opt.selected = true;
+ }
+ citySelect.appendChild(opt);
+ });
+ }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  const provSelect = document.getElementById('job_province');
-  if (provSelect) {
-    provSelect.addEventListener('change', updateCities);
-    if (provSelect.value) {
-      updateCities();
-    }
-  }
+ const provSelect = document.getElementById('job_province');
+ if (provSelect) {
+ provSelect.addEventListener('change', updateCities);
+ if (provSelect.value) {
+ updateCities();
+ }
+ }
 
-  // Toggle service routes field
-  const chkService = document.getElementById('chk_service');
-  const serviceRow = document.getElementById('service_routes_row');
-  if (chkService && serviceRow) {
-    chkService.addEventListener('change', function() {
-      serviceRow.style.display = this.checked ? 'block' : 'none';
-    });
-  }
+ // Toggle service routes field
+ const chkService = document.getElementById('chk_service');
+ const serviceRow = document.getElementById('service_routes_row');
+ if (chkService && serviceRow) {
+ chkService.addEventListener('change', function() {
+ serviceRow.style.display = this.checked ? 'block' : 'none';
+ });
+ }
 
-  // Salary formatting (thousands separator & Persian/English digits)
-  function cleanToRawDigits(str) {
-    if (!str) return '';
-    var persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-    var arabic  = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-    for (var i = 0; i < 10; i++) {
-      str = str.split(persian[i]).join(i.toString());
-      str = str.split(arabic[i]).join(i.toString());
-    }
-    return str.replace(/\D/g, '');
-  }
+ // Salary formatting (thousands separator & Persian/English digits)
+ function cleanToRawDigits(str) {
+ if (!str) return '';
+ var persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+ var arabic = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+ for (var i = 0; i < 10; i++) {
+ str = str.split(persian[i]).join(i.toString());
+ str = str.split(arabic[i]).join(i.toString());
+ }
+ return str.replace(/\D/g, '');
+ }
 
-  function formatCommas(str) {
-    var raw = cleanToRawDigits(str);
-    if (!raw) return '';
-    return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
+ function formatCommas(str) {
+ var raw = cleanToRawDigits(str);
+ if (!raw) return '';
+ return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+ }
 
-  function updateSalaryHelper(input, helperId) {
-    var helper = document.getElementById(helperId);
-    if (!helper) return;
-    var raw = cleanToRawDigits(input.value);
-    if (!raw || parseInt(raw, 10) === 0) {
-      helper.textContent = '';
-      return;
-    }
-    var num = parseInt(raw, 10);
-    if (num >= 1000000) {
-      var millions = (num / 1000000).toLocaleString('fa-IR', { maximumFractionDigits: 2 });
-      helper.textContent = 'معادل ' + millions + ' میلیون تومان';
-      helper.style.color = '#0284c7';
-    } else if (num >= 1000) {
-      var thousands = (num / 1000).toLocaleString('fa-IR', { maximumFractionDigits: 1 });
-      helper.textContent = 'معادل ' + thousands + ' هزار تومان';
-      helper.style.color = 'var(--muted)';
-    } else {
-      helper.textContent = num.toLocaleString('fa-IR') + ' تومان';
-      helper.style.color = 'var(--muted)';
-    }
-  }
+ function updateSalaryHelper(input, helperId) {
+ var helper = document.getElementById(helperId);
+ if (!helper) return;
+ var raw = cleanToRawDigits(input.value);
+ if (!raw || parseInt(raw, 10) === 0) {
+ helper.textContent = '';
+ return;
+ }
+ var num = parseInt(raw, 10);
+ if (num >= 1000000) {
+ var millions = (num / 1000000).toLocaleString('fa-IR', { maximumFractionDigits: 2 });
+ helper.textContent = 'معادل ' + millions + ' میلیون تومان';
+ helper.style.color = '#0284c7';
+ } else if (num >= 1000) {
+ var thousands = (num / 1000).toLocaleString('fa-IR', { maximumFractionDigits: 1 });
+ helper.textContent = 'معادل ' + thousands + ' هزار تومان';
+ helper.style.color = 'var(--muted)';
+ } else {
+ helper.textContent = num.toLocaleString('fa-IR') + ' تومان';
+ helper.style.color = 'var(--muted)';
+ }
+ }
 
-  document.querySelectorAll('.salary-number-format').forEach(function(input) {
-    var helperId = input.id === 'salary_min_input' ? 'salary_min_helper' : 'salary_max_helper';
-    if (input.value) {
-      input.value = formatCommas(input.value);
-      updateSalaryHelper(input, helperId);
-    }
-    input.addEventListener('input', function() {
-      this.value = formatCommas(this.value);
-      updateSalaryHelper(this, helperId);
-    });
-  });
+ document.querySelectorAll('.salary-number-format').forEach(function(input) {
+ var helperId = input.id === 'salary_min_input' ? 'salary_min_helper' : 'salary_max_helper';
+ if (input.value) {
+ input.value = formatCommas(input.value);
+ updateSalaryHelper(input, helperId);
+ }
+ input.addEventListener('input', function() {
+ this.value = formatCommas(this.value);
+ updateSalaryHelper(this, helperId);
+ });
+ });
 });
 </script>
 @endsection

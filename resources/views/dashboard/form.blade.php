@@ -184,7 +184,7 @@
     <h2 style="margin:0;font-size:22px;color:var(--primary)">{{ $company->exists ? 'ویرایش شرکت: ' . $company->name : 'ثبت نام و اطلاعات شرکت' }}</h2>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       @if(auth()->check() && auth()->user()->isAdmin())
-        <a href="{{ route('admin.companies') }}" class="btn ghost small" style="border-color:#0284c7;color:#0284c7;font-weight:700">👑 بازگشت به مدیریت شرکت‌ها</a>
+        <a href="{{ route('admin.companies') }}" class="btn ghost small" style="border-color:#0284c7;color:#0284c7;font-weight:700">{!! svg_icon('crown', 15) !!} بازگشت به مدیریت شرکت‌ها</a>
         @if($company->exists)
           <a href="{{ $company->url }}" target="_blank" class="btn ghost small">مشاهده در سایت ↗</a>
         @endif
@@ -209,61 +209,61 @@
     @if($company->exists) @method('PUT') @endif
 
     @php
-      $f = fn($k) => old($k, $company->$k);
-      $cVal = fn($sub, $k) => old("contacts.{$k}", data_get($company->contacts, $k));
-      $tVal = fn($sub, $k) => old("tech_specs.{$k}", data_get($company->tech_specs, $k));
-      $sVal = fn($sub, $k) => old("socials.{$k}", data_get($company->socials, $k));
-      $hasAct = fn($type) => in_array($type, old('activity_types', (array)($company->activity_types ?? [])));
-      $hasServ = fn($srv) => in_array($srv, old('services', (array)($company->services ?? [])));
-      $hasCert = fn($cert) => in_array($cert, (array)old('tech_specs.certificates', (array)(data_get($company->tech_specs, 'certificates') ?? [])));
+ $f = fn($k) => old($k, $company->$k);
+ $cVal = fn($sub, $k) => old("contacts.{$k}", data_get($company->contacts, $k));
+ $tVal = fn($sub, $k) => old("tech_specs.{$k}", data_get($company->tech_specs, $k));
+ $sVal = fn($sub, $k) => old("socials.{$k}", data_get($company->socials, $k));
+ $hasAct = fn($type) => in_array($type, old('activity_types', (array)($company->activity_types ?? [])));
+ $hasServ = fn($srv) => in_array($srv, old('services', (array)($company->services ?? [])));
+ $hasCert = fn($cert) => in_array($cert, (array)old('tech_specs.certificates', (array)(data_get($company->tech_specs, 'certificates') ?? [])));
 
-      // Initialize location list
-      $locList = old('locations', $company->locations);
-      if (empty($locList)) {
-        if ($company->exists && ($company->address || $company->city_id)) {
-          $locList = [
-            [
-              'type' => 'factory',
-              'title' => 'محل کارخانه / دفتر اصلی',
-              'province_id' => $company->province_id,
-              'city_id' => $company->city_id,
-              'address' => $company->address ?: $company->factory_address,
-              'phone' => $company->phone,
-              'is_primary' => true,
-            ]
-          ];
-          if ($company->office_address || $company->office_city) {
-            $locList[] = [
-              'type' => 'central_office',
-              'title' => 'دفتر مرکزی',
-              'province_name' => $company->office_province,
-              'city_name' => $company->office_city,
-              'address' => $company->office_address,
-              'phone' => data_get($company->contacts, 'support_mobile'),
-              'is_primary' => false,
-            ];
-          }
-        } else {
-          $locList = [
-            [
-              'type' => 'factory',
-              'title' => '',
-              'province_id' => '',
-              'city_id' => '',
-              'address' => '',
-              'phone' => '',
-              'is_primary' => true,
-            ]
-          ];
-        }
-      }
-    @endphp
+ // Initialize location list
+ $locList = old('locations', $company->locations);
+ if (empty($locList)) {
+ if ($company->exists && ($company->address || $company->city_id)) {
+ $locList = [
+ [
+ 'type' => 'factory',
+ 'title' => 'محل کارخانه / دفتر اصلی',
+ 'province_id' => $company->province_id,
+ 'city_id' => $company->city_id,
+ 'address' => $company->address ?: $company->factory_address,
+ 'phone' => $company->phone,
+ 'is_primary' => true,
+ ]
+ ];
+ if ($company->office_address || $company->office_city) {
+ $locList[] = [
+ 'type' => 'central_office',
+ 'title' => 'دفتر مرکزی',
+ 'province_name' => $company->office_province,
+ 'city_name' => $company->office_city,
+ 'address' => $company->office_address,
+ 'phone' => data_get($company->contacts, 'support_mobile'),
+ 'is_primary' => false,
+ ];
+ }
+ } else {
+ $locList = [
+ [
+ 'type' => 'factory',
+ 'title' => '',
+ 'province_id' => '',
+ 'city_id' => '',
+ 'address' => '',
+ 'phone' => '',
+ 'is_primary' => true,
+ ]
+ ];
+ }
+ }
+ @endphp
 
     @if(auth()->check() && auth()->user()->isAdmin() && $company->exists)
       <!-- بخش ویژه دسترسی مدیریت ارشد سایت -->
       <div class="form-card" style="background:#f0f9ff;border:1.5px solid #0284c7;margin-bottom:24px">
         <h3 style="color:#0369a1;margin-bottom:8px">
-          <span>👑 تنظیمات اختصاصی مالک و مدیر ارشد سایت (Admin)</span>
+          <span>{!! svg_icon('crown', 15) !!} تنظیمات اختصاصی مالک و مدیر ارشد سایت (Admin)</span>
           <span class="badge" style="background:#0284c7;color:#fff">اختیارات ادمین</span>
         </h3>
         <p style="font-size:13px;color:#0369a1;margin:0 0 16px">
@@ -274,9 +274,9 @@
           <div>
             <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">وضعیت انتشار در دایرکتوری</label>
             <select name="status" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit">
-              <option value="approved" @selected(old('status', $company->status) === 'approved')>✓ تأیید و منتشرشده</option>
-              <option value="pending" @selected(old('status', $company->status) === 'pending')>⏳ در انتظار بررسی</option>
-              <option value="rejected" @selected(old('status', $company->status) === 'rejected')>✕ معلق / رد شده</option>
+              <option value="approved" @selected(old('status', $company->status) === 'approved')> تأیید و منتشرشده</option>
+              <option value="pending" @selected(old('status', $company->status) === 'pending')> در انتظار بررسی</option>
+              <option value="rejected" @selected(old('status', $company->status) === 'rejected')> معلق / رد شده</option>
             </select>
           </div>
 
@@ -284,9 +284,9 @@
             <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">سطح اشتراک ویژه (Tier)</label>
             <select name="tier" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit">
               <option value="" @selected(!old('tier', $company->tier))>پلن عادی (رایگان)</option>
-              <option value="gold" @selected(old('tier', $company->tier) === 'gold')>★ اشتراک ویژه طلایی</option>
-              <option value="silver" @selected(old('tier', $company->tier) === 'silver')>★ اشتراک ویژه نقره‌ای</option>
-              <option value="bronze" @selected(old('tier', $company->tier) === 'bronze')>★ اشتراک ویژه برنزی</option>
+              <option value="gold" @selected(old('tier', $company->tier) === 'gold')> اشتراک ویژه طلایی</option>
+              <option value="silver" @selected(old('tier', $company->tier) === 'silver')> اشتراک ویژه نقره‌ای</option>
+              <option value="bronze" @selected(old('tier', $company->tier) === 'bronze')> اشتراک ویژه برنزی</option>
             </select>
           </div>
 
@@ -321,7 +321,7 @@
       <div class="cat-search-box" style="margin-top:10px;margin-bottom:6px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
           <label for="cat_search_input" style="font-weight:700;color:var(--primary);margin:0;font-size:14px;display:flex;align-items:center;gap:6px">
-            <span>🏷️ زمینه‌های فعالیت و دسته‌بندی‌های شرکت <span style="color:red">*</span></span>
+            <span>{!! svg_icon('tag', 15) !!} زمینه‌های فعالیت و دسته‌بندی‌های شرکت <span style="color:red">*</span></span>
           </label>
           <span id="cat_count_badge" class="badge" style="font-size:12px;background:#e2e8f0;color:#334155;font-weight:700">
             ۰ از ۱۰ انتخاب شده
@@ -337,7 +337,7 @@
           <span style="font-size:12px;color:var(--muted);margin-left:4px">پیشنهاد سریع:</span>
           @foreach($categories as $pillar)
             <button type="button" class="pillar-filter-pill" onclick="filterByPillar({{ $pillar->id }}, '{{ $pillar->name }}')">
-              {{ $pillar->icon }} {{ $pillar->name }}
+              {!! emoji_to_svg($pillar->icon, 16) !!} {{ $pillar->name }}
             </button>
           @endforeach
         </div>
@@ -345,8 +345,8 @@
         <!-- کادر جستجو -->
         <div style="position:relative">
           <input type="text" id="cat_search_input" placeholder="تایپ کنید: مثلاً کارتن، جعبه، لاینر، گلاسه، افست، طلاکوب، سلفون، ماشین‌آلات، دایکات..." autocomplete="off" style="padding-right:38px;padding-left:80px;background:#fff;font-size:14px;height:44px;border:1.5px solid #cbd5e1;border-radius:8px;width:100%">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;pointer-events:none">🔍</span>
-          <button type="button" id="cat_search_clear" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;display:none;color:#ef4444;font-size:12.5px;font-weight:700;font-family:inherit">✕ پاک کردن</button>
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;pointer-events:none">{!! svg_icon('search', 15) !!}</span>
+          <button type="button" id="cat_search_clear" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;display:none;color:#ef4444;font-size:12.5px;font-weight:700;font-family:inherit">{!! svg_icon('x', 15) !!} پاک کردن</button>
         </div>
 
         <!-- لیست نتایج شناور جستجو -->
@@ -356,7 +356,7 @@
         <div style="margin-top:14px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:14px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
             <span style="font-size:13px;font-weight:700;color:var(--text)">برچسب‌های انتخاب‌شده شما:</span>
-            <button type="button" id="clear_all_cats_btn" onclick="clearAllCategories()" style="display:none;font-size:11.5px;color:#ef4444;border:none;background:none;cursor:pointer;font-family:inherit">✕ حذف همه</button>
+            <button type="button" id="clear_all_cats_btn" onclick="clearAllCategories()" style="display:none;font-size:11.5px;color:#ef4444;border:none;background:none;cursor:pointer;font-family:inherit">{!! svg_icon('x', 15) !!} حذف همه</button>
           </div>
 
           <div id="selected_tags_container" style="display:flex;gap:8px;flex-wrap:wrap;min-height:36px;align-items:center">
@@ -364,7 +364,7 @@
           </div>
 
           <div id="no_categories_alert" style="font-size:12.5px;color:#e11d48;font-weight:500;padding:6px 0;display:none">
-            ⚠️ هنوز هیچ دسته‌بندی یا زمینه فعالیتی انتخاب نشده است. لطفاً حداقل ۱ مورد را با جستجو انتخاب کنید.
+            {!! svg_icon('alert', 15) !!} هنوز هیچ دسته‌بندی یا زمینه فعالیتی انتخاب نشده است. لطفاً حداقل ۱ مورد را با جستجو انتخاب کنید.
           </div>
         </div>
       </div>
@@ -389,7 +389,7 @@
                 <span style="white-space:nowrap"><b>آدرس اصلی</b></span>
               </label>
               <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('{{ $idx }}')" style="{{ count($locList) > 1 ? '' : 'display:none;' }}">
-                🗑️ حذف این آدرس
+                {!! svg_icon('trash', 15) !!} حذف این آدرس
               </button>
             </div>
 
@@ -398,7 +398,7 @@
               <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
               <select name="locations[{{ $idx }}][type]" required>
                 @foreach($locationTypes as $typeKey => $typeInfo)
-                  <option value="{{ $typeKey }}" @selected(($loc['type'] ?? '') == $typeKey)>{{ $typeInfo['icon'] }} {{ $typeInfo['title'] }}</option>
+                  <option value="{{ $typeKey }}" @selected(($loc['type'] ?? '') == $typeKey)> {{ $typeInfo['title'] }}</option>
                 @endforeach
               </select>
             </div>
@@ -445,7 +445,7 @@
       </div>
 
       <button type="button" class="btn ghost" onclick="addNewLocation()" style="width:100%;margin-top:10px;padding:12px;font-weight:700;border-style:dashed;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:8px">
-        <span>➕ افزودن آدرس و شعبه دیگر (کارخانه دیگر، دفتر، فروشگاه، انبار...)</span>
+        <span>{!! svg_icon('plus', 15) !!} افزودن آدرس و شعبه دیگر (کارخانه دیگر، دفتر، فروشگاه، انبار...)</span>
       </button>
     </div>
 
@@ -458,16 +458,16 @@
 
       <!-- ۱. گروه کارتن‌سازی -->
       <div id="group_carton" class="dynamic-box">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#1e3a8a">📦 خدمات و محصولات جعبه و کارتن‌سازی:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#1e3a8a">{!! svg_icon('box', 15) !!} خدمات و محصولات جعبه و کارتن‌سازی:</label>
         <div class="check-grid">
           @php
-            $cartonItems = [
-              'سینگل فیس', 'ورق ۳ لا', 'ورق ۵ لا', 'ورق ۷ لا',
-              'فلوت A', 'فلوت B', 'فلوت C', 'فلوت E', 'فلوت F', 'فلوت T',
-              'چاپ ۱ رنگ', 'چاپ ۲ رنگ', 'چاپ ۳ رنگ', 'چاپ ۴ رنگ', 'چاپ ۵ رنگ', 'چاپ ۶ رنگ', 'چاپ ۷ رنگ', 'چاپ ۸ رنگ',
-              'کارتن معمولی', 'کارتن درب دوبل', 'سینی', 'کارتن دایکاتی', 'کارتن تلسکوپی', 'کارتن لمینتی', 'منقسم', 'کارتن پستی'
-            ];
-          @endphp
+ $cartonItems = [
+ 'سینگل فیس', 'ورق ۳ لا', 'ورق ۵ لا', 'ورق ۷ لا',
+ 'فلوت A', 'فلوت B', 'فلوت C', 'فلوت E', 'فلوت F', 'فلوت T',
+ 'چاپ ۱ رنگ', 'چاپ ۲ رنگ', 'چاپ ۳ رنگ', 'چاپ ۴ رنگ', 'چاپ ۵ رنگ', 'چاپ ۶ رنگ', 'چاپ ۷ رنگ', 'چاپ ۸ رنگ',
+ 'کارتن معمولی', 'کارتن درب دوبل', 'سینی', 'کارتن دایکاتی', 'کارتن تلسکوپی', 'کارتن لمینتی', 'منقسم', 'کارتن پستی'
+ ];
+ @endphp
           @foreach($cartonItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
@@ -479,15 +479,15 @@
 
       <!-- ۲. گروه تکنولوژی‌های چاپ -->
       <div id="group_printing" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#7c2d12">🖨️ سیستم‌ها و تکنولوژی‌های چاپ موجود در مجموعه:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#7c2d12">{!! svg_icon('printer', 15) !!} سیستم‌ها و تکنولوژی‌های چاپ موجود در مجموعه:</label>
         <div class="check-grid">
           @php
-            $printItems = [
-              'آتلیه طراحی و لیتوگرافی', 'فاقد چاپخانه (واسطه)',
-              'چاپ افست ۱ ورقی', 'چاپ افست ۲ ورقی', 'چاپ افست ۲/۵ ورقی', 'چاپ افست ۴/۵ ورقی', 'چاپ افست ۶ ورقی', 'چاپ افست رول (وب)',
-              'چاپ فلکسو', 'چاپ هلیوگراور', 'چاپ دیجیتال ورقی', 'چاپ دیجیتال رول', 'چاپ سیلک اسکرین', 'چاپ رول و لیبل'
-            ];
-          @endphp
+ $printItems = [
+ 'آتلیه طراحی و لیتوگرافی', 'فاقد چاپخانه (واسطه)',
+ 'چاپ افست ۱ ورقی', 'چاپ افست ۲ ورقی', 'چاپ افست ۲/۵ ورقی', 'چاپ افست ۴/۵ ورقی', 'چاپ افست ۶ ورقی', 'چاپ افست رول (وب)',
+ 'چاپ فلکسو', 'چاپ هلیوگراور', 'چاپ دیجیتال ورقی', 'چاپ دیجیتال رول', 'چاپ سیلک اسکرین', 'چاپ رول و لیبل'
+ ];
+ @endphp
           @foreach($printItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
@@ -499,16 +499,16 @@
 
       <!-- ۳. گروه خدمات پس از چاپ و تکمیلی -->
       <div id="group_post_press" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#0e7490">✂️ خدمات پس از چاپ، پوشش و مونتاژ (Post-Press):</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#0e7490">{!! svg_icon('scissors', 15) !!} خدمات پس از چاپ، پوشش و مونتاژ (Post-Press):</label>
         <div class="check-grid">
           @php
-            $postPressItems = [
-              'سلفون‌کشی حرارتی', 'سلفون‌کشی واتربیس', 'یووی موضعی', 'یووی سیلندری', 'ورنی افست',
-              'طلاکوب و نقره‌کوب', 'برجسته‌سازی (امباس)', 'دایکات فکی', 'دایکات اتوماتیک بوبست', 'لترپرس و خط تا',
-              'جعبه‌چسبانی ساده', 'جعبه‌چسبانی لاک‌باتم', 'پنجره‌چسبانی (طلق)', 'لمینت کارتن و مقوا',
-              'صحافی چسب گرم', 'صحافی منگنه لوپ و تخت', 'صحافی فنر دوبل'
-            ];
-          @endphp
+ $postPressItems = [
+ 'سلفون‌کشی حرارتی', 'سلفون‌کشی واتربیس', 'یووی موضعی', 'یووی سیلندری', 'ورنی افست',
+ 'طلاکوب و نقره‌کوب', 'برجسته‌سازی (امباس)', 'دایکات فکی', 'دایکات اتوماتیک بوبست', 'لترپرس و خط تا',
+ 'جعبه‌چسبانی ساده', 'جعبه‌چسبانی لاک‌باتم', 'پنجره‌چسبانی (طلق)', 'لمینت کارتن و مقوا',
+ 'صحافی چسب گرم', 'صحافی منگنه لوپ و تخت', 'صحافی فنر دوبل'
+ ];
+ @endphp
           @foreach($postPressItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
@@ -520,15 +520,15 @@
 
       <!-- ۴. گروه محصولات جعبه و بسته‌بندی نهایی -->
       <div id="group_print_products" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#4338ca">📦 محصولات نهایی چاپی و بسته‌بندی مقوایی:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#4338ca">{!! svg_icon('box', 15) !!} محصولات نهایی چاپی و بسته‌بندی مقوایی:</label>
         <div class="check-grid">
           @php
-            $productItems = [
-              'جعبه مقوایی دارویی و بهداشتی', 'جعبه شیرینی و فست‌فود', 'هاردباکس (جعبه سخت لوکس)',
-              'لیبل و برچسب پشت‌چسب‌دار', 'ساک دستی کاغذی و مقوایی', 'کاتالوگ، بروشور و فولدر',
-              'جعبه و کارتن لمینتی', 'پوستر و بسته‌بندی صادراتی'
-            ];
-          @endphp
+ $productItems = [
+ 'جعبه مقوایی دارویی و بهداشتی', 'جعبه شیرینی و فست‌فود', 'هاردباکس (جعبه سخت لوکس)',
+ 'لیبل و برچسب پشت‌چسب‌دار', 'ساک دستی کاغذی و مقوایی', 'کاتالوگ، بروشور و فولدر',
+ 'جعبه و کارتن لمینتی', 'پوستر و بسته‌بندی صادراتی'
+ ];
+ @endphp
           @foreach($productItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
@@ -540,15 +540,15 @@
 
       <!-- ۵. گروه نصب و خدمات فنی ماشین‌آلات -->
       <div id="group_machine_services" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#b45309">🛠️ نصب، تعمیرات و خدمات فنی ماشین‌آلات:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#b45309">{!! svg_icon('wrench', 15) !!} نصب، تعمیرات و خدمات فنی ماشین‌آلات:</label>
         <div class="check-grid">
           @php
-            $serviceItems = [
-              'نصب و راه‌اندازی خط ورق کارتن', 'نصب و راه‌اندازی خطوط کارتن‌سازی', 'نصب و راه‌اندازی ماشین چاپ و تبدیل',
-              'تعمیرات اساسی مکانیک و هیدرولیک', 'اتوماسیون صنعتی و برق PLC', 'سنگ‌زنی سیلندر کروگیت و پرس',
-              'تأمین و تراش تیغه‌های اسلیتر و برش', 'قالب‌سازی لیزری و تخت'
-            ];
-          @endphp
+ $serviceItems = [
+ 'نصب و راه‌اندازی خط ورق کارتن', 'نصب و راه‌اندازی خطوط کارتن‌سازی', 'نصب و راه‌اندازی ماشین چاپ و تبدیل',
+ 'تعمیرات اساسی مکانیک و هیدرولیک', 'اتوماسیون صنعتی و برق PLC', 'سنگ‌زنی سیلندر کروگیت و پرس',
+ 'تأمین و تراش تیغه‌های اسلیتر و برش', 'قالب‌سازی لیزری و تخت'
+ ];
+ @endphp
           @foreach($serviceItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
@@ -560,16 +560,16 @@
 
       <!-- ۶. گروه ماشین‌آلات و خطوط تولید -->
       <div id="group_machinery" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#065f46">⚙️ تجهیزات و ماشین‌آلات ورق‌سازی، کارتن و چاپ:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#065f46">{!! svg_icon('settings', 15) !!} تجهیزات و ماشین‌آلات ورق‌سازی، کارتن و چاپ:</label>
         <div class="check-grid">
           @php
-            $machineItems = [
-              'پری هیتر', 'تری پری هیتر', 'پری کاندیشنر', 'رول گیر کاغذ', 'ترمز سینگل',
-              'سینگل فیسر', 'دستگاه چسب زن', 'دابل فیسر', 'اسلیتر اسکورر', 'کاتاف الکترونیکی',
-              'دستگاه کاتاف دوبل', 'دستگاه کاتاف هلیکال', 'دستگاه استاکر', 'استاکر دوبل', 'سیلندر کروگیت',
-              'ماشین چاپ افست', 'ماشین دایکات بوبست', 'دستگاه جعبه چسبان'
-            ];
-          @endphp
+ $machineItems = [
+ 'پری هیتر', 'تری پری هیتر', 'پری کاندیشنر', 'رول گیر کاغذ', 'ترمز سینگل',
+ 'سینگل فیسر', 'دستگاه چسب زن', 'دابل فیسر', 'اسلیتر اسکورر', 'کاتاف الکترونیکی',
+ 'دستگاه کاتاف دوبل', 'دستگاه کاتاف هلیکال', 'دستگاه استاکر', 'استاکر دوبل', 'سیلندر کروگیت',
+ 'ماشین چاپ افست', 'ماشین دایکات بوبست', 'دستگاه جعبه چسبان'
+ ];
+ @endphp
           @foreach($machineItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
@@ -599,7 +599,7 @@
       </div>
 
       <div style="margin-top:14px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px">
-        <h4 style="margin:0 0 12px;font-size:14.5px;color:var(--text)">👥 مشخصات مدیران و مسئولین شرکت:</h4>
+        <h4 style="margin:0 0 12px;font-size:14.5px;color:var(--text)">{!! svg_icon('users', 15) !!} مشخصات مدیران و مسئولین شرکت:</h4>
         
         <div class="form-row" style="margin-bottom:12px">
           <div class="field" style="margin-bottom:0">
@@ -680,8 +680,8 @@
         <label>گواهینامه‌های کیفی و استانداردها:</label>
         <div class="check-grid">
           @php
-            $certs = ['ISO 9001', 'ISO 14001', 'ISO 45001', 'ISO 22000', 'نشان استاندارد ملی', 'سیب سلامت / بهداشت', 'پروانه بهره‌برداری'];
-          @endphp
+ $certs = ['ISO 9001', 'ISO 14001', 'ISO 45001', 'ISO 22000', 'نشان استاندارد ملی', 'سیب سلامت / بهداشت', 'پروانه بهره‌برداری'];
+ @endphp
           @foreach($certs as $cert)
             <label class="check-item">
               <input type="checkbox" name="tech_specs[certificates][]" value="{{ $cert }}" @checked($hasCert($cert))>
@@ -722,7 +722,7 @@
         </div>
 
         <div class="field">
-          <label>📄 کاتالوگ محصولات و خدمات (فایل PDF)</label>
+          <label>{!! svg_icon('file-text', 15) !!} کاتالوگ محصولات و خدمات (فایل PDF)</label>
           @if($company->catalog)
             <div style="margin-bottom:6px"><a href="{{ asset($company->catalog) }}" target="_blank" style="font-weight:700">مشاهده کاتالوگ فعلی</a></div>
           @endif
@@ -732,7 +732,7 @@
       </div>
 
       <div class="field" style="margin-top:10px">
-        <label>📸 گالری تصاویر محصولات یا کارخانه (حداکثر ۵ تصویر)</label>
+        <label>{!! svg_icon('camera', 15) !!} گالری تصاویر محصولات یا کارخانه (حداکثر ۵ تصویر)</label>
         @if($company->gallery)
           <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
             @foreach((array)$company->gallery as $img)
@@ -745,7 +745,7 @@
       </div>
 
       <div class="field" style="margin-top:10px;margin-bottom:0">
-        <label>🎥 کد ویدیوی آپارات یا لینک ویدیو</label>
+        <label>{!! svg_icon('video', 15) !!} کد ویدیوی آپارات یا لینک ویدیو</label>
         <input name="video_code" value="{{ $f('video_code') }}" placeholder="مثال: کد یا لینک اشتراک‌گذاری آپارات">
         <div class="note">در صورت وارد کردن، پلیر ویدیوی معرفی کارخانه در صفحه شرکت نمایش داده می‌شود.</div>
       </div>
@@ -802,583 +802,583 @@ let selectedCategories = @json($selectedCategories);
 let nextLocIndex = {{ count($locList) }};
 
 function renderCategoryTags() {
-  const container = document.getElementById('selected_tags_container');
-  const countBadge = document.getElementById('cat_count_badge');
-  const noAlert = document.getElementById('no_categories_alert');
-  const clearAllBtn = document.getElementById('clear_all_cats_btn');
+ const container = document.getElementById('selected_tags_container');
+ const countBadge = document.getElementById('cat_count_badge');
+ const noAlert = document.getElementById('no_categories_alert');
+ const clearAllBtn = document.getElementById('clear_all_cats_btn');
 
-  if (!container) return;
-  container.innerHTML = '';
+ if (!container) return;
+ container.innerHTML = '';
 
-  const total = selectedCategories.length;
-  if (countBadge) {
-    countBadge.textContent = `${total} از ۱۰ انتخاب شده`;
-    if (total >= 10) {
-      countBadge.style.background = '#fef2f2';
-      countBadge.style.color = '#b91c1c';
-    } else if (total > 0) {
-      countBadge.style.background = '#eff6ff';
-      countBadge.style.color = '#1d4ed8';
-    } else {
-      countBadge.style.background = '#e2e8f0';
-      countBadge.style.color = '#334155';
-    }
-  }
+ const total = selectedCategories.length;
+ if (countBadge) {
+ countBadge.textContent = `${total} از ۱۰ انتخاب شده`;
+ if (total >= 10) {
+ countBadge.style.background = '#fef2f2';
+ countBadge.style.color = '#b91c1c';
+ } else if (total > 0) {
+ countBadge.style.background = '#eff6ff';
+ countBadge.style.color = '#1d4ed8';
+ } else {
+ countBadge.style.background = '#e2e8f0';
+ countBadge.style.color = '#334155';
+ }
+ }
 
-  if (total === 0) {
-    if (noAlert) noAlert.style.display = 'block';
-    if (clearAllBtn) clearAllBtn.style.display = 'none';
-    return;
-  }
+ if (total === 0) {
+ if (noAlert) noAlert.style.display = 'block';
+ if (clearAllBtn) clearAllBtn.style.display = 'none';
+ return;
+ }
 
-  if (noAlert) noAlert.style.display = 'none';
-  if (clearAllBtn) clearAllBtn.style.display = 'inline-block';
+ if (noAlert) noAlert.style.display = 'none';
+ if (clearAllBtn) clearAllBtn.style.display = 'inline-block';
 
-  selectedCategories.forEach((cat, index) => {
-    const isPrimary = (index === 0);
-    const chip = document.createElement('div');
-    chip.className = `cat-tag-chip fade-in ${isPrimary ? 'primary-chip' : ''}`;
-    chip.id = `cat_chip_${cat.id}`;
-    chip.innerHTML = `
-      <span>${cat.pillar_icon || '📁'}</span>
-      <span style="color:#64748b;font-size:12px">${cat.pillar_name}:</span>
-      <span>${cat.name}</span>
-      ${isPrimary ? '<span class="cat-tag-primary-badge">شاخه اول</span>' : ''}
-      <input type="hidden" name="category_ids[]" value="${cat.id}">
-      <button type="button" class="cat-tag-remove" onclick="removeCategory(${cat.id})" title="حذف این دسته">✕</button>
-    `;
-    container.appendChild(chip);
-  });
+ selectedCategories.forEach((cat, index) => {
+ const isPrimary = (index === 0);
+ const chip = document.createElement('div');
+ chip.className = `cat-tag-chip fade-in ${isPrimary ? 'primary-chip' : ''}`;
+ chip.id = `cat_chip_${cat.id}`;
+ chip.innerHTML = `
+ <span>${cat.pillar_icon || ''}</span>
+ <span style="color:#64748b;font-size:12px">${cat.pillar_name}:</span>
+ <span>${cat.name}</span>
+ ${isPrimary ? '<span class="cat-tag-primary-badge">شاخه اول</span>' : ''}
+ <input type="hidden" name="category_ids[]" value="${cat.id}">
+ <button type="button" class="cat-tag-remove" onclick="removeCategory(${cat.id})" title="حذف این دسته"></button>
+ `;
+ container.appendChild(chip);
+ });
 }
 
 function addCategory(catId) {
-  const id = parseInt(catId, 10);
-  if (!id) return;
+ const id = parseInt(catId, 10);
+ if (!id) return;
 
-  if (selectedCategories.some(c => c.id === id)) {
-    const existing = selectedCategories.find(c => c.id === id);
-    alert(`«${existing ? existing.name : ''}» قبلاً انتخاب شده است.`);
-    return;
-  }
+ if (selectedCategories.some(c => c.id === id)) {
+ const existing = selectedCategories.find(c => c.id === id);
+ alert(`«${existing ? existing.name : ''}» قبلاً انتخاب شده است.`);
+ return;
+ }
 
-  if (selectedCategories.length >= 10) {
-    alert('حداکثر می‌توانید ۱۰ دسته‌بندی انتخاب نمایید.');
-    return;
-  }
+ if (selectedCategories.length >= 10) {
+ alert('حداکثر می‌توانید ۱۰ دسته‌بندی انتخاب نمایید.');
+ return;
+ }
 
-  const cat = categoriesFlat.find(c => c.id === id);
-  if (!cat) return;
+ const cat = categoriesFlat.find(c => c.id === id);
+ if (!cat) return;
 
-  selectedCategories.push(cat);
-  renderCategoryTags();
-  toggleServices();
-  updateSearchDropdownSelection();
+ selectedCategories.push(cat);
+ renderCategoryTags();
+ toggleServices();
+ updateSearchDropdownSelection();
 }
 
 function removeCategory(catId) {
-  const id = parseInt(catId, 10);
-  selectedCategories = selectedCategories.filter(c => c.id !== id);
-  renderCategoryTags();
-  toggleServices();
-  updateSearchDropdownSelection();
+ const id = parseInt(catId, 10);
+ selectedCategories = selectedCategories.filter(c => c.id !== id);
+ renderCategoryTags();
+ toggleServices();
+ updateSearchDropdownSelection();
 }
 
 function clearAllCategories() {
-  if (selectedCategories.length === 0) return;
-  if (confirm('آیا از حذف تمام برچسب‌های انتخاب‌شده اطمینان دارید؟')) {
-    selectedCategories = [];
-    renderCategoryTags();
-    toggleServices();
-    updateSearchDropdownSelection();
-  }
+ if (selectedCategories.length === 0) return;
+ if (confirm('آیا از حذف تمام برچسب‌های انتخاب‌شده اطمینان دارید؟')) {
+ selectedCategories = [];
+ renderCategoryTags();
+ toggleServices();
+ updateSearchDropdownSelection();
+ }
 }
 
 function updateSearchDropdownSelection() {
-  const resultsBox = document.getElementById('cat_search_results');
-  if (!resultsBox || resultsBox.style.display === 'none') return;
+ const resultsBox = document.getElementById('cat_search_results');
+ if (!resultsBox || resultsBox.style.display === 'none') return;
 
-  const items = resultsBox.querySelectorAll('.cat-search-item');
-  items.forEach(el => {
-    const catId = parseInt(el.dataset.id, 10);
-    const isSelected = selectedCategories.some(c => c.id === catId);
-    const actionSlot = el.querySelector('.action-slot');
-    if (isSelected) {
-      el.classList.add('is-selected');
-      if (actionSlot) {
-        actionSlot.innerHTML = `<span style="font-size:12px;color:#16a34a;font-weight:700">✓ انتخاب شده</span>`;
-      }
-    } else {
-      el.classList.remove('is-selected');
-      if (actionSlot) {
-        actionSlot.innerHTML = `<span style="font-size:12px;color:#2563eb;font-weight:600">➕ انتخاب</span>`;
-      }
-    }
-  });
+ const items = resultsBox.querySelectorAll('.cat-search-item');
+ items.forEach(el => {
+ const catId = parseInt(el.dataset.id, 10);
+ const isSelected = selectedCategories.some(c => c.id === catId);
+ const actionSlot = el.querySelector('.action-slot');
+ if (isSelected) {
+ el.classList.add('is-selected');
+ if (actionSlot) {
+ actionSlot.innerHTML = `<span style="font-size:12px;color:#16a34a;font-weight:700"> انتخاب شده</span>`;
+ }
+ } else {
+ el.classList.remove('is-selected');
+ if (actionSlot) {
+ actionSlot.innerHTML = `<span style="font-size:12px;color:#2563eb;font-weight:600"> انتخاب</span>`;
+ }
+ }
+ });
 }
 
 function filterByPillar(pillarId, pillarName = '') {
-  const input = document.getElementById('cat_search_input');
-  const resultsBox = document.getElementById('cat_search_results');
-  const clearBtn = document.getElementById('cat_search_clear');
-  if (!resultsBox) return;
+ const input = document.getElementById('cat_search_input');
+ const resultsBox = document.getElementById('cat_search_results');
+ const clearBtn = document.getElementById('cat_search_clear');
+ if (!resultsBox) return;
 
-  if (input) input.value = '';
-  if (clearBtn) clearBtn.style.display = 'block';
+ if (input) input.value = '';
+ if (clearBtn) clearBtn.style.display = 'block';
 
-  // Toggle active pill state
-  document.querySelectorAll('.pillar-filter-pill').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(String(pillarId)));
-  });
+ // Toggle active pill state
+ document.querySelectorAll('.pillar-filter-pill').forEach(btn => {
+ btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(String(pillarId)));
+ });
 
-  const matches = categoriesFlat.filter(item => item.pillar_id == pillarId);
+ const matches = categoriesFlat.filter(item => item.pillar_id == pillarId);
 
-  let html = `
-    <div style="padding:10px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12.5px;color:#475569;font-weight:700">
-      📂 دسته‌های مرتبط با: ${pillarName || 'شاخه انتخابی'} (${matches.length} مورد)
-    </div>
-  `;
+ let html = `
+ <div style="padding:10px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12.5px;color:#475569;font-weight:700">
+ دسته‌های مرتبط با: ${pillarName || 'شاخه انتخابی'} (${matches.length} مورد)
+ </div>
+ `;
 
-  matches.forEach(item => {
-    const isSelected = selectedCategories.some(c => c.id === item.id);
-    html += `
-      <div class="cat-search-item ${isSelected ? 'is-selected' : ''}" data-id="${item.id}" onclick="handleSearchItemClick(${item.id})">
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:6px">
-            <span class="cat-badge-primary">${item.pillar_icon || ''} ${item.pillar_name}</span>
-            <span>${item.name}</span>
-          </div>
-          <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${item.full_path}</div>
-        </div>
-        <div class="action-slot" style="margin-right:10px">
-          ${isSelected 
-            ? '<span style="font-size:12px;color:#16a34a;font-weight:700">✓ انتخاب شده</span>' 
-            : '<span style="font-size:12px;color:#2563eb;font-weight:600">➕ انتخاب</span>'}
-        </div>
-      </div>
-    `;
-  });
+ matches.forEach(item => {
+ const isSelected = selectedCategories.some(c => c.id === item.id);
+ html += `
+ <div class="cat-search-item ${isSelected ? 'is-selected' : ''}" data-id="${item.id}" onclick="handleSearchItemClick(${item.id})">
+ <div style="flex:1">
+ <div style="font-weight:700;font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:6px">
+ <span class="cat-badge-primary">${item.pillar_icon || ''} ${item.pillar_name}</span>
+ <span>${item.name}</span>
+ </div>
+ <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${item.full_path}</div>
+ </div>
+ <div class="action-slot" style="margin-right:10px">
+ ${isSelected 
+ ? '<span style="font-size:12px;color:#16a34a;font-weight:700"> انتخاب شده</span>' 
+ : '<span style="font-size:12px;color:#2563eb;font-weight:600"> انتخاب</span>'}
+ </div>
+ </div>
+ `;
+ });
 
-  resultsBox.innerHTML = html;
-  resultsBox.style.display = 'block';
+ resultsBox.innerHTML = html;
+ resultsBox.style.display = 'block';
 }
 
 function handleSearchItemClick(catId) {
-  const isSelected = selectedCategories.some(c => c.id === catId);
-  if (isSelected) {
-    removeCategory(catId);
-  } else {
-    addCategory(catId);
-  }
+ const isSelected = selectedCategories.some(c => c.id === catId);
+ if (isSelected) {
+ removeCategory(catId);
+ } else {
+ addCategory(catId);
+ }
 }
 
 function initCategorySearch() {
-  const input = document.getElementById('cat_search_input');
-  const resultsBox = document.getElementById('cat_search_results');
-  const clearBtn = document.getElementById('cat_search_clear');
+ const input = document.getElementById('cat_search_input');
+ const resultsBox = document.getElementById('cat_search_results');
+ const clearBtn = document.getElementById('cat_search_clear');
 
-  if (!input || !resultsBox) return;
+ if (!input || !resultsBox) return;
 
-  function highlight(text, q) {
-    if (!q) return text;
-    const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-    return text.replace(re, '<mark style="background:#fef08a;color:#854d0e;padding:0 2px;border-radius:2px">$1</mark>');
-  }
+ function highlight(text, q) {
+ if (!q) return text;
+ const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+ return text.replace(re, '<mark style="background:#fef08a;color:#854d0e;padding:0 2px;border-radius:2px">$1</mark>');
+ }
 
-  function doSearch(term) {
-    document.querySelectorAll('.pillar-filter-pill').forEach(btn => btn.classList.remove('active'));
+ function doSearch(term) {
+ document.querySelectorAll('.pillar-filter-pill').forEach(btn => btn.classList.remove('active'));
 
-    const q = term.trim().toLowerCase();
-    if (!q) {
-      resultsBox.style.display = 'none';
-      resultsBox.innerHTML = '';
-      if (clearBtn) clearBtn.style.display = 'none';
-      return;
-    }
-    if (clearBtn) clearBtn.style.display = 'block';
+ const q = term.trim().toLowerCase();
+ if (!q) {
+ resultsBox.style.display = 'none';
+ resultsBox.innerHTML = '';
+ if (clearBtn) clearBtn.style.display = 'none';
+ return;
+ }
+ if (clearBtn) clearBtn.style.display = 'block';
 
-    const norm = s => s.replace(/ي/g, 'ی').replace(/ك/g, 'ک');
-    const nq = norm(q);
+ const norm = s => s.replace(/ي/g, 'ی').replace(/ك/g, 'ک');
+ const nq = norm(q);
 
-    const matches = categoriesFlat.filter(item => {
-      const name = norm(item.name.toLowerCase());
-      const path = norm(item.full_path.toLowerCase());
-      return name.includes(nq) || path.includes(nq);
-    }).slice(0, 25);
+ const matches = categoriesFlat.filter(item => {
+ const name = norm(item.name.toLowerCase());
+ const path = norm(item.full_path.toLowerCase());
+ return name.includes(nq) || path.includes(nq);
+ }).slice(0, 25);
 
-    if (matches.length === 0) {
-      resultsBox.innerHTML = `
-        <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">
-          موردی با عنوان «<b>${term}</b>» یافت نشد. می‌توانید با کلمات دیگر جستجو کنید یا از دکمه‌های پیشنهاد سریع بالا استفاده نمایید.
-        </div>
-      `;
-      resultsBox.style.display = 'block';
-      return;
-    }
+ if (matches.length === 0) {
+ resultsBox.innerHTML = `
+ <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">
+ موردی با عنوان «<b>${term}</b>» یافت نشد. می‌توانید با کلمات دیگر جستجو کنید یا از دکمه‌های پیشنهاد سریع بالا استفاده نمایید.
+ </div>
+ `;
+ resultsBox.style.display = 'block';
+ return;
+ }
 
-    let html = `
-      <div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12px;color:var(--muted)">
-        💡 برای افزودن یا حذف از برچسب‌های شرکت، روی گزینه مورد نظر کلیک کنید:
-      </div>
-    `;
+ let html = `
+ <div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12px;color:var(--muted)">
+ برای افزودن یا حذف از برچسب‌های شرکت، روی گزینه مورد نظر کلیک کنید:
+ </div>
+ `;
 
-    matches.forEach(item => {
-      const isSelected = selectedCategories.some(c => c.id === item.id);
-      html += `
-        <div class="cat-search-item ${isSelected ? 'is-selected' : ''}" data-id="${item.id}" onclick="handleSearchItemClick(${item.id})">
-          <div style="flex:1">
-            <div style="font-weight:700;font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:6px">
-              <span class="cat-badge-primary">${item.pillar_icon || ''} ${item.pillar_name}</span>
-              <span>${highlight(item.name, q)}</span>
-            </div>
-            <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${highlight(item.full_path, q)}</div>
-          </div>
-          <div class="action-slot" style="margin-right:10px">
-            ${isSelected 
-              ? '<span style="font-size:12px;color:#16a34a;font-weight:700">✓ انتخاب شده</span>' 
-              : '<span style="font-size:12px;color:#2563eb;font-weight:600">➕ انتخاب</span>'}
-          </div>
-        </div>
-      `;
-    });
+ matches.forEach(item => {
+ const isSelected = selectedCategories.some(c => c.id === item.id);
+ html += `
+ <div class="cat-search-item ${isSelected ? 'is-selected' : ''}" data-id="${item.id}" onclick="handleSearchItemClick(${item.id})">
+ <div style="flex:1">
+ <div style="font-weight:700;font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:6px">
+ <span class="cat-badge-primary">${item.pillar_icon || ''} ${item.pillar_name}</span>
+ <span>${highlight(item.name, q)}</span>
+ </div>
+ <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${highlight(item.full_path, q)}</div>
+ </div>
+ <div class="action-slot" style="margin-right:10px">
+ ${isSelected 
+ ? '<span style="font-size:12px;color:#16a34a;font-weight:700"> انتخاب شده</span>' 
+ : '<span style="font-size:12px;color:#2563eb;font-weight:600"> انتخاب</span>'}
+ </div>
+ </div>
+ `;
+ });
 
-    resultsBox.innerHTML = html;
-    resultsBox.style.display = 'block';
-  }
+ resultsBox.innerHTML = html;
+ resultsBox.style.display = 'block';
+ }
 
-  input.addEventListener('input', function() {
-    doSearch(this.value);
-  });
+ input.addEventListener('input', function() {
+ doSearch(this.value);
+ });
 
-  input.addEventListener('focus', function() {
-    if (this.value.trim()) doSearch(this.value);
-  });
+ input.addEventListener('focus', function() {
+ if (this.value.trim()) doSearch(this.value);
+ });
 
-  if (clearBtn) {
-    clearBtn.addEventListener('click', function() {
-      input.value = '';
-      doSearch('');
-      document.querySelectorAll('.pillar-filter-pill').forEach(btn => btn.classList.remove('active'));
-      input.focus();
-    });
-  }
+ if (clearBtn) {
+ clearBtn.addEventListener('click', function() {
+ input.value = '';
+ doSearch('');
+ document.querySelectorAll('.pillar-filter-pill').forEach(btn => btn.classList.remove('active'));
+ input.focus();
+ });
+ }
 
-  document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !resultsBox.contains(e.target) && !e.target.closest('#pillar_pills_container')) {
-      resultsBox.style.display = 'none';
-    }
-  });
+ document.addEventListener('click', function(e) {
+ if (!input.contains(e.target) && !resultsBox.contains(e.target) && !e.target.closest('#pillar_pills_container')) {
+ resultsBox.style.display = 'none';
+ }
+ });
 }
 
 function initLocationCascade(idx, initialProvinceVal = '', initialCityVal = '') {
-  const provEl = document.getElementById('loc_prov_' + idx);
-  const cityWrap = document.getElementById('loc_city_wrap_' + idx);
-  const cityEl = document.getElementById('loc_city_' + idx);
-  const addrWrap = document.getElementById('loc_addr_wrap_' + idx);
-  const addrEl = document.getElementById('loc_addr_' + idx);
+ const provEl = document.getElementById('loc_prov_' + idx);
+ const cityWrap = document.getElementById('loc_city_wrap_' + idx);
+ const cityEl = document.getElementById('loc_city_' + idx);
+ const addrWrap = document.getElementById('loc_addr_wrap_' + idx);
+ const addrEl = document.getElementById('loc_addr_' + idx);
 
-  if (!provEl || !cityWrap || !cityEl) return;
+ if (!provEl || !cityWrap || !cityEl) return;
 
-  function findProvince(val) {
-    if (!val) return null;
-    return locationsTree.find(p => p.id == val || p.name === val || p.slug === val);
-  }
+ function findProvince(val) {
+ if (!val) return null;
+ return locationsTree.find(p => p.id == val || p.name === val || p.slug === val);
+ }
 
-  function renderCities(prov, selectedVal = '') {
-    cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
-    if (!prov || !prov.cities) return;
+ function renderCities(prov, selectedVal = '') {
+ cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
+ if (!prov || !prov.cities) return;
 
-    prov.cities.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.textContent = c.name;
-      opt.dataset.slug = c.slug;
-      opt.dataset.name = c.name;
-      if (selectedVal && (c.id == selectedVal || c.name === selectedVal || c.slug === selectedVal)) {
-        opt.selected = true;
-      }
-      cityEl.appendChild(opt);
-    });
-  }
+ prov.cities.forEach(c => {
+ const opt = document.createElement('option');
+ opt.value = c.id;
+ opt.textContent = c.name;
+ opt.dataset.slug = c.slug;
+ opt.dataset.name = c.name;
+ if (selectedVal && (c.id == selectedVal || c.name === selectedVal || c.slug === selectedVal)) {
+ opt.selected = true;
+ }
+ cityEl.appendChild(opt);
+ });
+ }
 
-  provEl.addEventListener('change', function() {
-    const prov = findProvince(this.value);
-    if (prov) {
-      renderCities(prov);
-      cityWrap.style.display = 'block';
-      if (addrWrap) addrWrap.style.display = 'none';
-    } else {
-      cityWrap.style.display = 'none';
-      if (addrWrap) addrWrap.style.display = 'none';
-      cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
-    }
-  });
+ provEl.addEventListener('change', function() {
+ const prov = findProvince(this.value);
+ if (prov) {
+ renderCities(prov);
+ cityWrap.style.display = 'block';
+ if (addrWrap) addrWrap.style.display = 'none';
+ } else {
+ cityWrap.style.display = 'none';
+ if (addrWrap) addrWrap.style.display = 'none';
+ cityEl.innerHTML = '<option value="">-- انتخاب شهر --</option>';
+ }
+ });
 
-  cityEl.addEventListener('change', function() {
-    if (this.value) {
-      if (addrWrap) {
-        addrWrap.style.display = 'block';
-        if (addrEl && !addrEl.value) {
-          addrEl.focus();
-        }
-      }
-    } else {
-      if (addrWrap) addrWrap.style.display = 'none';
-    }
-  });
+ cityEl.addEventListener('change', function() {
+ if (this.value) {
+ if (addrWrap) {
+ addrWrap.style.display = 'block';
+ if (addrEl && !addrEl.value) {
+ addrEl.focus();
+ }
+ }
+ } else {
+ if (addrWrap) addrWrap.style.display = 'none';
+ }
+ });
 
-  // Initial restore
-  if (initialProvinceVal) {
-    const prov = findProvince(initialProvinceVal);
-    if (prov) {
-      provEl.value = prov.id;
-      renderCities(prov, initialCityVal);
-      cityWrap.style.display = 'block';
-      if (initialCityVal && addrWrap) {
-        addrWrap.style.display = 'block';
-      }
-    }
-  }
+ // Initial restore
+ if (initialProvinceVal) {
+ const prov = findProvince(initialProvinceVal);
+ if (prov) {
+ provEl.value = prov.id;
+ renderCities(prov, initialCityVal);
+ cityWrap.style.display = 'block';
+ if (initialCityVal && addrWrap) {
+ addrWrap.style.display = 'block';
+ }
+ }
+ }
 }
 
 function updateLocationNumbers() {
-  const cards = document.querySelectorAll('#locations_container .location-card');
-  cards.forEach((card) => {
-    const delBtn = card.querySelector('.btn-remove-loc');
-    if (delBtn) delBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
-  });
+ const cards = document.querySelectorAll('#locations_container .location-card');
+ cards.forEach((card) => {
+ const delBtn = card.querySelector('.btn-remove-loc');
+ if (delBtn) delBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+ });
 }
 
 function removeLocationBlock(idx) {
-  const cards = document.querySelectorAll('#locations_container .location-card');
-  if (cards.length <= 1) {
-    alert('حداقل وارد کردن یک موقعیت مکانی الزامی است.');
-    return;
-  }
-  const target = document.getElementById('loc_card_' + idx);
-  if (target) {
-    target.remove();
-    updateLocationNumbers();
+ const cards = document.querySelectorAll('#locations_container .location-card');
+ if (cards.length <= 1) {
+ alert('حداقل وارد کردن یک موقعیت مکانی الزامی است.');
+ return;
+ }
+ const target = document.getElementById('loc_card_' + idx);
+ if (target) {
+ target.remove();
+ updateLocationNumbers();
 
-    // Ensure one primary radio is checked
-    const checked = document.querySelector('input[name="primary_location_index"]:checked');
-    if (!checked) {
-      const firstRadio = document.querySelector('input[name="primary_location_index"]');
-      if (firstRadio) firstRadio.checked = true;
-    }
-  }
+ // Ensure one primary radio is checked
+ const checked = document.querySelector('input[name="primary_location_index"]:checked');
+ if (!checked) {
+ const firstRadio = document.querySelector('input[name="primary_location_index"]');
+ if (firstRadio) firstRadio.checked = true;
+ }
+ }
 }
 
 function addNewLocation() {
-  const idx = nextLocIndex++;
-  const container = document.getElementById('locations_container');
+ const idx = nextLocIndex++;
+ const container = document.getElementById('locations_container');
 
-  let typeOptions = '';
-  for (const [key, val] of Object.entries(locationTypesData)) {
-    typeOptions += `<option value="${key}">${val.icon} ${val.title}</option>`;
-  }
+ let typeOptions = '';
+ for (const [key, val] of Object.entries(locationTypesData)) {
+ typeOptions += `<option value="${key}">${val.icon} ${val.title}</option>`;
+ }
 
-  let provOptions = '<option value="">-- انتخاب استان --</option>';
-  locationsTree.forEach(p => {
-    provOptions += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`;
-  });
+ let provOptions = '<option value="">-- انتخاب استان --</option>';
+ locationsTree.forEach(p => {
+ provOptions += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`;
+ });
 
-  const cardHtml = `
-    <div class="location-card fade-in" id="loc_card_${idx}" data-index="${idx}">
-      <div class="location-header">
-        <label class="location-primary-label" style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none;flex-shrink:0">
-          <input type="radio" name="primary_location_index" value="${idx}">
-          <span style="white-space:nowrap"><b>آدرس اصلی</b></span>
-        </label>
-        <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('${idx}')">
-          🗑️ حذف این آدرس
-        </button>
-      </div>
+ const cardHtml = `
+ <div class="location-card fade-in" id="loc_card_${idx}" data-index="${idx}">
+ <div class="location-header">
+ <label class="location-primary-label" style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text);user-select:none;flex-shrink:0">
+ <input type="radio" name="primary_location_index" value="${idx}">
+ <span style="white-space:nowrap"><b>آدرس اصلی</b></span>
+ </label>
+ <button type="button" class="btn-remove-loc" onclick="removeLocationBlock('${idx}')">
+ حذف این آدرس
+ </button>
+ </div>
 
-      <div class="field" style="margin-bottom:12px">
-        <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
-        <select name="locations[${idx}][type]" required>
-          ${typeOptions}
-        </select>
-      </div>
+ <div class="field" style="margin-bottom:12px">
+ <label>نوع مکان / ماهیت آدرس <span style="color:red">*</span></label>
+ <select name="locations[${idx}][type]" required>
+ ${typeOptions}
+ </select>
+ </div>
 
-      <div class="form-row">
-        <div class="field" style="flex:1">
-          <label>استان <span style="color:red">*</span></label>
-          <select name="locations[${idx}][province_id]" id="loc_prov_${idx}" required>
-            ${provOptions}
-          </select>
-        </div>
-        <div class="field fade-in" id="loc_city_wrap_${idx}" style="flex:1;display:none">
-          <label>شهر / شهرستان <span style="color:red">*</span></label>
-          <select name="locations[${idx}][city_id]" id="loc_city_${idx}" required>
-            <option value="">-- انتخاب شهر --</option>
-          </select>
-        </div>
-      </div>
+ <div class="form-row">
+ <div class="field" style="flex:1">
+ <label>استان <span style="color:red">*</span></label>
+ <select name="locations[${idx}][province_id]" id="loc_prov_${idx}" required>
+ ${provOptions}
+ </select>
+ </div>
+ <div class="field fade-in" id="loc_city_wrap_${idx}" style="flex:1;display:none">
+ <label>شهر / شهرستان <span style="color:red">*</span></label>
+ <select name="locations[${idx}][city_id]" id="loc_city_${idx}" required>
+ <option value="">-- انتخاب شهر --</option>
+ </select>
+ </div>
+ </div>
 
-      <div class="field fade-in" id="loc_addr_wrap_${idx}" style="display:none;margin-top:6px">
-        <label>آدرس دقیق پستی (اختیاری)</label>
-        <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
-      </div>
+ <div class="field fade-in" id="loc_addr_wrap_${idx}" style="display:none;margin-top:6px">
+ <label>آدرس دقیق پستی (اختیاری)</label>
+ <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
+ </div>
 
-      <div class="form-row" style="margin-bottom:0;margin-top:10px">
-        <div class="field" style="flex:1;margin-bottom:0">
-          <label>تلفن مستقیم ۱ این مکان (اختیاری)</label>
-          <input name="locations[${idx}][phone]" placeholder="مثال: 02128421075">
-        </div>
-        <div class="field" style="flex:1;margin-bottom:0">
-          <label>تلفن مستقیم ۲ این مکان (اختیاری)</label>
-          <input name="locations[${idx}][phone2]" placeholder="مثال: 02128421076">
-        </div>
-      </div>
-    </div>
-  `;
+ <div class="form-row" style="margin-bottom:0;margin-top:10px">
+ <div class="field" style="flex:1;margin-bottom:0">
+ <label>تلفن مستقیم ۱ این مکان (اختیاری)</label>
+ <input name="locations[${idx}][phone]" placeholder="مثال: 02128421075">
+ </div>
+ <div class="field" style="flex:1;margin-bottom:0">
+ <label>تلفن مستقیم ۲ این مکان (اختیاری)</label>
+ <input name="locations[${idx}][phone2]" placeholder="مثال: 02128421076">
+ </div>
+ </div>
+ </div>
+ `;
 
-  container.insertAdjacentHTML('beforeend', cardHtml);
-  updateLocationNumbers();
-  initLocationCascade(idx);
+ container.insertAdjacentHTML('beforeend', cardHtml);
+ updateLocationNumbers();
+ initLocationCascade(idx);
 
-  const newCard = document.getElementById('loc_card_' + idx);
-  if (newCard) {
-    newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
+ const newCard = document.getElementById('loc_card_' + idx);
+ if (newCard) {
+ newCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+ }
 }
 
 function toggleServices() {
-  const activeSlugs = new Set();
-  if (Array.isArray(selectedCategories)) {
-    selectedCategories.forEach(c => {
-      if (c.pillar_slug) activeSlugs.add(c.pillar_slug);
-    });
-  }
+ const activeSlugs = new Set();
+ if (Array.isArray(selectedCategories)) {
+ selectedCategories.forEach(c => {
+ if (c.pillar_slug) activeSlugs.add(c.pillar_slug);
+ });
+ }
 
-  const isCarton = activeSlugs.has('factories');
-  const isPrint = activeSlugs.has('printing-services');
-  const isService = activeSlugs.has('service-providers');
-  const isMachinery = activeSlugs.has('stores') || activeSlugs.has('importers') || activeSlugs.has('service-providers');
+ const isCarton = activeSlugs.has('factories');
+ const isPrint = activeSlugs.has('printing-services');
+ const isService = activeSlugs.has('service-providers');
+ const isMachinery = activeSlugs.has('stores') || activeSlugs.has('importers') || activeSlugs.has('service-providers');
 
-  const sec = document.getElementById('services_section');
-  const boxCarton = document.getElementById('group_carton');
-  const boxPrint = document.getElementById('group_printing');
-  const boxPostPress = document.getElementById('group_post_press');
-  const boxPrintProducts = document.getElementById('group_print_products');
-  const boxMachine = document.getElementById('group_machinery');
-  const boxMachineSrv = document.getElementById('group_machine_services');
+ const sec = document.getElementById('services_section');
+ const boxCarton = document.getElementById('group_carton');
+ const boxPrint = document.getElementById('group_printing');
+ const boxPostPress = document.getElementById('group_post_press');
+ const boxPrintProducts = document.getElementById('group_print_products');
+ const boxMachine = document.getElementById('group_machinery');
+ const boxMachineSrv = document.getElementById('group_machine_services');
 
-  const hasAny = (isCarton || isPrint || isService || isMachinery);
-  if (sec) sec.style.display = hasAny ? 'block' : 'none';
-  if (boxCarton) boxCarton.style.display = isCarton ? 'block' : 'none';
-  if (boxPrint) boxPrint.style.display = isPrint ? 'block' : 'none';
-  if (boxPostPress) boxPostPress.style.display = (isPrint || isService) ? 'block' : 'none';
-  if (boxPrintProducts) boxPrintProducts.style.display = (isPrint || isCarton) ? 'block' : 'none';
-  if (boxMachine) boxMachine.style.display = isMachinery ? 'block' : 'none';
-  if (boxMachineSrv) boxMachineSrv.style.display = (isService || isMachinery) ? 'block' : 'none';
+ const hasAny = (isCarton || isPrint || isService || isMachinery);
+ if (sec) sec.style.display = hasAny ? 'block' : 'none';
+ if (boxCarton) boxCarton.style.display = isCarton ? 'block' : 'none';
+ if (boxPrint) boxPrint.style.display = isPrint ? 'block' : 'none';
+ if (boxPostPress) boxPostPress.style.display = (isPrint || isService) ? 'block' : 'none';
+ if (boxPrintProducts) boxPrintProducts.style.display = (isPrint || isCarton) ? 'block' : 'none';
+ if (boxMachine) boxMachine.style.display = isMachinery ? 'block' : 'none';
+ if (boxMachineSrv) boxMachineSrv.style.display = (isService || isMachinery) ? 'block' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  renderCategoryTags();
-  initCategorySearch();
-  toggleServices();
+ renderCategoryTags();
+ initCategorySearch();
+ toggleServices();
 
-  // Real-time email validation
-  const emailInput = document.getElementById('email_input');
-  const emailFeedback = document.getElementById('email_feedback');
+ // Real-time email validation
+ const emailInput = document.getElementById('email_input');
+ const emailFeedback = document.getElementById('email_feedback');
 
-  function validateEmailField(showSuccess = true) {
-    if (!emailInput) return true;
-    const val = emailInput.value.trim();
-    if (!val) {
-      emailInput.style.borderColor = '';
-      emailInput.style.boxShadow = '';
-      if (emailFeedback) {
-        emailFeedback.style.display = 'none';
-        emailFeedback.textContent = '';
-      }
-      return true;
-    }
+ function validateEmailField(showSuccess = true) {
+ if (!emailInput) return true;
+ const val = emailInput.value.trim();
+ if (!val) {
+ emailInput.style.borderColor = '';
+ emailInput.style.boxShadow = '';
+ if (emailFeedback) {
+ emailFeedback.style.display = 'none';
+ emailFeedback.textContent = '';
+ }
+ return true;
+ }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    if (emailRegex.test(val)) {
-      emailInput.style.borderColor = '#16a34a';
-      emailInput.style.boxShadow = '0 0 0 3px rgba(22, 163, 74, 0.12)';
-      if (emailFeedback) {
-        if (showSuccess) {
-          emailFeedback.style.display = 'block';
-          emailFeedback.style.color = '#16a34a';
-          emailFeedback.textContent = '✓ فرمت ایمیل معتبر است';
-        } else {
-          emailFeedback.style.display = 'none';
-        }
-      }
-      return true;
-    } else {
-      emailInput.style.borderColor = '#dc2626';
-      emailInput.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.12)';
-      if (emailFeedback) {
-        emailFeedback.style.display = 'block';
-        emailFeedback.style.color = '#dc2626';
-        emailFeedback.textContent = '⚠️ فرمت ایمیل نامعتبر است (مثال: info@company.ir)';
-      }
-      return false;
-    }
-  }
+ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+ if (emailRegex.test(val)) {
+ emailInput.style.borderColor = '#16a34a';
+ emailInput.style.boxShadow = '0 0 0 3px rgba(22, 163, 74, 0.12)';
+ if (emailFeedback) {
+ if (showSuccess) {
+ emailFeedback.style.display = 'block';
+ emailFeedback.style.color = '#16a34a';
+ emailFeedback.textContent = ' فرمت ایمیل معتبر است';
+ } else {
+ emailFeedback.style.display = 'none';
+ }
+ }
+ return true;
+ } else {
+ emailInput.style.borderColor = '#dc2626';
+ emailInput.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.12)';
+ if (emailFeedback) {
+ emailFeedback.style.display = 'block';
+ emailFeedback.style.color = '#dc2626';
+ emailFeedback.textContent = ' فرمت ایمیل نامعتبر است (مثال: info@company.ir)';
+ }
+ return false;
+ }
+ }
 
-  if (emailInput) {
-    emailInput.addEventListener('input', () => validateEmailField(true));
-    emailInput.addEventListener('blur', () => validateEmailField(true));
-    if (emailInput.value.trim()) {
-      validateEmailField(false);
-    }
-  }
+ if (emailInput) {
+ emailInput.addEventListener('input', () => validateEmailField(true));
+ emailInput.addEventListener('blur', () => validateEmailField(true));
+ if (emailInput.value.trim()) {
+ validateEmailField(false);
+ }
+ }
 
-  // Validate at least 1 category on form submission
-  const companyForm = document.querySelector('form');
-  if (companyForm) {
-    companyForm.addEventListener('submit', function(e) {
-      if (!selectedCategories || selectedCategories.length === 0) {
-        e.preventDefault();
-        alert('لطفاً حداقل یک دسته‌بندی یا زمینه فعالیت برای شرکت انتخاب نمایید.');
-        const searchInput = document.getElementById('cat_search_input');
-        if (searchInput) {
-          searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          searchInput.focus();
-        }
-        const noAlert = document.getElementById('no_categories_alert');
-        if (noAlert) noAlert.style.display = 'block';
-        return false;
-      }
+ // Validate at least 1 category on form submission
+ const companyForm = document.querySelector('form');
+ if (companyForm) {
+ companyForm.addEventListener('submit', function(e) {
+ if (!selectedCategories || selectedCategories.length === 0) {
+ e.preventDefault();
+ alert('لطفاً حداقل یک دسته‌بندی یا زمینه فعالیت برای شرکت انتخاب نمایید.');
+ const searchInput = document.getElementById('cat_search_input');
+ if (searchInput) {
+ searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+ searchInput.focus();
+ }
+ const noAlert = document.getElementById('no_categories_alert');
+ if (noAlert) noAlert.style.display = 'block';
+ return false;
+ }
 
-      if (emailInput && !validateEmailField(true)) {
-        e.preventDefault();
-        alert('لطفاً فرمت ایمیل را اصلاح فرمایید یا فیلد را خالی بگذارید.');
-        emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        emailInput.focus();
-        return false;
-      }
-    });
-  }
+ if (emailInput && !validateEmailField(true)) {
+ e.preventDefault();
+ alert('لطفاً فرمت ایمیل را اصلاح فرمایید یا فیلد را خالی بگذارید.');
+ emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+ emailInput.focus();
+ return false;
+ }
+ });
+ }
 
-  // Initialize existing location cards
-  @foreach($locList as $idx => $loc)
-    initLocationCascade(
-      '{{ $idx }}',
-      '{{ $loc["province_id"] ?? $loc["province_name"] ?? "" }}',
-      '{{ $loc["city_id"] ?? $loc["city_name"] ?? "" }}'
-    );
-  @endforeach
+ // Initialize existing location cards
+ @foreach($locList as $idx => $loc)
+ initLocationCascade(
+ '{{ $idx }}',
+ '{{ $loc["province_id"] ?? $loc["province_name"] ?? "" }}',
+ '{{ $loc["city_id"] ?? $loc["city_name"] ?? "" }}'
+ );
+ @endforeach
 
-  updateLocationNumbers();
+ updateLocationNumbers();
 
-  // Limit gallery to max 5 images
-  const galleryInput = document.getElementById('gallery_input');
-  if (galleryInput) {
-    galleryInput.addEventListener('change', function() {
-      if (this.files && this.files.length > 5) {
-        alert('حداکثر می‌توانید ۵ تصویر برای گالری انتخاب کنید.');
-        this.value = '';
-      }
-    });
-  }
+ // Limit gallery to max 5 images
+ const galleryInput = document.getElementById('gallery_input');
+ if (galleryInput) {
+ galleryInput.addEventListener('change', function() {
+ if (this.files && this.files.length > 5) {
+ alert('حداکثر می‌توانید ۵ تصویر برای گالری انتخاب کنید.');
+ this.value = '';
+ }
+ });
+ }
 });
 </script>
 @endsection

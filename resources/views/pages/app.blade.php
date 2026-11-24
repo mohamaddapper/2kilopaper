@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'دانلود اپلیکیشن ۲ کیلو کاغذ',
-  'description' => 'دانلود مستقیم اپلیکیشن اندروید و راهنمای نصب نسخه وب‌اپلیکیشن آیفون (iOS) ۲ کیلو کاغذ'
+ 'title' => 'دانلود اپلیکیشن ۲ کیلو کاغذ',
+ 'description' => 'دانلود مستقیم اپلیکیشن اندروید و راهنمای نصب نسخه وب‌اپلیکیشن آیفون (iOS) ۲ کیلو کاغذ'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- بنر هدر معرفی اپلیکیشن -->
   <div class="app-hero">
     <div class="app-hero-badge">
-      <span>📱</span>
+      <span>{!! svg_icon('smartphone', 15) !!}</span>
       <span>دسترسی سریع و همیشه همراه</span>
     </div>
     <h1 class="app-hero-title">اپلیکیشن ۲ کیلو کاغذ</h1>
@@ -24,7 +24,7 @@
     <!-- کارت اندروید -->
     <div class="platform-card card-android">
       <div class="platform-badge">
-        <span>🤖</span>
+        <span>{!! svg_icon('android', 15) !!}</span>
         <span>سیستم‌عامل اندروید</span>
       </div>
       <h2 class="platform-title">نسخه اندروید (Android)</h2>
@@ -32,19 +32,19 @@
       
       <div class="platform-features">
         <div class="feat-item">
-          <span class="feat-icon">⚡</span>
+          <span class="feat-icon">{!! svg_icon('zap', 15) !!}</span>
           <span>سرعت بالا در جستجوی شرکت‌ها و تامین‌کنندگان</span>
         </div>
         <div class="feat-item">
-          <span class="feat-icon">🔔</span>
+          <span class="feat-icon">{!! svg_icon('bell', 15) !!}</span>
           <span>دریافت فوری پیام‌ها، پاسخ استعلام‌ها و آگهی‌ها</span>
         </div>
         <div class="feat-item">
-          <span class="feat-icon">📦</span>
+          <span class="feat-icon">{!! svg_icon('box', 15) !!}</span>
           <span>امکان ثبت سریع بار آخال و فرصت‌های شغلی</span>
         </div>
         <div class="feat-item">
-          <span class="feat-icon">📶</span>
+          <span class="feat-icon">{!! svg_icon('signal', 15) !!}</span>
           <span>مصرف اینترنت نیم‌بها و کارکرد روان در تمام نسخه‌ها</span>
         </div>
       </div>
@@ -63,7 +63,7 @@
     <!-- کارت آیفون iOS -->
     <div class="platform-card card-ios">
       <div class="platform-badge badge-ios">
-        <span>🍎</span>
+        <span>{!! svg_icon('apple', 15) !!}</span>
         <span>گوشی‌های آیفون (iOS)</span>
       </div>
       <h2 class="platform-title">وب‌اپلیکیشن آیفون (iOS PWA)</h2>
@@ -98,7 +98,7 @@
       </div>
 
       <div class="ios-status-badge">
-        <span>✓</span>
+        <span>{!! svg_icon('check', 15) !!}</span>
         <span>سازگار با تمامی مدل‌های آیفون و آیپد با سیستم‌عامل iOS 11 به بالا</span>
       </div>
     </div>
@@ -110,17 +110,17 @@
     <h3 class="benefits-title">چرا نصب اپلیکیشن ۲ کیلو کاغذ؟</h3>
     <div class="benefits-grid">
       <div class="benefit-item">
-        <div class="b-icon">🔍</div>
+        <div class="b-icon">{!! svg_icon('search', 15) !!}</div>
         <h4>جستجوی هوشمند در جیب شما</h4>
         <p>دسترسی به هزاران چاپخانه، کارتن‌سازی و واردکننده بر اساس شهر و تخصص بدون نیاز به جستجو در وب.</p>
       </div>
       <div class="benefit-item">
-        <div class="b-icon">📞</div>
+        <div class="b-icon">{!! svg_icon('phone', 15) !!}</div>
         <h4>تماس یک‌کلیکه با مدیران</h4>
         <p>با یک لمس، با شماره‌های مستقیم و موبایل مدیران و مسئولان فروش شرکت‌ها ارتباط تلفنی برقرار کنید.</p>
       </div>
       <div class="benefit-item">
-        <div class="b-icon">💼</div>
+        <div class="b-icon">{!! svg_icon('briefcase', 15) !!}</div>
         <h4>کاریابی سریع صنعت</h4>
         <p>آگهی‌های استخدامی جدید در صنایع چاپ، بسته‌بندی و کاغذ را سریع‌تر از سایرین مشاهده کرده و رزومه بفرستید.</p>
       </div>

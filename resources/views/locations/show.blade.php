@@ -1,24 +1,24 @@
 @php
-  $h1Title = 'کارخانجات و شرکت‌های صنعت کاغذ، کارتن و چاپ در استان ' . $province->name;
-  $seoTitle = "تولیدکنندگان و فروشندگان کاغذ و کارتن در {$province->name} | ۲ کیلو کاغذ";
-  $metaDesc = "فهرست کامل {$companies->total()} کارخانه کارتن‌سازی، فروشنده کاغذ، واردکننده و چاپخانه فعال در استان {$province->name} به همراه آدرس و تلفن تماس.";
+ $h1Title = 'کارخانجات و شرکت‌های صنعت کاغذ، کارتن و چاپ در استان ' . $province->name;
+ $seoTitle = "تولیدکنندگان و فروشندگان کاغذ و کارتن در {$province->name} | ۲ کیلو کاغذ";
+ $metaDesc = "فهرست کامل {$companies->total()} کارخانه کارتن‌سازی، فروشنده کاغذ، واردکننده و چاپخانه فعال در استان {$province->name} به همراه آدرس و تلفن تماس.";
 @endphp
 
 @extends('layouts.app', [
-  'title' => $seoTitle,
-  'description' => $metaDesc,
-  'canonical' => $province->url,
+ 'title' => $seoTitle,
+ 'description' => $metaDesc,
+ 'canonical' => $province->url,
 ])
 
 @push('head')
 <script type="application/ld+json">{!! json_encode([
-  '@context' => 'https://schema.org',
-  '@type' => 'BreadcrumbList',
-  'itemListElement' => [
-    ['@type' => 'ListItem', 'position' => 1, 'name' => 'خانه', 'item' => url('/')],
-    ['@type' => 'ListItem', 'position' => 2, 'name' => 'استان‌ها', 'item' => route('locations.index')],
-    ['@type' => 'ListItem', 'position' => 3, 'name' => $province->name, 'item' => $province->url],
-  ],
+ '@context' => 'https://schema.org',
+ '@type' => 'BreadcrumbList',
+ 'itemListElement' => [
+ ['@type' => 'ListItem', 'position' => 1, 'name' => 'خانه', 'item' => url('/')],
+ ['@type' => 'ListItem', 'position' => 2, 'name' => 'استان‌ها', 'item' => route('locations.index')],
+ ['@type' => 'ListItem', 'position' => 3, 'name' => $province->name, 'item' => $province->url],
+ ],
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 @endpush
 
@@ -37,7 +37,7 @@
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
     <div>
       <h1 style="margin:0 0 6px;font-size:22px;font-weight:900;color:#0f172a">
-        📍 {{ $h1Title }}
+        {!! svg_icon('map-pin', 15) !!} {{ $h1Title }}
       </h1>
       <p style="margin:0;font-size:13.5px;color:#64748b">
         نمایش <strong>{{ number_format($companies->total()) }}</strong> واحد صنعتی و بازرگانی فعال در استان {{ $province->name }}
@@ -53,19 +53,19 @@
   @if($topCategories->isNotEmpty())
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-bottom:22px">
       <div style="font-size:12.5px;font-weight:800;color:#475569;margin-bottom:10px">
-        🏷️ دسته‌بندی‌های تخصصی فعال در استان {{ $province->name }}:
+        {!! svg_icon('tag', 15) !!} دسته‌بندی‌های تخصصی فعال در استان {{ $province->name }}:
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         @foreach($topCategories as $cat)
           @php
-            $comboUrl = route('categories.province', [
-              'role' => $cat->role_slug,
-              'category' => slugify($cat->name),
-              'province' => slugify($province->name),
-            ]);
-          @endphp
+ $comboUrl = route('categories.province', [
+ 'role' => $cat->role_slug,
+ 'category' => slugify($cat->name),
+ 'province' => slugify($province->name),
+ ]);
+ @endphp
           <a href="{{ $comboUrl }}" style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;font-size:12.5px;font-weight:600;color:#334155;text-decoration:none">
-            <span>{{ $cat->role_icon }}</span>
+            <span>{!! $cat->role_icon !!}</span>
             <span>{{ $cat->smart_h1 }}</span>
             <span style="font-size:11px;color:#64748b">({{ $topCategoryCounts[$cat->id] ?? 0 }})</span>
           </a>
@@ -93,7 +93,7 @@
     </div>
   @else
     <div class="card" style="padding:48px 24px;text-align:center;color:var(--muted);border-radius:16px">
-      <div style="font-size:42px;margin-bottom:12px">📍</div>
+      <div style="font-size:42px;margin-bottom:12px">{!! svg_icon('map-pin', 15) !!}</div>
       <h3 style="margin:0 0 8px;font-size:18px;color:var(--text)">شرکتی در استان {{ $province->name }} ثبت نشده است</h3>
       <p style="margin:0 0 18px;font-size:14px">اولین شرکت فعال این استان باشید و اطلاعات خود را رایگان ثبت کنید.</p>
       <a href="{{ route('companies.create') }}" class="btn small">ثبت رایگان شرکت</a>
@@ -122,40 +122,40 @@
 @if($companies->hasMorePages())
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const grid = document.getElementById('companies-grid');
-  const trigger = document.getElementById('infinite-scroll-trigger');
-  const loader = document.getElementById('infinite-loader');
-  const endMsg = document.getElementById('infinite-end');
-  if (!grid || !trigger) return;
+ const grid = document.getElementById('companies-grid');
+ const trigger = document.getElementById('infinite-scroll-trigger');
+ const loader = document.getElementById('infinite-loader');
+ const endMsg = document.getElementById('infinite-end');
+ if (!grid || !trigger) return;
 
-  let nextPageUrl = @json($companies->nextPageUrl());
-  let isLoading = false;
+ let nextPageUrl = @json($companies->nextPageUrl());
+ let isLoading = false;
 
-  async function loadNextBatch() {
-    if (!nextPageUrl || isLoading) return;
-    isLoading = true;
-    loader.style.display = 'inline-flex';
-    try {
-      const url = new URL(nextPageUrl, window.location.origin);
-      url.searchParams.set('ajax', '1');
-      const res = await fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } });
-      if (!res.ok) throw new Error('Network error');
-      const data = await res.json();
-      if (data.html) grid.insertAdjacentHTML('beforeend', data.html);
-      nextPageUrl = data.has_more ? data.next_page_url : null;
-      if (!nextPageUrl) endMsg.style.display = 'block';
-    } catch (e) {
-      console.error(e);
-    } finally {
-      loader.style.display = 'none';
-      isLoading = false;
-    }
-  }
+ async function loadNextBatch() {
+ if (!nextPageUrl || isLoading) return;
+ isLoading = true;
+ loader.style.display = 'inline-flex';
+ try {
+ const url = new URL(nextPageUrl, window.location.origin);
+ url.searchParams.set('ajax', '1');
+ const res = await fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } });
+ if (!res.ok) throw new Error('Network error');
+ const data = await res.json();
+ if (data.html) grid.insertAdjacentHTML('beforeend', data.html);
+ nextPageUrl = data.has_more ? data.next_page_url : null;
+ if (!nextPageUrl) endMsg.style.display = 'block';
+ } catch (e) {
+ console.error(e);
+ } finally {
+ loader.style.display = 'none';
+ isLoading = false;
+ }
+ }
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && nextPageUrl && !isLoading) loadNextBatch();
-  }, { rootMargin: '250px' });
-  observer.observe(trigger);
+ const observer = new IntersectionObserver((entries) => {
+ if (entries[0].isIntersecting && nextPageUrl && !isLoading) loadNextBatch();
+ }, { rootMargin: '250px' });
+ observer.observe(trigger);
 });
 </script>
 @endif

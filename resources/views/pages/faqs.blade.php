@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'سوالات متداول',
-  'description' => 'پاسخ به پرتکرارترین پرسش‌های کاربران درباره ثبت شرکت، کاریابی، تعرفه‌ها و خدمات ۲ کیلو کاغذ'
+ 'title' => 'سوالات متداول',
+ 'description' => 'پاسخ به پرتکرارترین پرسش‌های کاربران درباره ثبت شرکت، کاریابی، تعرفه‌ها و خدمات ۲ کیلو کاغذ'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- بنر بالای صفحه -->
   <div class="faq-hero">
     <div class="faq-hero-badge">
-      <span>❓</span>
+      <span>{!! svg_icon('help', 15) !!}</span>
       <span>مرکز پاسخ به پرسش‌ها</span>
     </div>
     <h1 class="faq-hero-title">سوالات متداول کاربران</h1>
@@ -159,7 +159,7 @@
 
   <!-- کادر نیافتن پاسخ -->
   <div class="faq-support-box">
-    <div class="support-icon">💬</div>
+    <div class="support-icon">{!! svg_icon('message', 15) !!}</div>
     <div class="support-text">
       <strong>پاسخ سوال خود را در این لیست پیدا نکردید؟</strong>
       <span>کارشناسان پشتیبانی ۲ کیلو کاغذ همه‌روزه آماده راهنمایی و پاسخگویی به سوالات شما هستند.</span>
@@ -390,28 +390,28 @@
 
 <script>
 function toggleFaq(btn) {
-  const item = btn.closest('.faq-item');
-  const wasActive = item.classList.contains('active');
-  
-  // بستن سایر آیتم‌ها
-  document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+ const item = btn.closest('.faq-item');
+ const wasActive = item.classList.contains('active');
+ 
+ // بستن سایر آیتم‌ها
+ document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
 
-  if (!wasActive) {
-    item.classList.add('active');
-  }
+ if (!wasActive) {
+ item.classList.add('active');
+ }
 }
 
 function filterFaqs() {
-  const query = document.getElementById('faqSearchInput').value.trim().toLowerCase();
-  const items = document.querySelectorAll('.faq-item');
-  items.forEach(item => {
-    const text = (item.getAttribute('data-keywords') + ' ' + item.textContent).toLowerCase();
-    if (!query || text.includes(query)) {
-      item.style.display = 'block';
-    } else {
-      item.style.display = 'none';
-    }
-  });
+ const query = document.getElementById('faqSearchInput').value.trim().toLowerCase();
+ const items = document.querySelectorAll('.faq-item');
+ items.forEach(item => {
+ const text = (item.getAttribute('data-keywords') + ' ' + item.textContent).toLowerCase();
+ if (!query || text.includes(query)) {
+ item.style.display = 'block';
+ } else {
+ item.style.display = 'none';
+ }
+ });
 }
 </script>
 @endsection

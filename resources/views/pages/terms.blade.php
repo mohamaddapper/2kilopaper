@@ -1,6 +1,6 @@
 @extends('layouts.app', [
-  'title' => 'شرایط و قوانین استفاده از خدمات',
-  'description' => 'شرایط، مقررات و قوانین استفاده از خدمات، ثبت شرکت و فعالیت در دایرکتوری ۲ کیلو کاغذ'
+ 'title' => 'شرایط و قوانین استفاده از خدمات',
+ 'description' => 'شرایط، مقررات و قوانین استفاده از خدمات، ثبت شرکت و فعالیت در دایرکتوری ۲ کیلو کاغذ'
 ])
 
 @section('content')
@@ -9,7 +9,7 @@
   <!-- هدر صفحه قوانین -->
   <div class="legal-hero">
     <div class="legal-badge">
-      <span>📜</span>
+      <span>{!! svg_icon('file-text', 15) !!}</span>
       <span>قوانین و ضوابط رسمی</span>
     </div>
     <h1 class="legal-title">شرایط و قوانین استفاده از سرویس‌ها و خدمات ۲ کیلو کاغذ</h1>
@@ -17,7 +17,7 @@
       به منظور حفظ سلامت تعاملات تجاری، شفافیت اطلاعات و ارتقای کیفیت زنجیره تامین صنعت کاغذ، مقوا، کارتن و چاپ کشور، مجموعه ضوابط زیر به عنوان توافق‌نامه الزام‌آور بین کاربران و پلتفرم ۲ کیلو کاغذ تدوین شده است.
     </p>
     <div class="legal-date">
-      <span>🗓️</span>
+      <span>{!! svg_icon('calendar', 15) !!}</span>
       <span>آخرین به‌روزرسانی و بازنگری: ۳ خرداد ۱۴۰۲</span>
     </div>
   </div>
@@ -62,27 +62,27 @@
       
       <div class="prohibited-grid">
         <div class="prohibit-item">
-          <span class="p-icon">❌</span>
+          <span class="p-icon">{!! svg_icon('x-circle', 15) !!}</span>
           <span>تصاویر بیش از حد تار، کشیده یا بی‌کیفیت</span>
         </div>
         <div class="prohibit-item">
-          <span class="p-icon">❌</span>
+          <span class="p-icon">{!! svg_icon('x-circle', 15) !!}</span>
           <span>تصاویر غیرواقعی و دانلودی از اینترنت</span>
         </div>
         <div class="prohibit-item">
-          <span class="p-icon">❌</span>
+          <span class="p-icon">{!! svg_icon('x-circle', 15) !!}</span>
           <span>تصاویر متعلق به شرکت‌های دیگر در سامانه</span>
         </div>
         <div class="prohibit-item">
-          <span class="p-icon">❌</span>
+          <span class="p-icon">{!! svg_icon('x-circle', 15) !!}</span>
           <span>تصاویر نامرتبط با حوزه کاغذ، چاپ و بسته‌بندی</span>
         </div>
         <div class="prohibit-item">
-          <span class="p-icon">❌</span>
+          <span class="p-icon">{!! svg_icon('x-circle', 15) !!}</span>
           <span>تصاویری که حاوی متن‌های بلند و شلوغ هستند</span>
         </div>
         <div class="prohibit-item">
-          <span class="p-icon">❌</span>
+          <span class="p-icon">{!! svg_icon('x-circle', 15) !!}</span>
           <span>درج قیمت، شماره موبایل یا آدرس سایت روی تصویر</span>
         </div>
       </div>

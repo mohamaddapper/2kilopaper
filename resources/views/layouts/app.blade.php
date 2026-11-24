@@ -18,7 +18,7 @@
   @if(!empty($dashboardNav))
     <div style="display:flex;align-items:center;gap:18px">
       @if(auth()->check() && auth()->user()->isAdmin())
-        <a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-size:14px;font-weight:700;text-decoration:none">★ پنل مدیریت</a>
+        <a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-size:14px;font-weight:700;text-decoration:none">{!! svg_icon('star-filled', 15) !!} پنل مدیریت</a>
       @endif
       <a href="{{ route('directory') }}" style="color:var(--muted);font-size:14px;text-decoration:none">دایرکتوری</a>
       <a href="{{ route('jobs.index') }}" style="color:var(--muted);font-size:14px;text-decoration:none">فرصت‌های شغلی</a>
@@ -30,7 +30,7 @@
   @else
     <ul>
       @if(auth()->check() && auth()->user()->isAdmin())
-        <li><a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-weight:700">★ مدیریت</a></li>
+        <li><a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-weight:700">{!! svg_icon('star-filled', 15) !!} مدیریت</a></li>
       @endif
       <li><a href="{{ route('directory') }}">دایرکتوری</a></li>
       <li><a href="{{ route('jobs.index') }}">فرصت‌های شغلی</a></li>
@@ -64,13 +64,13 @@
         </p>
         <div class="footer-social-row">
           <a href="https://ble.ir/dokilopaper" target="_blank" rel="noopener" class="footer-social-btn" title="پیام‌رسان بله">
-            <span>💬 بله</span>
+            <span>{!! svg_icon('message', 15) !!} بله</span>
           </a>
           <a href="https://t.me/dokilopaper" target="_blank" rel="noopener" class="footer-social-btn" title="تلگرام">
-            <span>✈️ تلگرام</span>
+            <span>{!! svg_icon('send', 15) !!} تلگرام</span>
           </a>
           <a href="https://instagram.com/2kilopaper" target="_blank" rel="noopener" class="footer-social-btn" title="اینستاگرام">
-            <span>📷 اینستاگرام</span>
+            <span>{!! svg_icon('camera', 15) !!} اینستاگرام</span>
           </a>
         </div>
       </div>
@@ -107,7 +107,7 @@
       <div class="footer-col col-contact">
         <h4 class="footer-col-title">تماس و پشتیبانی</h4>
         <div class="footer-contact-item">
-          <span class="f-icon">📞</span>
+          <span class="f-icon">{!! svg_icon('phone', 15) !!}</span>
           <div class="f-info">
             <span class="f-lbl">پشتیبانی تلفنی:</span>
             <a href="tel:02128421075" class="f-val ltr-text">۰۲۱-۲۸۴۲۱۰۷۵</a>
@@ -115,7 +115,7 @@
         </div>
 
         <div class="footer-contact-item">
-          <span class="f-icon">📧</span>
+          <span class="f-icon">{!! svg_icon('mail', 15) !!}</span>
           <div class="f-info">
             <span class="f-lbl">پست الکترونیکی:</span>
             <a href="mailto:support@2kilopaper.ir" class="f-val ltr-text">support@2kilopaper.ir</a>
@@ -123,7 +123,7 @@
         </div>
 
         <div class="footer-contact-item">
-          <span class="f-icon">📍</span>
+          <span class="f-icon">{!! svg_icon('map-pin', 15) !!}</span>
           <div class="f-info">
             <span class="f-lbl">آدرس دفتر مرکزی:</span>
             <span class="f-val" style="font-size:12.5px">تهران، خیابان مطهری، خیابان میرعماد، پلاک ۱۱، طبقه ۲</span>

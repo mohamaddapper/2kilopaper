@@ -166,7 +166,7 @@ class Company extends Model
         $roleMeta = [
             'factories' => [
                 'label' => 'تولیدکننده',
-                'icon' => '🏭',
+                'icon' => svg_icon('factory', 14),
                 'bg' => '#ecfdf5',
                 'border' => '#a7f3d0',
                 'color' => '#047857',
@@ -174,7 +174,7 @@ class Company extends Model
             ],
             'importers' => [
                 'label' => 'واردکننده',
-                'icon' => '🚢',
+                'icon' => svg_icon('ship', 14),
                 'bg' => '#eef2ff',
                 'border' => '#c7d2fe',
                 'color' => '#4338ca',
@@ -182,7 +182,7 @@ class Company extends Model
             ],
             'stores' => [
                 'label' => 'فروشنده',
-                'icon' => '🏪',
+                'icon' => svg_icon('store', 14),
                 'bg' => '#fffbeb',
                 'border' => '#fde68a',
                 'color' => '#b45309',
@@ -190,7 +190,7 @@ class Company extends Model
             ],
             'printing-services' => [
                 'label' => 'چاپخانه',
-                'icon' => '🖨️',
+                'icon' => svg_icon('printer', 14),
                 'bg' => '#f0f9ff',
                 'border' => '#bae6fd',
                 'color' => '#0369a1',
@@ -198,7 +198,7 @@ class Company extends Model
             ],
             'service-providers' => [
                 'label' => 'خدمات‌دهنده',
-                'icon' => '⚙️',
+                'icon' => svg_icon('settings', 14),
                 'bg' => '#f0fdfa',
                 'border' => '#99f6e4',
                 'color' => '#0f766e',
@@ -206,7 +206,7 @@ class Company extends Model
             ],
             'other' => [
                 'label' => 'سایر فعالیت‌ها',
-                'icon' => '🏷️',
+                'icon' => svg_icon('tag', 14),
                 'bg' => '#f8fafc',
                 'border' => '#cbd5e1',
                 'color' => '#334155',
@@ -305,19 +305,19 @@ public function scopeRanked(Builder $q)
     public static function locationTypes(): array
     {
         return [
-            'factory' => ['title' => 'کارخانه / کارگاه تولیدی', 'icon' => '🏭'],
-            'central_office' => ['title' => 'دفتر مرکزی', 'icon' => '🏢'],
-            'sales_office' => ['title' => 'دفتر فروش / بازرگانی', 'icon' => '💼'],
-            'store' => ['title' => 'فروشگاه / مغازه / شوروم', 'icon' => '🏪'],
-            'warehouse' => ['title' => 'انبار مرکزی / بارانداز', 'icon' => '📦'],
-            'branch' => ['title' => 'شعبه دیگر', 'icon' => '📍'],
+            'factory' => ['title' => 'کارخانه / کارگاه تولیدی', 'icon' => svg_icon('factory', 15)],
+            'central_office' => ['title' => 'دفتر مرکزی', 'icon' => svg_icon('building', 15)],
+            'sales_office' => ['title' => 'دفتر فروش / بازرگانی', 'icon' => svg_icon('briefcase', 15)],
+            'store' => ['title' => 'فروشگاه / مغازه / شوروم', 'icon' => svg_icon('store', 15)],
+            'warehouse' => ['title' => 'انبار مرکزی / بارانداز', 'icon' => svg_icon('box', 15)],
+            'branch' => ['title' => 'شعبه دیگر', 'icon' => svg_icon('map-pin', 15)],
         ];
     }
 
     public static function getLocationTypeInfo(?string $type): array
     {
         $types = static::locationTypes();
-        return $types[$type] ?? ['title' => 'موقعیت مکانی', 'icon' => '📍'];
+        return $types[$type] ?? ['title' => 'موقعیت مکانی', 'icon' => svg_icon('map-pin', 15)];
     }
 
     public function activeTier(): ?string

@@ -9,7 +9,7 @@
         <a href="{{ route('dashboard') }}#jobs" style="color:var(--primary);text-decoration:none">مدیریت آگهی‌ها</a> / متقاضیان
       </div>
       <h1 style="margin:0 0 6px;font-size:20px;color:var(--text)">
-        👥 متقاضیان و رزومه‌های دریافتی: {{ $job->title }}
+        {!! svg_icon('users', 15) !!} متقاضیان و رزومه‌های دریافتی: {{ $job->title }}
       </h1>
       <span style="font-size:13px;color:var(--muted)">
         تعداد کل متقاضیان: <b>{{ $job->applications->count() }} نفر</b>
@@ -37,20 +37,20 @@
                 <span class="badge {{ $app->status_badge_class }}" id="badge_status_{{ $app->id }}" style="font-size:12px">
                   {{ $app->status_label }}
                 </span>
-                <span style="font-size:12px;color:var(--muted)">📅 {{ $app->created_at->diffForHumans() }}</span>
-                <span style="font-size:12px;color:var(--muted)">👁️ {{ number_format($app->views_count ?? 0) }} بار مشاهده</span>
+                <span style="font-size:12px;color:var(--muted)">{!! svg_icon('calendar', 15) !!} {{ $app->created_at->diffForHumans() }}</span>
+                <span style="font-size:12px;color:var(--muted)">{!! svg_icon('eye', 15) !!} {{ number_format($app->views_count ?? 0) }} بار مشاهده</span>
               </div>
 
               <div style="display:flex;align-items:center;gap:14px;margin-top:8px;font-size:13.5px;color:var(--muted);flex-wrap:wrap">
-                <span>📞 <b>شماره تماس:</b> <a href="tel:{{ $app->phone }}" style="color:var(--primary);font-weight:700">{{ $app->phone }}</a></span>
+                <span>{!! svg_icon('phone', 15) !!} <b>شماره تماس:</b> <a href="tel:{{ $app->phone }}" style="color:var(--primary);font-weight:700">{{ $app->phone }}</a></span>
                 @if($app->email)
-                  <span>✉️ {{ $app->email }}</span>
+                  <span>{!! svg_icon('mail', 15) !!} {{ $app->email }}</span>
                 @endif
                 @if($app->birth_year)
-                  <span>🎂 متولد {{ $app->birth_year }}</span>
+                  <span>{!! svg_icon('cake', 15) !!} متولد {{ $app->birth_year }}</span>
                 @endif
                 @if($app->military_status)
-                  <span>🎖️ {{ $app->military_status }}</span>
+                  <span>{!! svg_icon('award', 15) !!} {{ $app->military_status }}</span>
                 @endif
               </div>
             </div>
@@ -87,7 +87,7 @@
               <span style="color:var(--muted);display:block">فایل رزومه:</span>
               @if($app->resume_file)
                 <a href="{{ asset($app->resume_file) }}" target="_blank" class="btn small" style="padding:2px 10px;font-size:11.5px;background:#0284c7">
-                  📥 دانلود رزومه PDF
+                  {!! svg_icon('download', 15) !!} دانلود رزومه PDF
                 </a>
               @else
                 <span style="color:var(--muted)">فایلی پیوست نشده</span>
@@ -112,7 +112,7 @@
     </div>
   @else
     <div class="card" style="padding:48px;text-align:center;color:var(--muted);background:#fff;border-radius:12px">
-      <span style="font-size:42px;display:block;margin-bottom:12px">📭</span>
+      <span style="font-size:42px;display:block;margin-bottom:12px">{!! svg_icon('inbox', 15) !!}</span>
       <h3 style="margin:0 0 8px;color:var(--text)">هنوز متقاضی برای این آگهی ثبت نشده است.</h3>
       <p style="margin:0;font-size:14px">به محض ارسال رزومه توسط کارجویان، اطلاعات آن‌ها در این صفحه نمایش داده خواهد شد.</p>
     </div>
@@ -122,62 +122,62 @@
 
 <script>
 function updateAppStatus(appId, newStatus) {
-  fetch('{{ url("/dashboard/applications") }}/' + appId + '/status', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': '{{ csrf_token() }}',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({ status: newStatus })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      const badge = document.getElementById('badge_status_' + appId);
-      if (badge) {
-        const labels = {
-          'new': 'جدید',
-          'reviewed': 'در حال بررسی',
-          'interview': 'دعوت به مصاحبه',
-          'rejected': 'رد متقاضی',
-          'hired': 'استخدام شد'
-        };
-        const classes = {
-          'new': 'badge silver',
-          'reviewed': 'badge warn',
-          'interview': 'badge ok',
-          'rejected': 'badge bad',
-          'hired': 'badge gold'
-        };
-        badge.textContent = labels[newStatus] || newStatus;
-        badge.className = classes[newStatus] || 'badge';
-      }
-    }
-  })
-  .catch(err => console.error(err));
+ fetch('{{ url("/dashboard/applications") }}/' + appId + '/status', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+ 'Accept': 'application/json'
+ },
+ body: JSON.stringify({ status: newStatus })
+ })
+ .then(res => res.json())
+ .then(data => {
+ if (data.success) {
+ const badge = document.getElementById('badge_status_' + appId);
+ if (badge) {
+ const labels = {
+ 'new': 'جدید',
+ 'reviewed': 'در حال بررسی',
+ 'interview': 'دعوت به مصاحبه',
+ 'rejected': 'رد متقاضی',
+ 'hired': 'استخدام شد'
+ };
+ const classes = {
+ 'new': 'badge silver',
+ 'reviewed': 'badge warn',
+ 'interview': 'badge ok',
+ 'rejected': 'badge bad',
+ 'hired': 'badge gold'
+ };
+ badge.textContent = labels[newStatus] || newStatus;
+ badge.className = classes[newStatus] || 'badge';
+ }
+ }
+ })
+ .catch(err => console.error(err));
 }
 
 function saveAppNote(appId) {
-  const noteInput = document.getElementById('note_input_' + appId);
-  if (!noteInput) return;
+ const noteInput = document.getElementById('note_input_' + appId);
+ if (!noteInput) return;
 
-  fetch('{{ url("/dashboard/applications") }}/' + appId + '/status', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': '{{ csrf_token() }}',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({ employer_note: noteInput.value })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert('یادداشت با موفقیت ذخیره شد.');
-    }
-  })
-  .catch(err => console.error(err));
+ fetch('{{ url("/dashboard/applications") }}/' + appId + '/status', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+ 'Accept': 'application/json'
+ },
+ body: JSON.stringify({ employer_note: noteInput.value })
+ })
+ .then(res => res.json())
+ .then(data => {
+ if (data.success) {
+ alert('یادداشت با موفقیت ذخیره شد.');
+ }
+ })
+ .catch(err => console.error(err));
 }
 </script>
 @endsection

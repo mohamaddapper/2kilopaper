@@ -5,7 +5,7 @@
   
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
     <div>
-      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">👤 اعضا و کاربران سامانه ۲ کیلو کاغذ</h1>
+      <h1 style="margin:0 0 6px;font-size:22px;color:#0f172a">{!! svg_icon('user', 15) !!} اعضا و کاربران سامانه ۲ کیلو کاغذ</h1>
       <p style="margin:0;color:#64748b;font-size:13.5px">مشاهده شماره تماس کاربران، تعداد شرکت‌های ثبت‌شده و تعیین مدیران سیستم</p>
     </div>
   </div>
@@ -69,7 +69,7 @@
 
             <td style="text-align:center">
               @if($u->isAdmin())
-                <span class="badge gold" style="font-size:11.5px;font-weight:700">★ مدیر ارشد</span>
+                <span class="badge gold" style="font-size:11.5px;font-weight:700">{!! svg_icon('star-filled', 15) !!} مدیر ارشد</span>
               @else
                 <span style="font-size:12px;color:#64748b">کاربر عادی</span>
               @endif
