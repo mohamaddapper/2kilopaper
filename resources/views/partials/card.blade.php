@@ -11,77 +11,114 @@
           'badge_bg' => '#fef3c7',
           'badge_text' => '#92400e',
           'badge_border' => '#fcd34d',
-          'shadow' => '0 2px 10px rgba(245, 158, 11, 0.1)',
+          'shadow' => '0 4px 16px rgba(245, 158, 11, 0.12)',
       ],
       'silver' => [
           'border' => '1.5px solid #94a3b8',
           'badge_bg' => '#f1f5f9',
           'badge_text' => '#334155',
           'badge_border' => '#cbd5e1',
-          'shadow' => '0 2px 10px rgba(100, 116, 139, 0.1)',
+          'shadow' => '0 4px 16px rgba(100, 116, 139, 0.1)',
       ],
       'bronze' => [
           'border' => '1.5px solid #d97706',
           'badge_bg' => '#ffedd5',
           'badge_text' => '#9a3412',
           'badge_border' => '#fed7aa',
-          'shadow' => '0 2px 10px rgba(217, 119, 6, 0.1)',
+          'shadow' => '0 4px 16px rgba(217, 119, 6, 0.1)',
       ],
   ];
   $currentTier = $tier ? ($tierStyles[$tier] ?? null) : null;
+
+  // دسته‌بندی‌ها یا خدمات خلاصه
+  $categoriesText = '';
+  if ($company->relationLoaded('categories') && $company->categories->count()) {
+      $categoriesText = $company->categories->pluck('name')->take(2)->join('، ');
+  } elseif (!empty($company->services) && is_array($company->services)) {
+      $categoriesText = implode('، ', array_slice($company->services, 0, 2));
+  } else {
+      $categoriesText = $company->category->name ?? 'صنایع کاغذ و بسته‌بندی';
+  }
+
+  // بررسی وضعیت استخدام
+  $isHiring = $company->relationLoaded('jobPostings') ? ($company->jobPostings->where('status', 'active')->count() > 0) : false;
+
+  // آمار بازدید و علاقه‌مندی
+  $likesCount = $company->relationLoaded('bookmarks') ? $company->bookmarks->count() : ($company->bookmarks_count ?? 0);
+  $viewsCount = $company->views_count ?? 0;
 @endphp
 
-<a href="{{ route('company', $company) }}" class="card company-card @if($tier) tier-card tier-{{ $tier }} @endif" style="color:inherit;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;position:relative;background:#fff;border-radius:12px;padding:16px;transition:all 0.2s ease;@if($currentTier) border:{{ $currentTier['border'] }};box-shadow:{{ $currentTier['shadow'] }}; @endif">
+<a href="{{ route('company', $company) }}" class="card company-card @if($tier) tier-card tier-{{ $tier }} @endif" style="color:inherit;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;position:relative;background:#fff;border-radius:14px;padding:0!important;overflow:hidden!important;transition:all 0.25s ease;@if($currentTier) border:{{ $currentTier['border'] }};box-shadow:{{ $currentTier['shadow'] }}; @else border:1px solid #e2e8f0; @endif">
   
-  <div>
-    <!-- ردیف بالای کارت: لوگو، عنوان و نشان سطح اشتراک -->
-    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;position:relative">
-      
-      <!-- لوگوی شرکت -->
-      <div style="width:52px;height:52px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;padding:3px">
-        @if($company->logo)
-          <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain">
-        @else
-          <span style="font-size:22px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
-        @endif
+  <!-- بخش بالای کارت: کادر مربعی بزرگ لوگو -->
+  <div style="width:100%;aspect-ratio:1/1;position:relative;background:#ffffff;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:16px;box-sizing:border-box">
+    
+    <!-- نشان سطح اشتراک (★ طلایی، نقره‌ای، برنزی) در گوشه چپ -->
+    @if($tier && isset($tierTitles[$tier]))
+      <div style="position:absolute;left:10px;top:10px;z-index:3">
+        <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:{{ $currentTier['badge_bg'] }};color:{{ $currentTier['badge_text'] }};border:1px solid {{ $currentTier['badge_border'] }};white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+          ★ {{ $tierTitles[$tier] }}
+        </span>
       </div>
-
-      <!-- نام شرکت و دسته‌بندی -->
-      <div style="flex:1;min-width:0;padding-left:@if($tier) 68px @else 0 @endif">
-        <h3 style="margin:0 0 4px;font-size:14.5px;font-weight:700;color:#0f172a;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis" title="{{ $company->name }}">
-          {{ $company->name }}
-        </h3>
-        <p style="margin:0;color:#64748b;font-size:12px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-          {{ $company->category->name ?? 'صنایع کاغذ' }} · {{ $company->city->name ?? 'ایران' }}
-        </p>
-      </div>
-
-      <!-- نشان سطح اشتراک (بدون کلمه ویژه، فقط طلایی، نقره‌ای، برنزی) -->
-      @if($tier && isset($tierTitles[$tier]))
-        <div style="position:absolute;left:0;top:0">
-          <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:{{ $currentTier['badge_bg'] }};color:{{ $currentTier['badge_text'] }};border:1px solid {{ $currentTier['badge_border'] }};white-space:nowrap">
-            ★ {{ $tierTitles[$tier] }}
-          </span>
-        </div>
-      @endif
-    </div>
-
-    <!-- شرح مختصر فعالیت -->
-    @if($company->description)
-      <p style="margin:0 0 14px;color:#475569;font-size:12.5px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis">
-        {{ \Illuminate\Support\Str::limit(strip_tags($company->description), 110) }}
-      </p>
     @endif
+
+    <!-- نشان جذب نیرو در گوشه راست (در صورت داشتن آگهی فعال) -->
+    @if($isHiring)
+      <div style="position:absolute;right:10px;top:10px;z-index:3">
+        <span style="display:inline-flex;align-items:center;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:12px;background:#059669;color:#ffffff;white-space:nowrap;box-shadow:0 2px 6px rgba(5,150,105,0.2)">
+          جذب نیرو
+        </span>
+      </div>
+    @endif
+
+    <!-- تصویر لوگوی بزرگ و خوانا -->
+    @if($company->logo)
+      <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;transition:transform 0.3s ease">
+    @else
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;position:relative;width:100%;height:100%;user-select:none">
+        <span style="position:absolute;font-size:68px;font-weight:900;color:#f1f5f9;z-index:1">2K</span>
+        <span style="position:relative;z-index:2;font-size:14px;font-weight:800;color:#64748b">بدون تصویر!</span>
+      </div>
+    @endif
+
   </div>
 
-  <!-- ردیف پایین: اطلاعات مکان و لینک ورود -->
-  <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #f1f5f9;margin-top:auto;font-size:12px">
-    <span style="color:#64748b;display:flex;align-items:center;gap:4px">
-      📍 {{ $company->city->name ?? 'ایران' }}
-    </span>
-    <span style="color:var(--primary);font-weight:700;display:flex;align-items:center;gap:2px">
-      مشاهده شرکت ←
-    </span>
+  <!-- بخش پایین کارت: اطلاعات شرکت -->
+  <div style="padding:14px 12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;justify-content:space-between;background:#ffffff;box-sizing:border-box">
+    
+    <div style="width:100%">
+      <!-- نام شرکت -->
+      <h3 style="margin:0 0 5px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden" title="{{ $company->name }}">
+        {{ $company->name }}
+      </h3>
+      
+      <!-- دسته‌بندی و زمینه فعالیت -->
+      <p style="margin:0 0 4px;font-size:11.5px;color:#64748b;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ $categoriesText }}">
+        {{ $categoriesText }}
+      </p>
+
+      <!-- موقعیت مکانی (شهر و استان) -->
+      <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;line-height:1.4">
+        {{ $company->city->name ?? 'ایران' }}
+        @if($company->province && $company->city && $company->province->name !== $company->city->name)
+          · {{ $company->province->name }}
+        @endif
+      </p>
+    </div>
+
+    <!-- ردیف آمار و بازدید پایین کارت (مشابه ۲ کیلو کاغذ) -->
+    <div style="width:100%;padding-top:8px;border-top:1px dashed #f1f5f9;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:auto">
+      <span style="display:inline-flex;align-items:center;gap:3px" title="علاقه‌مندی">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span>{{ $likesCount }}</span>
+      </span>
+
+      <span style="display:inline-flex;align-items:center;gap:4px" title="تعداد بازدید">
+        <span>{{ number_format($viewsCount) }}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </span>
+    </div>
+
   </div>
 
 </a>
