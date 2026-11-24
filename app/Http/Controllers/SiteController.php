@@ -47,44 +47,44 @@ class SiteController extends Controller
             ->whereNotNull('tier')
             ->ranked()
             ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
-            ->limit(15)
+            ->limit(18)
             ->get();
         
-        if ($featured->count() < 10) {
+        if ($featured->count() < 12) {
             $featured = Company::approved()
                 ->ranked()
                 ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
-                ->limit(15)
+                ->limit(18)
                 ->get();
         }
 
-        // شرکت‌های تخصصی برای تب‌های تفکیکی (اسلایدرهای صفحه اصلی)
+        // شرکت‌های تخصصی برای تب‌های تفکیکی (اسلایدرهای ۶ تایی صفحه اصلی)
         $cartonCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%کارتن%')->orWhere('name', 'like', '%ورق%'))
             ->ranked()
             ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
-            ->limit(12)
+            ->limit(18)
             ->get();
 
         $paperCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%کاغذ%')->orWhere('name', 'like', '%مقوا%'))
             ->ranked()
             ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
-            ->limit(12)
+            ->limit(18)
             ->get();
 
         $machineryCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%ماشین%'))
             ->ranked()
             ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
-            ->limit(12)
+            ->limit(18)
             ->get();
 
         $printCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%چاپ%'))
             ->ranked()
             ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
-            ->limit(12)
+            ->limit(18)
             ->get();
 
         // فرصت‌های شغلی و رزومه‌های کارجویان
