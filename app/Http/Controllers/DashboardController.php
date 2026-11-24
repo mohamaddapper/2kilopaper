@@ -38,7 +38,49 @@ class DashboardController extends Controller
             })->with(['jobPosting.company'])->latest()->take(20)->get()
             : collect();
 
-        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications'));
+        $savedCompanies = $user
+            ? $user->savedCompanies()->with(['category', 'city', 'province'])->latest('company_bookmarks.created_at')->get()
+            : collect();
+
+        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications', 'savedCompanies'));
+    }
+
+    public function toggleBookmark(Request $r, Company $company)
+    {
+        $user = $r->user();
+        if (!$user) {
+            if ($r->expectsJson() || $r->ajax()) {
+                return response()->json(['error' => 'unauthenticated', 'redirect' => route('login')], 401);
+            }
+            return redirect()->route('login');
+        }
+
+        $existing = \App\Models\CompanyBookmark::where('user_id', $user->id)
+            ->where('company_id', $company->id)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $saved = false;
+            $message = 'شرکت از ذخیره‌ها حذف شد.';
+        } else {
+            \App\Models\CompanyBookmark::create([
+                'user_id' => $user->id,
+                'company_id' => $company->id,
+            ]);
+            $saved = true;
+            $message = 'شرکت با موفقیت ذخیره شد.';
+        }
+
+        if ($r->expectsJson() || $r->ajax()) {
+            return response()->json([
+                'saved' => $saved,
+                'message' => $message,
+                'count' => $company->bookmarks()->count(),
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 
     public function create()

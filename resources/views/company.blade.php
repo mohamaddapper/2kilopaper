@@ -25,6 +25,43 @@
 @section('content')
 <div class="page-wrapper" style="margin:16px 0 40px">
 
+  @php
+    $isBookmarked = auth()->check() && $company->isBookmarkedBy(auth()->user());
+  @endphp
+
+  <!-- بنرهای تبلیغاتی بالای صفحه (تنها برای شرکت‌های عادی / بدون اشتراک فعال نمایش داده می‌شود) -->
+  @if(!$company->activeTier())
+    <div class="company-ad-banners" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:14px;margin-bottom:20px">
+      <!-- بنر راست: ارتقای صفحه و حذف تبلیغات -->
+      <a href="{{ route('subscription.fee') }}" class="ad-banner-box" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);border:1.5px dashed #f59e0b;border-radius:12px;text-decoration:none;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.03)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;border-radius:10px;background:#fef08a;display:flex;align-items:center;justify-content:center;font-size:22px;color:#b45309;flex-shrink:0">
+            ⭐
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:#92400e;margin-bottom:2px">جایگاه ویژه کسب‌وکار شما</div>
+            <div style="font-size:12px;color:#78350f">با تهیه اشتراک، بنرهای تبلیغاتی از صفحه شما حذف می‌شوند!</div>
+          </div>
+        </div>
+        <span class="btn small" style="background:#d97706;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;font-weight:700;white-space:nowrap;margin-right:8px">ارتقای صفحه</span>
+      </a>
+
+      <!-- بنر چپ: محل درج تبلیغات -->
+      <a href="{{ route('advertising') }}" class="ad-banner-box" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);border:1.5px dashed #0284c7;border-radius:12px;text-decoration:none;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.03)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;border-radius:10px;background:#bae6fd;display:flex;align-items:center;justify-content:center;font-size:22px;color:#0369a1;flex-shrink:0">
+            📢
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:#0369a1;margin-bottom:2px">محل درج بنر تبلیغاتی شما</div>
+            <div style="font-size:12px;color:#0c4a6e">دیده‌شدن توسط هزاران فعال صنعت چاپ، کارتن‌سازی و بسته‌بندی</div>
+          </div>
+        </div>
+        <span class="btn small" style="background:#0284c7;color:#fff;font-size:11.5px;padding:6px 12px;border-radius:6px;font-weight:700;white-space:nowrap;margin-right:8px">سفارش تبلیغات</span>
+      </a>
+    </div>
+  @endif
+
   <!-- هدر پروفایل شرکت -->
   <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px">
     <div class="logo-box" style="width:100px;height:100px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff">
@@ -39,11 +76,11 @@
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
         @if($company->activeTier() === 'gold')
-          <span class="badge gold" style="font-size:13px;padding:3px 12px">★ ویژه طلایی</span>
+          <span class="badge gold" style="font-size:13px;padding:3px 12px">★ طلایی</span>
         @elseif($company->activeTier() === 'silver')
-          <span class="badge silver" style="font-size:13px;padding:3px 12px">★ ویژه نقره‌ای</span>
+          <span class="badge silver" style="font-size:13px;padding:3px 12px">★ نقره‌ای</span>
         @elseif($company->activeTier() === 'bronze')
-          <span class="badge bronze" style="font-size:13px;padding:3px 12px">★ ویژه برنزی</span>
+          <span class="badge bronze" style="font-size:13px;padding:3px 12px">★ برنزی</span>
         @endif
       </div>
 
@@ -79,6 +116,19 @@
           @endforeach
         @endif
       </div>
+    </div>
+
+    <!-- دکمه ذخیره / نشان کردن سریع در هدر -->
+    <div style="display:flex;align-items:center;margin-right:auto">
+      <button type="button" 
+              onclick="toggleBookmark()" 
+              id="bookmark-btn-head"
+              class="btn ghost small"
+              title="{{ $isBookmarked ? 'حذف از شرکت‌های ذخیره‌شده' : 'ذخیره در میز کار' }}"
+              style="padding:8px 16px;font-size:13px;font-weight:700;border-radius:8px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.2s ease;{{ $isBookmarked ? 'background:#f0fdf4;color:#166534;border:1.5px solid #86efac' : 'background:#fff;color:#475569;border:1.5px solid #cbd5e1' }}">
+        <span id="bookmark-icon-head" style="color:{{ $isBookmarked ? '#16a34a' : '#94a3b8' }};font-size:16px">{{ $isBookmarked ? '★' : '☆' }}</span>
+        <span id="bookmark-text-head">{{ $isBookmarked ? 'ذخیره‌شده در میز کار' : 'ذخیره در میز کار' }}</span>
+      </button>
     </div>
   </div>
 
@@ -301,35 +351,42 @@
     <!-- ستون کناری (چپ) -->
     <div>
       <!-- کارت ارتباط و اقدامات سریع -->
-      @if($company->phone || $company->email || $company->catalog || $company->website)
-        <div class="card" style="margin-bottom:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
-          @if($company->phone)
-            @php
-              $phones = array_filter(array_map('trim', explode(';', $company->phone)));
-            @endphp
-            @foreach($phones as $pNum)
-              <a href="tel:{{ $pNum }}" class="btn" style="text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;font-size:13.5px;background:#0284c7;color:#fff;text-decoration:none">
-                📞 <span>تماس: {{ $pNum }}</span>
-              </a>
-            @endforeach
-          @endif
-          @if($company->email)
-            <a href="mailto:{{ $company->email }}" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
-              ✉️ <span>ارسال ایمیل</span>
+      <div class="card" style="margin-bottom:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
+        <button type="button" 
+                onclick="toggleBookmark()" 
+                id="bookmark-btn-sidebar"
+                class="btn" 
+                style="text-align:center;font-size:13.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;text-decoration:none;cursor:pointer;transition:all 0.2s ease;{{ $isBookmarked ? 'background:#f0fdf4;color:#166534;border:1.5px solid #86efac' : 'background:#f8fafc;color:#334155;border:1.5px solid #cbd5e1' }}">
+          <span id="bookmark-icon-sidebar" style="font-size:16px;color:{{ $isBookmarked ? '#16a34a' : '#94a3b8' }}">{{ $isBookmarked ? '★' : '☆' }}</span>
+          <span id="bookmark-text-sidebar">{{ $isBookmarked ? 'ذخیره‌شده در میز کار' : 'ذخیره شرکت در میز کار' }}</span>
+        </button>
+
+        @if($company->phone)
+          @php
+            $phones = array_filter(array_map('trim', explode(';', $company->phone)));
+          @endphp
+          @foreach($phones as $pNum)
+            <a href="tel:{{ $pNum }}" class="btn" style="text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;font-size:13.5px;background:#0284c7;color:#fff;text-decoration:none">
+              📞 <span>تماس: {{ $pNum }}</span>
             </a>
-          @endif
-          @if($company->catalog)
-            <a href="{{ asset($company->catalog) }}" target="_blank" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
-              📄 <span>دریافت کاتالوگ (PDF)</span>
-            </a>
-          @endif
-          @if($company->website)
-            <a href="{{ $company->website }}" target="_blank" rel="nofollow noopener" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
-              🌐 <span>وب‌سایت رسمی</span>
-            </a>
-          @endif
-        </div>
-      @endif
+          @endforeach
+        @endif
+        @if($company->email)
+          <a href="mailto:{{ $company->email }}" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
+            ✉️ <span>ارسال ایمیل</span>
+          </a>
+        @endif
+        @if($company->catalog)
+          <a href="{{ asset($company->catalog) }}" target="_blank" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
+            📄 <span>دریافت کاتالوگ (PDF)</span>
+          </a>
+        @endif
+        @if($company->website)
+          <a href="{{ $company->website }}" target="_blank" rel="nofollow noopener" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
+            🌐 <span>وب‌سایت رسمی</span>
+          </a>
+        @endif
+      </div>
 
       <!-- افراد کلیدی و مدیران -->
       @if($company->contacts && count(array_filter($company->contacts)) > 0)
@@ -444,43 +501,35 @@
         </div>
       @endif
 
-    </div>
-  </div>
+      <!-- اطلاعات صفحه (انتقال‌یافته به سایدبار) -->
+      <div class="card" style="margin-bottom:20px;padding:16px">
+        <h3 style="margin-top:0;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:8px">ℹ️ اطلاعات صفحه</h3>
+        
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:#475569;margin-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px dashed var(--border)">
+            <span>📅 تاریخ ایجاد:</span>
+            <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->created_at) }}</span>
+          </div>
 
-  <!-- بخش اطلاعات صفحه (دقیقاً مشابه تصویر ارسالی) -->
-  <div style="margin-top:30px">
-    <div style="display:flex;align-items:center;margin-bottom:16px">
-      <div style="flex:1;height:1px;background:#e2e8f0"></div>
-      <span style="padding:0 16px;color:#64748b;font-weight:700;font-size:15px">اطلاعات صفحه</span>
-      <div style="flex:1;height:1px;background:#e2e8f0"></div>
-    </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px dashed var(--border)">
+            <span>⏰ به‌روزرسانی:</span>
+            <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->updated_at) }}</span>
+          </div>
 
-    <div class="card" style="padding:22px;margin-bottom:24px">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-        <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#475569">
-          <span>📅 <b>تاریخ ایجاد صفحه:</b></span>
-          <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->created_at) }}</span>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#475569">
-          <span>⏰ <b>آخرین به‌روزرسانی:</b></span>
-          <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->updated_at) }}</span>
-        </div>
-      </div>
-
-      <div style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--border)">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-          <label for="short_link_input" style="font-size:13.5px;font-weight:700;color:#334155;margin:0">
-            🔗 لینک جهت درج در شبکه‌های اجتماعی:
-          </label>
-          <div style="display:flex;gap:8px;align-items:center;flex:1;max-width:440px;min-width:260px">
-            <input type="text" id="short_link_input" value="{{ url('/?p=' . $company->id) }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:8px 12px;border-radius:6px;font-size:13.5px;flex:1;color:#1e293b;font-family:inherit">
-            <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" style="background:#0284c7;font-size:13px;padding:8px 18px;white-space:nowrap;font-weight:700;cursor:pointer">
-              برای کپی کلیک کنید
-            </button>
+          <div style="margin-top:4px">
+            <label for="short_link_input" style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px">
+              🔗 لینک کوتاه صفحه:
+            </label>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <input type="text" id="short_link_input" value="{{ url('/?p=' . $company->id) }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:8px 10px;border-radius:6px;font-size:12.5px;width:100%;color:#1e293b;font-family:inherit;box-sizing:border-box">
+              <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" style="background:#0284c7;font-size:12.5px;padding:8px 12px;width:100%;font-weight:700;cursor:pointer;text-align:center">
+                برای کپی کلیک کنید
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -523,6 +572,74 @@
         }, 2000);
       }
     }
+  }
+
+  function toggleBookmark() {
+    @guest
+      window.location.href = "{{ route('login') }}";
+      return;
+    @endguest
+
+    const sidebarBtn = document.getElementById('bookmark-btn-sidebar');
+    const sidebarIcon = document.getElementById('bookmark-icon-sidebar');
+    const sidebarText = document.getElementById('bookmark-text-sidebar');
+
+    const headBtn = document.getElementById('bookmark-btn-head');
+    const headIcon = document.getElementById('bookmark-icon-head');
+    const headText = document.getElementById('bookmark-text-head');
+
+    fetch("{{ route('companies.bookmark', $company) }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Accept': 'application/json'
+      }
+    })
+    .then(res => {
+      if (res.status === 401) {
+        window.location.href = "{{ route('login') }}";
+        return null;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!data) return;
+      if (data.saved) {
+        if (sidebarBtn) {
+          sidebarBtn.style.background = '#f0fdf4';
+          sidebarBtn.style.color = '#166534';
+          sidebarBtn.style.borderColor = '#86efac';
+          if (sidebarIcon) { sidebarIcon.textContent = '★'; sidebarIcon.style.color = '#16a34a'; }
+          if (sidebarText) sidebarText.textContent = 'ذخیره‌شده در میز کار';
+        }
+        if (headBtn) {
+          headBtn.style.background = '#f0fdf4';
+          headBtn.style.color = '#166534';
+          headBtn.style.borderColor = '#86efac';
+          if (headIcon) { headIcon.textContent = '★'; headIcon.style.color = '#16a34a'; }
+          if (headText) headText.textContent = 'ذخیره‌شده در میز کار';
+        }
+      } else {
+        if (sidebarBtn) {
+          sidebarBtn.style.background = '#f8fafc';
+          sidebarBtn.style.color = '#334155';
+          sidebarBtn.style.borderColor = '#cbd5e1';
+          if (sidebarIcon) { sidebarIcon.textContent = '☆'; sidebarIcon.style.color = '#94a3b8'; }
+          if (sidebarText) sidebarText.textContent = 'ذخیره شرکت در میز کار';
+        }
+        if (headBtn) {
+          headBtn.style.background = '#fff';
+          headBtn.style.color = '#475569';
+          headBtn.style.borderColor = '#cbd5e1';
+          if (headIcon) { headIcon.textContent = '☆'; headIcon.style.color = '#94a3b8'; }
+          if (headText) headText.textContent = 'ذخیره در میز کار';
+        }
+      }
+    })
+    .catch(err => {
+      console.error('Error toggling bookmark:', err);
+    });
   }
   </script>
 </div>

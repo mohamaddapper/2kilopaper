@@ -14,6 +14,10 @@
           <span class="badge" style="background:#eff6ff;color:var(--primary);font-size:11px;padding:2px 7px">{{ $companies->count() }}</span>
         @endif
       </a>
+      <a href="javascript:void(0)" onclick="switchTab('saved')" id="nav-saved" class="dashboard-menu-link">
+        <span>شرکت‌های ذخیره‌شده</span>
+        <span id="saved-badge-count" class="badge" style="background:#fef3c7;color:#92400e;font-size:11px;padding:2px 7px;{{ $savedCompanies->count() > 0 ? '' : 'display:none' }}">{{ $savedCompanies->count() }}</span>
+      </a>
       <a href="javascript:void(0)" onclick="switchTab('jobs')" id="nav-jobs" class="dashboard-menu-link">
         <span>آگهی‌های استخدام</span>
         @if($jobs->count() > 0)
@@ -82,21 +86,21 @@
 
       <!-- کارت‌های آمار ۴ تایی -->
       <div class="dash-stat-grid">
-        <div class="dash-stat-box">
-          <div class="dash-stat-title">شرکت‌ها</div>
+        <div class="dash-stat-box" onclick="switchTab('companies')" style="cursor:pointer">
+          <div class="dash-stat-title">شرکت‌های من</div>
           <div class="dash-stat-number">{{ $companies->count() ?: 2 }}</div>
         </div>
-        <div class="dash-stat-box">
+        <div class="dash-stat-box" onclick="switchTab('saved')" style="cursor:pointer" title="مشاهده شرکت‌های ذخیره‌شده">
+          <div class="dash-stat-title">شرکت‌های ذخیره‌شده</div>
+          <div class="dash-stat-number" style="color:#0284c7">{{ $savedCompanies->count() }}</div>
+        </div>
+        <div class="dash-stat-box" onclick="switchTab('jobs')" style="cursor:pointer">
           <div class="dash-stat-title">آگهی فعال</div>
           <div class="dash-stat-number">{{ $jobs->where('status', 'active')->count() ?: 2 }}</div>
         </div>
-        <div class="dash-stat-box">
+        <div class="dash-stat-box" onclick="switchTab('resumes')" style="cursor:pointer">
           <div class="dash-stat-title">رزومه دریافتی</div>
           <div class="dash-stat-number">{{ $totalApplications ?: 14 }}</div>
-        </div>
-        <div class="dash-stat-box">
-          <div class="dash-stat-title">بازدید ماه</div>
-          <div class="dash-stat-number">۱,۲۴۰</div>
         </div>
       </div>
 
@@ -614,6 +618,86 @@
       </div>
     </div>
 
+    <!-- تب ۸: شرکت‌های ذخیره‌شده -->
+    <div id="tab-saved" class="dashboard-tab-content" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h2 style="margin:0 0 6px;font-size:18px;color:#1e293b">⭐ شرکت‌های ذخیره‌شده و برگزیده</h2>
+          <p style="margin:0;font-size:13px;color:var(--muted)">شرکت‌ها و کارخانجاتی که برای دسترسی سریع به میز کار خود اضافه کرده‌اید</p>
+        </div>
+        <a href="{{ route('directory') }}" class="btn ghost small" style="font-size:13px;padding:6px 14px">
+          🔍 جستجو در دایرکتوری شرکت‌ها
+        </a>
+      </div>
+
+      <div class="dash-table-card">
+        @if($savedCompanies->count() > 0)
+          <div id="saved-companies-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;padding:18px">
+            @foreach($savedCompanies as $savedC)
+              <div id="saved-card-{{ $savedC->id }}" style="border:1px solid var(--border);border-radius:12px;padding:16px;background:#fff;display:flex;flex-direction:column;justify-content:space-between;transition:box-shadow 0.2s ease">
+                <div>
+                  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                    <div style="width:48px;height:48px;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                      @if($savedC->logo)
+                        <img src="{{ asset($savedC->logo) }}" alt="{{ $savedC->name }}" style="width:100%;height:100%;object-fit:contain;padding:4px">
+                      @else
+                        <span style="font-size:20px;font-weight:800;color:var(--primary)">{{ mb_substr($savedC->name, 0, 1) }}</span>
+                      @endif
+                    </div>
+                    <div style="flex:1;min-width:0">
+                      <a href="{{ route('company', $savedC) }}" target="_blank" style="text-decoration:none;color:var(--text);font-weight:700;font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                        {{ $savedC->name }}
+                      </a>
+                      <div style="font-size:12px;color:var(--muted);margin-top:2px">
+                        {{ $savedC->category->name ?? '—' }} · {{ $savedC->city->name ?? '' }}
+                      </div>
+                    </div>
+                  </div>
+
+                  @if($savedC->phone)
+                    <div style="font-size:12.5px;color:#475569;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+                      <span>📞</span>
+                      <span style="direction:ltr">{{ explode(';', $savedC->phone)[0] }}</span>
+                    </div>
+                  @endif
+                </div>
+
+                <div style="display:flex;gap:8px;align-items:center;padding-top:12px;border-top:1px dashed var(--border)">
+                  <a href="{{ route('company', $savedC) }}" target="_blank" class="btn small" style="flex:1;text-align:center;font-size:12px;padding:6px 10px">
+                    مشاهده صفحه
+                  </a>
+                  <button type="button" onclick="removeSavedCompany({{ $savedC->id }})" class="btn ghost small" style="font-size:12px;padding:6px 10px;color:#dc2626;border-color:#fca5a5;cursor:pointer" title="حذف از ذخیره‌ها">
+                    حذف
+                  </button>
+                </div>
+              </div>
+            @endforeach
+          </div>
+          <div id="saved-empty-state" style="display:none;padding:40px 20px;text-align:center;color:var(--muted)">
+            <div style="font-size:42px;margin-bottom:10px">📑</div>
+            <p style="margin:0 0 10px;font-size:15px;font-weight:700;color:#334155">هنوز هیچ شرکتی را ذخیره نکرده‌اید</p>
+            <p style="margin:0 0 18px;font-size:13.5px;color:#64748b;max-width:480px;margin-left:auto;margin-right:auto">
+              هنگام مرور دایرکتوری و مشاهده صفحه هر شرکت، با کلیک روی دکمه «ذخیره در میز کار» می‌توانید شرکت‌های مورد علاقه یا همکاران تجاری خود را اینجا ذخیره کنید.
+            </p>
+            <a href="{{ route('directory') }}" class="btn small" style="padding:8px 20px;font-size:13.5px">
+              مشاهده دایرکتوری شرکت‌ها
+            </a>
+          </div>
+        @else
+          <div id="saved-empty-state" style="padding:40px 20px;text-align:center;color:var(--muted)">
+            <div style="font-size:42px;margin-bottom:10px">📑</div>
+            <p style="margin:0 0 10px;font-size:15px;font-weight:700;color:#334155">هنوز هیچ شرکتی را ذخیره نکرده‌اید</p>
+            <p style="margin:0 0 18px;font-size:13.5px;color:#64748b;max-width:480px;margin-left:auto;margin-right:auto">
+              هنگام مرور دایرکتوری و مشاهده صفحه هر شرکت، با کلیک روی دکمه «ذخیره در میز کار» می‌توانید شرکت‌های مورد علاقه یا همکاران تجاری خود را اینجا ذخیره کنید.
+            </p>
+            <a href="{{ route('directory') }}" class="btn small" style="padding:8px 20px;font-size:13.5px">
+              مشاهده دایرکتوری شرکت‌ها
+            </a>
+          </div>
+        @endif
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -648,5 +732,39 @@ document.addEventListener('DOMContentLoaded', function() {
     switchTab(hash);
   }
 });
+
+function removeSavedCompany(id) {
+  if (!confirm('آیا مایل به حذف این شرکت از لیست ذخیره‌های میز کار هستید؟')) return;
+
+  fetch("/companies/" + id + "/bookmark", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}',
+      'Accept': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const card = document.getElementById('saved-card-' + id);
+    if (card) {
+      card.remove();
+    }
+    const badge = document.getElementById('saved-badge-count');
+    if (badge) {
+      const current = parseInt(badge.textContent) || 1;
+      const next = Math.max(0, current - 1);
+      badge.textContent = next;
+      if (next === 0) badge.style.display = 'none';
+    }
+    const grid = document.getElementById('saved-companies-grid');
+    if (grid && grid.querySelectorAll('[id^="saved-card-"]').length === 0) {
+      grid.style.display = 'none';
+      const emptyState = document.getElementById('saved-empty-state');
+      if (emptyState) emptyState.style.display = 'block';
+    }
+  })
+  .catch(err => console.error('Error removing bookmark:', err));
+}
 </script>
 @endsection

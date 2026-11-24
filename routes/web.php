@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/companies/create', [DashboardController::class, 'create'])->name('companies.create');
     Route::post('/dashboard/companies', [DashboardController::class, 'store'])->name('companies.store');
+    Route::post('/companies/{company}/bookmark', [DashboardController::class, 'toggleBookmark'])->name('companies.bookmark');
     Route::get('/dashboard/companies/{company}/edit', [DashboardController::class, 'edit'])->name('companies.edit');
     Route::put('/dashboard/companies/{company}', [DashboardController::class, 'update'])->name('companies.update');
 

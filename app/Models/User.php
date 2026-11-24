@@ -22,6 +22,7 @@ class User extends Authenticatable
     }
 
     public function companies() { return $this->hasMany(Company::class); }
+    public function savedCompanies() { return $this->belongsToMany(Company::class, 'company_bookmarks')->withTimestamps(); }
     public function jobPostings() { return $this->hasMany(JobPosting::class); }
     public function jobApplications() { return $this->hasMany(JobApplication::class); }
 }

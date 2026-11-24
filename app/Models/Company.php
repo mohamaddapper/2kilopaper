@@ -61,6 +61,13 @@ class Company extends Model
     public function province() { return $this->belongsTo(Province::class); }
     public function city() { return $this->belongsTo(City::class); }
     public function jobPostings() { return $this->hasMany(JobPosting::class); }
+    public function bookmarks() { return $this->hasMany(CompanyBookmark::class); }
+
+    public function isBookmarkedBy(?User $user): bool
+    {
+        if (!$user) return false;
+        return $this->bookmarks()->where('user_id', $user->id)->exists();
+    }
     public function getRouteKeyName() { return 'slug'; }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)
@@ -74,6 +81,9 @@ class Company extends Model
             $q->where($field, $raw)
               ->orWhere($field, $decoded)
               ->orWhere($field, $doubleDecoded);
+            if (is_numeric($raw)) {
+                $q->orWhere('id', (int) $raw);
+            }
         });
     }
 
