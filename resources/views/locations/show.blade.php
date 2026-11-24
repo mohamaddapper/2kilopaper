@@ -85,7 +85,7 @@
     <div id="infinite-scroll-trigger" style="text-align:center;padding:28px 0 10px;min-height:60px">
       <div id="infinite-loader" style="display:none;align-items:center;justify-content:center;gap:10px;color:var(--primary);font-weight:700;font-size:14px">
         <span style="display:inline-block;width:22px;height:22px;border:3px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite"></span>
-        <span>در حال بارگذاری ۱۸ شرکت بعدی...</span>
+        <span>در حال بارگذاری شرکت‌های بیشتر...</span>
       </div>
       <div id="infinite-end" style="{{ $companies->hasMorePages() ? 'display:none;' : 'display:block;' }}color:#94a3b8;font-size:13px;padding:8px 0">
         پایان فهرست شرکت‌های استان {{ $province->name }}

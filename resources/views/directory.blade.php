@@ -36,7 +36,7 @@
       @endif
     </h1>
     <p style="margin:0;font-size:13.5px;color:#64748b">
-      نمایش ۱۸ شرکت در هر بارگذاری · مجموعاً <strong>{{ number_format($companies->total()) }}</strong> شرکت و واحد تولیدی فعال
+      مجموعاً <strong>{{ number_format($companies->total()) }}</strong> شرکت و واحد تولیدی فعال
     </p>
   </div>
 
@@ -125,19 +125,19 @@
 <!-- نگهدارنده اسکرول نامحدود (Infinite Scroll Sentinel & Loading) -->
 <div id="infiniteScrollSentinel" style="height:20px;margin:20px 0 10px"></div>
 
-<!-- انیمیشن چرخان بارگذاری ۱۸ شرکت بعدی -->
+<!-- انیمیشن چرخان بارگذاری شرکت‌های بیشتر -->
 <div id="infiniteLoadingIndicator" style="display:none;text-align:center;padding:26px 0">
   <div class="infinite-loader-spinner"></div>
   <span style="font-size:13.5px;font-weight:700;color:#475569;margin-top:10px;display:block">
-    در حال بارگذاری ۱۸ شرکت بعدی...
+    در حال بارگذاری شرکت‌های بیشتر...
   </span>
 </div>
 
-<!-- دکمه کمکی بارگذاری دستی ۱۸ شرکت بیشتر -->
+<!-- دکمه کمکی بارگذاری دستی شرکت‌های بیشتر -->
 @if($companies->hasMorePages())
   <div id="manualLoadMoreWrap" style="text-align:center;margin:24px 0 32px">
     <button type="button" id="loadMoreBtn" class="btn" style="padding:12px 34px;font-size:14px;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:8px" onclick="loadNextDirectoryPage()">
-      <span>مشاهده ۱۸ شرکت بیشتر</span>
+      <span>مشاهده شرکت‌های بیشتر</span>
       <span style="font-size:16px">↓</span>
     </button>
   </div>
@@ -284,7 +284,7 @@
     if (loadBtn) {
       loadBtn.disabled = true;
       loadBtn.style.opacity = '0.6';
-      loadBtn.innerHTML = 'در حال بارگذاری ۱۸ شرکت...';
+      loadBtn.innerHTML = 'در حال بارگذاری...';
     }
 
     fetch(nextPageUrl, {
@@ -325,7 +325,7 @@
         if (loadBtn) {
           loadBtn.disabled = false;
           loadBtn.style.opacity = '1';
-          loadBtn.innerHTML = '<span>مشاهده ۱۸ شرکت بیشتر</span> <span style="font-size:16px">↓</span>';
+          loadBtn.innerHTML = '<span>مشاهده شرکت‌های بیشتر</span> <span style="font-size:16px">↓</span>';
         }
       }
     })
