@@ -1545,13 +1545,13 @@
 }
 .company-carousel-track {
   display: flex;
-  gap: 10px;
+  gap: 14px;
   align-items: stretch;
 }
 .company-carousel-slide {
-  flex: 0 0 calc((100% - 50px) / 6);
-  min-width: calc((100% - 50px) / 6);
-  max-width: calc((100% - 50px) / 6);
+  flex: 0 0 calc((100% - 70px) / 6);
+  min-width: calc((100% - 70px) / 6);
+  max-width: calc((100% - 70px) / 6);
   box-sizing: border-box;
   display: flex;
 }
@@ -1560,26 +1560,26 @@
 }
 @media (max-width: 1024px) {
   .company-carousel-slide {
-    flex: 0 0 calc((100% - 30px) / 4);
-    min-width: calc((100% - 30px) / 4);
-    max-width: calc((100% - 30px) / 4);
+    flex: 0 0 calc((100% - 42px) / 4);
+    min-width: calc((100% - 42px) / 4);
+    max-width: calc((100% - 42px) / 4);
   }
 }
 @media (max-width: 768px) {
   .company-carousel-track {
-    gap: 8px;
+    gap: 12px;
   }
   .company-carousel-slide {
-    flex: 0 0 calc((100% - 16px) / 3);
-    min-width: calc((100% - 16px) / 3);
-    max-width: calc((100% - 16px) / 3);
+    flex: 0 0 calc((100% - 24px) / 3);
+    min-width: calc((100% - 24px) / 3);
+    max-width: calc((100% - 24px) / 3);
   }
 }
 @media (max-width: 540px) {
   .company-carousel-slide {
-    flex: 0 0 calc((100% - 8px) / 2);
-    min-width: calc((100% - 8px) / 2);
-    max-width: calc((100% - 8px) / 2);
+    flex: 0 0 calc((100% - 12px) / 2);
+    min-width: calc((100% - 12px) / 2);
+    max-width: calc((100% - 12px) / 2);
   }
 }
 @media (max-width: 380px) {
@@ -2181,8 +2181,7 @@ function slideCompanyRow(id, dir) {
   const vp = document.getElementById('carousel-' + id);
   if (!vp) return;
   const slide = vp.querySelector('.company-carousel-slide');
-  const gap = window.innerWidth <= 768 ? 8 : 10;
-  const step = slide ? (slide.offsetWidth + gap) : 200;
+  const step = slide ? (slide.offsetWidth + 14) : 200;
   const maxScroll = vp.scrollWidth - vp.clientWidth;
   
   if (maxScroll <= 5) return;
