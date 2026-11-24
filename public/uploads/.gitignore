@@ -1,2 +1,6 @@
-*
+# Allow tracking of seeded company assets
 !.gitignore
+!logos/*
+!catalogs/*
+!gallery/*
+!covers/*

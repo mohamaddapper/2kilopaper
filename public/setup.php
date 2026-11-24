@@ -27,13 +27,33 @@ if (file_exists(__DIR__ . '/../laravel-app/vendor/autoload.php')) {
 }
 
 // Auto-sync public files if public_html is separate from repo base directory
-if ($baseDir !== __DIR__ && file_exists($baseDir . '/public/assets/style.css')) {
-    if (!file_exists(__DIR__ . '/assets')) {
-        @mkdir(__DIR__ . '/assets', 0755, true);
+if ($baseDir !== __DIR__) {
+    if (file_exists($baseDir . '/public/assets/style.css')) {
+        if (!file_exists(__DIR__ . '/assets')) {
+            @mkdir(__DIR__ . '/assets', 0755, true);
+        }
+        @copy($baseDir . '/public/assets/style.css', __DIR__ . '/assets/style.css');
     }
-    @copy($baseDir . '/public/assets/style.css', __DIR__ . '/assets/style.css');
     if (file_exists($baseDir . '/public/index.php')) {
         @copy($baseDir . '/public/index.php', __DIR__ . '/index.php');
+    }
+    // Sync company uploads (logos, catalogs, gallery)
+    foreach (['logos', 'catalogs', 'gallery', 'covers'] as $sub) {
+        $srcDir = $baseDir . '/public/uploads/' . $sub;
+        $dstDir = __DIR__ . '/uploads/' . $sub;
+        if (is_dir($srcDir)) {
+            if (!file_exists($dstDir)) {
+                @mkdir($dstDir, 0755, true);
+            }
+            $dirFiles = @scandir($srcDir);
+            if ($dirFiles) {
+                foreach ($dirFiles as $f) {
+                    if ($f !== '.' && $f !== '..' && !file_exists($dstDir . '/' . $f)) {
+                        @copy($srcDir . '/' . $f, $dstDir . '/' . $f);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -48,6 +68,7 @@ echo '<div style="max-width:800px;margin:0 auto;background:#fff;padding:24px;bor
 echo '<h2 style="margin-top:0;color:#0369a1">⚙️ ابزار به‌روزرسانی آنلاین بدون نیاز به ترمینال</h2>';
 echo '<div style="margin-bottom:15px;display:flex;gap:8px;flex-wrap:wrap">';
 echo '<a href="setup.php?action=all" class="btn">🚀 به‌روزرسانی کامل (گیت + کش + مایگریشن)</a>';
+echo '<a href="setup.php?action=import_companies" class="btn" style="background:#059669">🏢 ثبت کامل شرکت‌ها و لوگوها (۹۱۹ شرکت)</a>';
 echo '<a href="setup.php?action=clear" class="btn" style="background:#64748b">🧹 فقط پاک‌سازی کش و ویوها</a>';
 echo '<a href="setup.php?action=seed" class="btn" style="background:#475569">🌱 ثبت مجدد شهرها و دسته‌ها</a>';
 echo '</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:15px 0">';
@@ -83,8 +104,18 @@ try {
         echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
     }
 
-    // 4. Seeds (only when requested or action=seed)
-    if ($action === 'seed') {
+    // 4. Seeds & Import Companies
+    if ($action === 'import_companies') {
+        echo '<p><b>۴. ثبت کامل شهرها، دسته‌ها و شرکت‌ها به همراه لوگوها:</b></p>';
+        @set_time_limit(300);
+        @ini_set('memory_limit', '512M');
+        $kernel->call('db:seed', ['--class' => 'CategorySeeder', '--force' => true]);
+        echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+        $kernel->call('db:seed', ['--class' => 'LocationSeeder', '--force' => true]);
+        echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+        $kernel->call('db:seed', ['--class' => 'CompanySeeder', '--force' => true]);
+        echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
+    } elseif ($action === 'seed') {
         echo '<p><b>۴. ورود اطلاعات دسته‌ها و استان/شهرها:</b></p>';
         $kernel->call('db:seed', ['--class' => 'CategorySeeder', '--force' => true]);
         $kernel->call('db:seed', ['--class' => 'LocationSeeder', '--force' => true]);
