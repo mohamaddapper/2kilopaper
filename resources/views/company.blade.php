@@ -313,16 +313,281 @@
 
       <!-- گالری تصاویر -->
       @if($company->gallery && count($company->gallery) > 0)
+        @php $galleryUrls = array_values(array_map(fn($g) => asset($g), $company->gallery)); @endphp
         <div class="card" style="margin-bottom:20px">
-          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px">{!! svg_icon('camera', 15) !!} تصاویر</h3>
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+            <span style="display:inline-flex;align-items:center;gap:6px">{!! svg_icon('camera', 16) !!} تصاویر</span>
+            <span style="font-size:12px;font-weight:500;color:var(--muted)">برای بزرگ‌نمایی روی تصویر کلیک کنید</span>
+          </h3>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px">
-            @foreach($company->gallery as $img)
-              <a href="{{ asset($img) }}" target="_blank" style="display:block;height:140px;border-radius:8px;overflow:hidden;border:1px solid var(--border)">
-                <img src="{{ asset($img) }}" alt="تصویر {{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-              </a>
+            @foreach($galleryUrls as $idx => $imgUrl)
+              <button type="button" onclick="openLightbox({{ $idx }})" class="gallery-thumb-btn" aria-label="بزرگ‌نمایی تصویر {{ $idx + 1 }}">
+                <img src="{{ $imgUrl }}" alt="تصویر {{ $company->name }}" loading="lazy" decoding="async">
+                <span class="gallery-zoom-badge">{!! svg_icon('search', 14) !!}</span>
+              </button>
             @endforeach
           </div>
         </div>
+
+        <!-- Lightbox Modal -->
+        <div id="companyLightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="نمایشگر تصاویر" onclick="if(event.target === this) closeLightbox()">
+          <div class="lightbox-topbar">
+            <div id="lightboxCounter" class="lightbox-counter">۱ از {{ count($galleryUrls) }}</div>
+            <button type="button" class="lightbox-close-btn" onclick="closeLightbox()" aria-label="بستن">
+              {!! svg_icon('x', 22) !!}
+            </button>
+          </div>
+
+          <div class="lightbox-stage" onclick="if(event.target === this) closeLightbox()">
+            @if(count($galleryUrls) > 1)
+              <button type="button" class="lightbox-nav-btn prev" onclick="stepLightbox(-1)" aria-label="تصویر قبلی">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            @endif
+
+            <img id="lightboxMainImg" src="" alt="تصویر {{ $company->name }}" class="lightbox-main-img">
+
+            @if(count($galleryUrls) > 1)
+              <button type="button" class="lightbox-nav-btn next" onclick="stepLightbox(1)" aria-label="تصویر بعدی">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+            @endif
+          </div>
+
+          @if(count($galleryUrls) > 1)
+            <div class="lightbox-thumbs" id="lightboxThumbs">
+              @foreach($galleryUrls as $idx => $imgUrl)
+                <button type="button" class="lightbox-thumb-item" onclick="setLightboxIndex({{ $idx }})" data-idx="{{ $idx }}">
+                  <img src="{{ $imgUrl }}" alt="بندانگشتی {{ $idx + 1 }}">
+                </button>
+              @endforeach
+            </div>
+          @endif
+        </div>
+
+        <style>
+          .gallery-thumb-btn {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 140px;
+            padding: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            cursor: zoom-in;
+          }
+          .gallery-thumb-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+          }
+          .gallery-thumb-btn:hover img {
+            transform: scale(1.06);
+          }
+          .gallery-zoom-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.65);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+          }
+          .gallery-thumb-btn:hover .gallery-zoom-badge {
+            opacity: 1;
+          }
+          .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(6px);
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px 20px;
+            box-sizing: border-box;
+          }
+          .lightbox-overlay.open {
+            display: flex;
+          }
+          .lightbox-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            flex-shrink: 0;
+          }
+          .lightbox-counter {
+            font-size: 13.5px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 6px 14px;
+            border-radius: 20px;
+          }
+          .lightbox-close-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+          }
+          .lightbox-close-btn:hover {
+            background: rgba(239, 68, 68, 0.85);
+          }
+          .lightbox-stage {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 12px 54px;
+          }
+          .lightbox-main-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            user-select: none;
+          }
+          .lightbox-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(15, 23, 42, 0.65);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+          }
+          .lightbox-nav-btn:hover {
+            background: var(--primary);
+          }
+          .lightbox-nav-btn.prev { right: 4px; }
+          .lightbox-nav-btn.next { left: 4px; }
+          .lightbox-thumbs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 0 2px;
+            flex-shrink: 0;
+          }
+          .lightbox-thumb-item {
+            width: 60px;
+            height: 46px;
+            padding: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            opacity: 0.55;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: #000;
+            transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
+          }
+          .lightbox-thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+          }
+          .lightbox-thumb-item.active {
+            opacity: 1;
+            border-color: #38bdf8;
+            transform: scale(1.06);
+          }
+          @media (max-width: 640px) {
+            .lightbox-stage { padding: 10px 6px; }
+            .lightbox-nav-btn { width: 36px; height: 36px; background: rgba(15, 23, 42, 0.78); }
+          }
+        </style>
+
+        <script>
+          const galleryImages = @json($galleryUrls);
+          let currentLightboxIndex = 0;
+          let lbTouchStartX = 0;
+
+          function toPersianDigits(n) {
+            return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+          }
+
+          function openLightbox(idx) {
+            const modal = document.getElementById('companyLightbox');
+            if (!modal || !galleryImages.length) return;
+            setLightboxIndex(idx);
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+          }
+
+          function closeLightbox() {
+            const modal = document.getElementById('companyLightbox');
+            if (!modal) return;
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+          }
+
+          function setLightboxIndex(idx) {
+            if (!galleryImages.length) return;
+            currentLightboxIndex = (idx + galleryImages.length) % galleryImages.length;
+            const imgEl = document.getElementById('lightboxMainImg');
+            const counterEl = document.getElementById('lightboxCounter');
+            if (imgEl) imgEl.src = galleryImages[currentLightboxIndex];
+            if (counterEl) {
+              counterEl.textContent = toPersianDigits(currentLightboxIndex + 1) + ' از ' + toPersianDigits(galleryImages.length);
+            }
+            document.querySelectorAll('#lightboxThumbs .lightbox-thumb-item').forEach((btn, i) => {
+              btn.classList.toggle('active', i === currentLightboxIndex);
+            });
+          }
+
+          function stepLightbox(delta) {
+            setLightboxIndex(currentLightboxIndex + delta);
+          }
+
+          document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('companyLightbox');
+            if (!modal || !modal.classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            else if (e.key === 'ArrowLeft') stepLightbox(1);
+            else if (e.key === 'ArrowRight') stepLightbox(-1);
+          });
+
+          const lbStage = document.querySelector('#companyLightbox .lightbox-stage');
+          if (lbStage) {
+            lbStage.addEventListener('touchstart', (e) => { lbTouchStartX = e.changedTouches[0].clientX; }, { passive: true });
+            lbStage.addEventListener('touchend', (e) => {
+              const dx = e.changedTouches[0].clientX - lbTouchStartX;
+              if (Math.abs(dx) > 45) stepLightbox(dx > 0 ? 1 : -1);
+            }, { passive: true });
+          }
+        </script>
       @endif
 
       <!-- ویدیو معرفی -->
