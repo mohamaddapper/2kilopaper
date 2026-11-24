@@ -179,7 +179,7 @@ class SiteController extends Controller
         }
 
         \App\Services\ViewTracker::track($company, 'company', $company->user_id);
-        $company->load(['city', 'category', 'province', 'categories' => fn($q) => $q->with('parent')]);
+        $company->load(['city', 'category.parent.parent.parent', 'province', 'categories.parent.parent.parent']);
 
         // یافتن شرکت‌های مشابه و هم‌رسته بر اساس دسته‌بندی و زمینه‌های فعالیت مشترک
         $categoryIds = $company->categories->pluck('id')->push($company->category_id)->filter()->unique();

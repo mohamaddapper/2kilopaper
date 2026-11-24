@@ -158,6 +158,118 @@ class Company extends Model
         return route('company', $this->routeParams());
     }
 
+    /**
+     * دسته‌بندی‌های شرکت را بر اساس نقش (تولیدکننده، واردکننده، فروشنده، چاپخانه، خدمات‌دهنده) گروه‌بندی می‌کند.
+     */
+    public function groupedCategories(): array
+    {
+        $roleMeta = [
+            'factories' => [
+                'label' => 'تولیدکننده',
+                'icon' => '🏭',
+                'bg' => '#ecfdf5',
+                'border' => '#a7f3d0',
+                'color' => '#047857',
+                'order' => 1,
+            ],
+            'importers' => [
+                'label' => 'واردکننده',
+                'icon' => '🚢',
+                'bg' => '#eef2ff',
+                'border' => '#c7d2fe',
+                'color' => '#4338ca',
+                'order' => 2,
+            ],
+            'stores' => [
+                'label' => 'فروشنده',
+                'icon' => '🏪',
+                'bg' => '#fffbeb',
+                'border' => '#fde68a',
+                'color' => '#b45309',
+                'order' => 3,
+            ],
+            'printing-services' => [
+                'label' => 'چاپخانه',
+                'icon' => '🖨️',
+                'bg' => '#f0f9ff',
+                'border' => '#bae6fd',
+                'color' => '#0369a1',
+                'order' => 4,
+            ],
+            'service-providers' => [
+                'label' => 'خدمات‌دهنده',
+                'icon' => '⚙️',
+                'bg' => '#f0fdfa',
+                'border' => '#99f6e4',
+                'color' => '#0f766e',
+                'order' => 5,
+            ],
+            'other' => [
+                'label' => 'سایر فعالیت‌ها',
+                'icon' => '🏷️',
+                'bg' => '#f8fafc',
+                'border' => '#cbd5e1',
+                'color' => '#334155',
+                'order' => 6,
+            ],
+        ];
+
+        $allCats = collect();
+        if ($this->category) {
+            $allCats->push($this->category);
+        }
+        if ($this->relationLoaded('categories')) {
+            foreach ($this->categories as $cat) {
+                $allCats->push($cat);
+            }
+        } elseif ($this->exists) {
+            foreach ($this->categories()->with('parent.parent.parent')->get() as $cat) {
+                $allCats->push($cat);
+            }
+        }
+
+        $allCats = $allCats->unique('id')->values();
+        $groups = [];
+
+        foreach ($allCats as $cat) {
+            $curr = $cat;
+            while ($curr->parent_id) {
+                $curr = $curr->parent ?: Category::find($curr->parent_id);
+                if (!$curr) break;
+            }
+
+            $rootSlug = ($curr && isset($roleMeta[$curr->slug])) ? $curr->slug : 'other';
+            if (!isset($groups[$rootSlug])) {
+                $groups[$rootSlug] = array_merge($roleMeta[$rootSlug], [
+                    'slug' => $rootSlug,
+                    'items' => [],
+                ]);
+            }
+
+            $groups[$rootSlug]['items'][] = [
+                'id' => $cat->id,
+                'name' => $cat->name,
+                'is_primary' => ((int) $cat->id === (int) $this->category_id),
+            ];
+        }
+
+        foreach ($groups as &$g) {
+            usort($g['items'], fn($a, $b) => ($b['is_primary'] <=> $a['is_primary']));
+        }
+        unset($g);
+
+        uasort($groups, function ($a, $b) {
+            $aPrimary = collect($a['items'])->contains('is_primary', true) ? 0 : 1;
+            $bPrimary = collect($b['items'])->contains('is_primary', true) ? 0 : 1;
+            if ($aPrimary !== $bPrimary) {
+                return $aPrimary <=> $bPrimary;
+            }
+            return $a['order'] <=> $b['order'];
+        });
+
+        return array_values($groups);
+    }
+
     public function getRouteKeyName() { return 'slug'; }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)

@@ -99,26 +99,27 @@
         <span>👁️ <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
       </div>
 
-      <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت -->
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
-        <span class="badge" style="background:#ecfdf5;color:#047857;font-weight:700;border:1px solid #a7f3d0">
-          🏷️ {{ $company->activity_role }}
-        </span>
-        @if($company->category)
-          <a href="{{ route('directory', ['cat' => $company->category_id]) }}" class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd;text-decoration:none">
-            {{ $company->category->name }}
-          </a>
-        @endif
-        @if($company->relationLoaded('categories'))
-          @foreach($company->categories as $secCat)
-            @if($secCat->id !== $company->category_id)
-              <a href="{{ route('directory', ['cat' => $secCat->id]) }}" class="badge" style="background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;text-decoration:none">
-                {{ $secCat->name }}
-              </a>
-            @endif
+      <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت به تفکیک نقش -->
+      @php $roleGroups = $company->groupedCategories(); @endphp
+      @if(!empty($roleGroups))
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
+          @foreach($roleGroups as $group)
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="badge" style="background:{{ $group['bg'] }};color:{{ $group['color'] }};border:1px solid {{ $group['border'] }};font-weight:800;font-size:12px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px">
+                <span>{{ $group['icon'] }}</span>
+                <span>{{ $group['label'] }}:</span>
+              </span>
+              @foreach($group['items'] as $catItem)
+                <a href="{{ route('directory', ['cat' => $catItem['id']]) }}"
+                   class="badge"
+                   style="@if($catItem['is_primary']) background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd; @else background:#f8fafc;color:#334155;border:1px solid #e2e8f0; @endif text-decoration:none;font-size:12px;padding:3px 10px">
+                  {{ $catItem['name'] }}
+                </a>
+              @endforeach
+            </div>
           @endforeach
-        @endif
-      </div>
+        </div>
+      @endif
     </div>
 
     <!-- دکمه ذخیره / نشان کردن سریع در هدر -->
