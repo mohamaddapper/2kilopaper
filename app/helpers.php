@@ -24,6 +24,22 @@ if (!function_exists('fa_to_en_digits')) {
     }
 }
 
+if (!function_exists('en_to_fa_digits')) {
+    function en_to_fa_digits($val)
+    {
+        if (is_array($val)) {
+            return array_map('en_to_fa_digits', $val);
+        }
+        if (!is_string($val) && !is_numeric($val)) {
+            return $val;
+        }
+        return strtr((string) $val, [
+            '0' => '۰', '1' => '۱', '2' => '۲', '3' => '۳', '4' => '۴',
+            '5' => '۵', '6' => '۶', '7' => '۷', '8' => '۸', '9' => '۹',
+        ]);
+    }
+}
+
 if (!function_exists('normalize_phone')) {
     function normalize_phone(?string $p): string
     {

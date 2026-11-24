@@ -141,3 +141,10 @@ footer{background:#fff;border-top:1px solid var(--border);padding:20px 0;text-al
 
 
 
+
+/* Pagination */
+.custom-pagination li a:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0284c7 !important;
+}
