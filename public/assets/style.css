@@ -148,3 +148,21 @@ footer{background:#fff;border-top:1px solid var(--border);padding:20px 0;text-al
   border-color: #94a3b8 !important;
   color: #0284c7 !important;
 }
+
+/* Company Card Hover Effects */
+.company-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.company-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+.company-card.tier-gold:hover {
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.22) !important;
+}
+.company-card.tier-silver:hover {
+  box-shadow: 0 8px 24px rgba(100, 116, 139, 0.2) !important;
+}
+.company-card.tier-bronze:hover {
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.22) !important;
+}
