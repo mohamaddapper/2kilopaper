@@ -116,7 +116,7 @@ class SiteController extends Controller
 
     public function directory(Request $r)
     {
-        $q = Company::approved()->with(['city', 'category']);
+        $q = Company::approved()->with(['city', 'category', 'province', 'categories', 'bookmarks']);
         if ($s = trim((string) $r->query('q'))) {
             $like = '%' . addcslashes($s, '%_\\') . '%';
             $q->where(fn ($w) => $w->where('name', 'like', $like)->orWhere('description', 'like', $like));
@@ -138,8 +138,26 @@ class SiteController extends Controller
                      ->orWhereHas('categories', fn($cQ) => $cQ->whereIn('categories.id', $ids));
             });
         }
+
+        $companies = $q->ranked()->paginate(18)->withQueryString();
+
+        // پاسخ ایجکس برای بارگذاری خودکار و نامحدود در فرانت‌اند (Infinite Scroll)
+        if ($r->ajax() || $r->wantsJson() || $r->boolean('ajax')) {
+            $html = '';
+            foreach ($companies as $company) {
+                $html .= view('partials.card', compact('company'))->render();
+            }
+            return response()->json([
+                'html' => $html,
+                'has_more' => $companies->hasMorePages(),
+                'next_page_url' => $companies->nextPageUrl(),
+                'current_page' => $companies->currentPage(),
+                'total' => $companies->total(),
+            ]);
+        }
+
         return view('directory', [
-            'companies' => $q->ranked()->paginate(12)->withQueryString(),
+            'companies' => $companies,
             'cities' => City::orderBy('name')->get(),
             'provinces' => Province::orderBy('name')->get(),
             'categories' => Category::whereNull('parent_id')->with('children')->orderBy('sort')->get(),
