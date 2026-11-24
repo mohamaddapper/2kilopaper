@@ -215,6 +215,60 @@ class SiteController extends Controller
         return response()->view('sitemap', compact('companies'))->header('Content-Type', 'application/xml');
     }
 
+    public function phoneNumbers()
+    {
+        return view('pages.phone-numbers');
+    }
+
+    public function appDownload()
+    {
+        return view('pages.app');
+    }
+
+    public function faqs()
+    {
+        return view('pages.faqs');
+    }
+
+    public function terms()
+    {
+        return view('pages.terms');
+    }
+
+    public function privacy()
+    {
+        return view('pages.privacy');
+    }
+
+    public function aboutUs()
+    {
+        return view('pages.about');
+    }
+
+    public function contactUs()
+    {
+        return view('pages.contact');
+    }
+
+    public function submitContact(Request $r)
+    {
+        $r->validate([
+            'name' => 'required|string|max:100',
+            'phone' => 'required|string|max:30',
+            'email' => 'nullable|email|max:120',
+            'subject' => 'nullable|string|max:150',
+            'message' => 'required|string|max:3000',
+        ], [
+            'name.required' => 'لطفاً نام و نام خانوادگی خود را وارد کنید.',
+            'phone.required' => 'لطفاً شماره تماس معتبر وارد فرمایید.',
+            'message.required' => 'لطفاً متن پیام خود را بنویسید.',
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('Contact Message Received: ', $r->only(['name', 'phone', 'email', 'subject', 'message']));
+
+        return back()->with('ok', 'پیام شما با موفقیت دریافت شد. کارشناسان ۲ کیلو کاغذ در اسرع وقت با شما تماس خواهند گرفت.');
+    }
+
     public function robots()
     {
         $txt = "User-agent: *\nDisallow: /dashboard\nDisallow: /login\nSitemap: " . url('/sitemap.xml') . "\n";

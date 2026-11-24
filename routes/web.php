@@ -15,6 +15,28 @@ Route::get('/subscription-fee', [SiteController::class, 'subscriptionFee'])->nam
 Route::get('/pricing', fn() => redirect()->route('subscription.fee'));
 Route::get('/advertising', [SiteController::class, 'advertising'])->name('advertising');
 
+// صفحات اطلاع‌رسانی، تماس، قوانین و اپلیکیشن
+Route::get('/cellulose-industry-essential-phone-numbers', [SiteController::class, 'phoneNumbers'])->name('pages.phone-numbers');
+Route::get('/phone-numbers', fn() => redirect()->route('pages.phone-numbers', [], 301));
+
+Route::get('/app', [SiteController::class, 'appDownload'])->name('pages.app');
+
+Route::get('/faqs', [SiteController::class, 'faqs'])->name('pages.faqs');
+Route::get('/faq', fn() => redirect()->route('pages.faqs', [], 301));
+
+Route::get('/terms-and-conditions', [SiteController::class, 'terms'])->name('pages.terms');
+Route::get('/terms', fn() => redirect()->route('pages.terms', [], 301));
+
+Route::get('/privacy-policy', [SiteController::class, 'privacy'])->name('pages.privacy');
+Route::get('/privacy', fn() => redirect()->route('pages.privacy', [], 301));
+
+Route::get('/about-us', [SiteController::class, 'aboutUs'])->name('pages.about');
+Route::get('/about', fn() => redirect()->route('pages.about', [], 301));
+
+Route::get('/contact-us', [SiteController::class, 'contactUs'])->name('pages.contact');
+Route::get('/contact', fn() => redirect()->route('pages.contact', [], 301));
+Route::post('/contact-us', [SiteController::class, 'submitContact'])->name('pages.contact.submit');
+
 // کاریابی و فرصت‌های شغلی عمومی
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job:slug}', [JobController::class, 'show'])->name('jobs.show');
