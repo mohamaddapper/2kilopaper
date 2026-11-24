@@ -28,7 +28,7 @@
       <li><a href="{{ route('directory') }}">دایرکتوری</a></li>
       <li><a href="{{ route('jobs.index') }}">فرصت‌های شغلی</a></li>
       @auth
-        <li><a href="{{ route('dashboard') }}">پنل من</a></li>
+        <li><a href="{{ route('dashboard') }}">میز کار</a></li>
         <li><form method="post" action="{{ route('logout') }}">@csrf<button class="btn ghost small">خروج</button></form></li>
       @else
         <li><a href="{{ route('login') }}">ورود</a></li>

@@ -21,7 +21,7 @@
     
     <div style="display:flex;gap:8px">
       <a href="{{ route('jobs.show', $job) }}" target="_blank" class="btn ghost small">مشاهده آگهی در سایت ↗</a>
-      <a href="{{ route('dashboard') }}#jobs" class="btn small">بازگشت به پنل</a>
+      <a href="{{ route('dashboard') }}#jobs" class="btn small">بازگشت به میز کار</a>
     </div>
   </div>
 

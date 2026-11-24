@@ -10,7 +10,7 @@
       </h1>
       <p style="margin:0;color:var(--muted);font-size:13.5px">اطلاعات شغل، شرایط کارخانه یا دفتر و تسهیلات رفاهی را مشخص کنید.</p>
     </div>
-    <a href="{{ route('dashboard') }}#jobs" class="btn ghost small">بازگشت به پنل</a>
+    <a href="{{ route('dashboard') }}#jobs" class="btn ghost small">بازگشت به میز کار</a>
   </div>
 
   @if($errors->any())
