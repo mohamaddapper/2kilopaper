@@ -121,6 +121,11 @@ class SiteController extends Controller
             $like = '%' . addcslashes($s, '%_\\') . '%';
             $q->where(fn ($w) => $w->where('name', 'like', $like)->orWhere('description', 'like', $like));
         }
+        if ($r->boolean('featured') || $r->query('featured') == '1' || $r->query('tier') === 'featured') {
+            $q->whereNotNull('tier')->where(function ($sub) {
+                $sub->whereNull('tier_expires_at')->orWhere('tier_expires_at', '>', now());
+            });
+        }
         if ($r->filled('province')) {
             $q->where('province_id', (int) $r->query('province'));
         }

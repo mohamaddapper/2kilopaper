@@ -304,7 +304,7 @@
   </div>
 </section>
 
-<!-- ۳. بخش ۳ بنر تبلیغاتی هم‌سطح (مشابه بنرهای ۳ گانه صفحه اصلی ۲ کیلو کاغذ) -->
+<!-- ۳. بخش ۴ بنر تبلیغاتی هم‌سطح (مشابه بنرهای ۴ گانه صفحه اصلی ۲ کیلو کاغذ) -->
 <section class="home-section">
   <div class="triple-banners-grid">
     
@@ -334,7 +334,20 @@
       </div>
     </div>
 
-    <!-- بنر ۳: سرویس پیامکی و استعلام آنلاین -->
+    <!-- بنر ۳: سامانه پیامکی نرخ روز بازار -->
+    <div class="ad-promo-card promo-teal">
+      <div class="promo-badge">اطلاع‌رسانی لحظه‌ای</div>
+      <h3 class="promo-title">سامانه پیامکی نرخ روز</h3>
+      <p class="promo-desc">دریافت روزانه آخرین مظنه و نوسانات قیمت رول کاغذ، ورق کارتن و مواد اولیه در بازار ایران</p>
+      <div class="promo-action">
+        <a href="https://t.me" target="_blank" rel="noopener" class="promo-btn">
+          <span>عضویت و دریافت پیامک</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- بنر ۴: سامانه هوشمند استعلام -->
     <div class="ad-promo-card promo-amber">
       <div class="promo-badge">استعلام بدون واسطه</div>
       <h3 class="promo-title">سامانه هوشمند استعلام</h3>
@@ -350,19 +363,18 @@
   </div>
 </section>
 
-<!-- ۴. بخش شرکت‌های ویژه (ویژه‌های طلایی و نقره‌ای با پاسخگویی سریع) -->
+<!-- ۴. بخش شرکت‌های ویژه -->
 @if($featured->count())
 <section class="home-section">
   <div class="home-section-header">
     <div class="header-right">
       <h2 class="home-section-title">
         <span style="color:#f59e0b;margin-left:4px">★</span>
-        شرکت‌های ویژه و منتخب صنعت
+        شرکت‌های ویژه
       </h2>
-      <span class="home-section-tag" style="background:#fef3c7;color:#92400e;border-color:#fcd34d">تأییدشده و پاسخگو</span>
     </div>
-    <a href="{{ route('directory') }}" class="home-section-link">
-      <span>مشاهده همه شرکت‌ها</span>
+    <a href="{{ route('directory', ['featured' => 1]) }}" class="home-section-link">
+      <span>مشاهده همه شرکت‌های ویژه</span>
       <span style="font-size:16px">←</span>
     </a>
   </div>
@@ -1147,15 +1159,15 @@
   transform: translateX(-4px);
 }
 
-/* ۳. سه بنر تبلیغاتی */
+/* ۳. بنرهای تبلیغاتی چهارگانه */
 .triple-banners-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 .ad-promo-card {
   border-radius: 16px;
-  padding: 26px 24px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1173,6 +1185,10 @@
 }
 .promo-green {
   background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+  color: #ffffff;
+}
+.promo-teal {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
   color: #ffffff;
 }
 .promo-amber {
@@ -1650,7 +1666,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .triple-banners-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   .provinces-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1694,6 +1710,12 @@
   }
   .app-cta-icon-box {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .triple-banners-grid {
+    grid-template-columns: 1fr;
   }
 }
 
