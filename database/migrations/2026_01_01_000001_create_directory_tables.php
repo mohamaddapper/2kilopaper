@@ -35,9 +35,9 @@ return new class extends Migration {
             $t->string('name');
             $t->string('slug')->unique();
             $t->text('description')->nullable();
-            $t->string('phone', 20)->nullable();
+            $t->string('phone', 255)->nullable();
             $t->string('website')->nullable();
-            $t->string('address')->nullable();
+            $t->text('address')->nullable();
             $t->string('status', 10)->default('pending')->index(); // pending|approved|rejected
             $t->string('tier', 10)->nullable();                    // gold|silver|bronze
             $t->timestamp('tier_expires_at')->nullable();

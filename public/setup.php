@@ -37,6 +37,9 @@ if ($baseDir !== __DIR__) {
     if (file_exists($baseDir . '/public/index.php')) {
         @copy($baseDir . '/public/index.php', __DIR__ . '/index.php');
     }
+    if (file_exists($baseDir . '/public/setup.php') && realpath(__DIR__ . '/setup.php') !== realpath($baseDir . '/public/setup.php')) {
+        @copy($baseDir . '/public/setup.php', __DIR__ . '/setup.php');
+    }
     // Sync company uploads (logos, catalogs, gallery)
     foreach (['logos', 'catalogs', 'gallery', 'covers'] as $sub) {
         $srcDir = $baseDir . '/public/uploads/' . $sub;
@@ -97,9 +100,13 @@ try {
     $kernel->call('optimize:clear');
     echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
 
-    // 3. Migrations
-    if (in_array($action, ['all', 'migrate'])) {
+    // 3. Migrations & Schema Adjustments
+    if (in_array($action, ['all', 'migrate', 'import_companies'])) {
         echo '<p><b>۳. بررسی و اجرای مایگریشن‌های جدید دیتابیس:</b></p>';
+        try {
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE companies MODIFY phone VARCHAR(255) NULL");
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE companies MODIFY address TEXT NULL");
+        } catch (\Throwable $e) {}
         $kernel->call('migrate', ['--force' => true]);
         echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
     }

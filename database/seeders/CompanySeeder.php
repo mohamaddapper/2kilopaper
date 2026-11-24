@@ -23,6 +23,14 @@ class CompanySeeder extends Seeder
             return;
         }
 
+        // 0. Ensure columns in companies table are expanded
+        try {
+            DB::statement("ALTER TABLE companies MODIFY phone VARCHAR(255) NULL");
+            DB::statement("ALTER TABLE companies MODIFY address TEXT NULL");
+        } catch (\Throwable $e) {
+            // Ignore on SQLite or if already expanded
+        }
+
         // 1. Get or create system / admin user
         $adminUser = User::where('is_admin', true)->first();
         if (!$adminUser) {
@@ -70,7 +78,7 @@ class CompanySeeder extends Seeder
         DB::beginTransaction();
         try {
             foreach ($rows as $index => $row) {
-                $name = trim($row['post_title'] ?? '');
+                $name = mb_substr(trim($row['post_title'] ?? ''), 0, 190);
                 if (!$name) {
                     continue;
                 }
@@ -83,11 +91,12 @@ class CompanySeeder extends Seeder
                         $slug = 'company-' . ($row['post_id'] ?? ($index + 1));
                     }
                 }
+                $slug = mb_substr($slug, 0, 180);
                 // Ensure slug uniqueness
                 $baseSlug = $slug;
                 $counter = 1;
                 while (isset($existingSlugs[$slug])) {
-                    $slug = $baseSlug . '-' . (++$counter);
+                    $slug = mb_substr($baseSlug, 0, 170) . '-' . (++$counter);
                 }
                 $existingSlugs[$slug] = true;
 
@@ -155,14 +164,18 @@ class CompanySeeder extends Seeder
 
                 // Video
                 $videoCode = trim($row['field_aparat_video_code'] ?? '') ?: trim($row['field_video'] ?? '');
+                $videoCode = $videoCode ? mb_substr($videoCode, 0, 250) : null;
 
                 // Phone, Email, Website
                 $phone = trim($row['field_phone'] ?? '');
+                $phone = $phone ? mb_substr($phone, 0, 250) : null;
                 $email = filter_var(trim($row['field_email'] ?? ''), FILTER_VALIDATE_EMAIL) ?: null;
+                $email = $email ? mb_substr($email, 0, 95) : null;
                 $website = trim($row['field_website'] ?? '');
                 if ($website && !preg_match('#^https?://#i', $website)) {
                     $website = 'https://' . $website;
                 }
+                $website = $website ? mb_substr($website, 0, 250) : null;
 
                 // Tech Specs
                 $techSpecs = array_filter([
