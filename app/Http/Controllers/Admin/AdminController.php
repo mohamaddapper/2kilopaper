@@ -233,4 +233,65 @@ class AdminController extends Controller
         $txt = $user->is_admin ? 'ادمین سیستم گردید' : 'از سطح ادمین خارج شد';
         return back()->with('ok', "کاربر {$user->phone} {$txt}.");
     }
+
+    public function categories(Request $request)
+    {
+        $query = Category::with('parent.parent.parent')->withCount('companies');
+
+        if ($q = trim($request->input('q', ''))) {
+            $query->where('name', 'like', "%{$q}%")->orWhere('slug', 'like', "%{$q}%");
+        }
+
+        if ($pillarId = (int) $request->input('pillar', 0)) {
+            $pillar = Category::find($pillarId);
+            if ($pillar) {
+                $query->whereIn('id', $pillar->allDescendantIds());
+            }
+        }
+
+        $categories = $query->orderBy('sort')->paginate(30)->withQueryString();
+        $pillars = Category::whereNull('parent_id')->orderBy('sort')->get();
+
+        return view('admin.categories.index', compact('categories', 'pillars'));
+    }
+
+    public function editCategory(Category $category)
+    {
+        $category->load('parent.parent.parent');
+        return view('admin.categories.edit', compact('category'));
+    }
+
+    public function updateCategory(Request $request, Category $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:190',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'description' => 'nullable|string|max:20000',
+            'faqs' => 'nullable|array',
+            'faqs.*.q' => 'nullable|string|max:300',
+            'faqs.*.a' => 'nullable|string|max:2000',
+        ], [
+            'name.required' => 'نام دسته‌بندی الزامی است.',
+        ]);
+
+        $faqs = [];
+        foreach ((array) ($validated['faqs'] ?? []) as $item) {
+            $q = trim((string) ($item['q'] ?? ''));
+            $a = trim((string) ($item['a'] ?? ''));
+            if ($q !== '' && $a !== '') {
+                $faqs[] = ['q' => $q, 'a' => $a];
+            }
+        }
+
+        $category->update([
+            'name' => $validated['name'],
+            'seo_title' => $validated['seo_title'] ?: null,
+            'seo_description' => $validated['seo_description'] ?: null,
+            'description' => $validated['description'] ?: null,
+            'faqs' => !empty($faqs) ? $faqs : null,
+        ]);
+
+        return redirect()->route('admin.categories')->with('ok', "تنظیمات سئو و محتوای دسته «{$category->name}» با موفقیت ذخیره شد.");
+    }
 }

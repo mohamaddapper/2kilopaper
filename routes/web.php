@@ -11,6 +11,17 @@ Route::get('/directory', [SiteController::class, 'directory'])->name('directory'
 Route::get('/company/{role}/{category}/{company}', [SiteController::class, 'company'])->name('company');
 Route::get('/company/{company}', [SiteController::class, 'legacyCompany'])->name('company.legacy');
 
+// صفحات سئو شده دسته‌بندی‌ها و استان‌ها
+Route::get('/categories', [SiteController::class, 'categoriesIndex'])->name('categories.index');
+Route::get('/classification-of-suppliers-based-on-field-of-activity', fn() => redirect()->route('categories.index', [], 301));
+Route::get('/category/{role}', [SiteController::class, 'categoryRole'])->name('categories.role');
+Route::get('/category/{role}/{category}', [SiteController::class, 'categoryShow'])->name('categories.show');
+Route::get('/category/{role}/{category}/{province}', [SiteController::class, 'categoryProvinceShow'])->name('categories.province');
+
+Route::get('/locations', [SiteController::class, 'locationsIndex'])->name('locations.index');
+Route::get('/classification-of-suppliers-based-on-location', fn() => redirect()->route('locations.index', [], 301));
+Route::get('/location/{province}', [SiteController::class, 'locationShow'])->name('locations.show');
+
 // تعرفه‌ها و تبلیغات
 Route::get('/subscription-fee', [SiteController::class, 'subscriptionFee'])->name('subscription.fee');
 Route::get('/pricing', fn() => redirect()->route('subscription.fee'));
@@ -90,4 +101,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/applications', [\App\Http\Controllers\Admin\AdminController::class, 'applications'])->name('applications');
     Route::get('/users', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
     Route::post('/users/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminController::class, 'toggleUserAdmin'])->name('users.toggle-admin');
+
+    Route::get('/categories', [\App\Http\Controllers\Admin\AdminController::class, 'categories'])->name('categories');
+    Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\AdminController::class, 'editCategory'])->name('categories.edit');
+    Route::put('/categories/{category}', [\App\Http\Controllers\Admin\AdminController::class, 'updateCategory'])->name('categories.update');
 });

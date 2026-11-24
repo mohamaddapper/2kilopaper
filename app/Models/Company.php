@@ -249,6 +249,7 @@ class Company extends Model
             $groups[$rootSlug]['items'][] = [
                 'id' => $cat->id,
                 'name' => $cat->name,
+                'url' => $cat->url,
                 'is_primary' => ((int) $cat->id === (int) $this->category_id),
             ];
         }

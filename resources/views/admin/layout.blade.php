@@ -174,6 +174,9 @@
         <a href="{{ route('admin.companies') }}" class="{{ request()->routeIs('admin.companies') ? 'active' : '' }}">
           🏢 شرکت‌ها
         </a>
+        <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+          🏷️ دسته‌بندی و سئو
+        </a>
         <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs') ? 'active' : '' }}">
           💼 آگهی‌های شغلی
         </a>

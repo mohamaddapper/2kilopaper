@@ -81,6 +81,8 @@
         <ul class="footer-links">
           <li><a href="{{ route('home') }}">صفحه اصلی</a></li>
           <li><a href="{{ route('directory') }}">دایرکتوری و جستجوی شرکت‌ها</a></li>
+          <li><a href="{{ route('categories.index') }}">دسته‌بندی بر اساس زمینه فعالیت</a></li>
+          <li><a href="{{ route('locations.index') }}">دسته‌بندی بر اساس استان</a></li>
           <li><a href="{{ route('jobs.index') }}">فرصت‌های شغلی و کاریابی</a></li>
           <li><a href="{{ route('subscription.fee') }}">تعرفه‌های اشتراک طلایی</a></li>
           <li><a href="{{ route('advertising') }}">تعرفه و جایگاه‌های تبلیغات</a></li>

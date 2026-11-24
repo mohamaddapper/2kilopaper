@@ -110,7 +110,7 @@
                 <span>{{ $group['label'] }}:</span>
               </span>
               @foreach($group['items'] as $catItem)
-                <a href="{{ route('directory', ['cat' => $catItem['id']]) }}"
+                <a href="{{ $catItem['url'] ?? route('directory', ['cat' => $catItem['id']]) }}"
                    class="badge"
                    style="@if($catItem['is_primary']) background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd; @else background:#f8fafc;color:#334155;border:1px solid #e2e8f0; @endif text-decoration:none;font-size:12px;padding:3px 10px">
                   {{ $catItem['name'] }}
@@ -547,8 +547,8 @@
             <span>شرکت‌های مشابه</span>
           </h2>
         </div>
-        @if($company->category_id)
-          <a href="{{ route('directory', ['cat' => $company->category_id]) }}" style="font-size:13px;font-weight:700;color:var(--primary);display:inline-flex;align-items:center;gap:4px">
+        @if($company->category)
+          <a href="{{ $company->category->url }}" style="font-size:13px;font-weight:700;color:var(--primary);display:inline-flex;align-items:center;gap:4px">
             <span>مشاهده همه</span>
             <span>←</span>
           </a>

@@ -23,4 +23,9 @@ class Province extends Model
     {
         return $this->hasMany(Company::class);
     }
+
+    public function getUrlAttribute(): string
+    {
+        return route('locations.show', ['province' => slugify($this->name)]);
+    }
 }
