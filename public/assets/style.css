@@ -283,16 +283,76 @@ html.dark .why-us-card,
 html.dark .platform-card,
 html.dark .app-benefits-section,
 html.dark .info-card,
+html.dark .form-card,
 html.dark .faq-search-box,
 html.dark .faq-item,
 html.dark .faq-support-box,
 html.dark .org-card,
 html.dark .search-input-box,
 html.dark .privacy-card,
-html.dark .legal-content-card {
+html.dark .legal-content-card,
+html.dark .dashboard-sidebar-card,
+html.dark .dash-stat-box,
+html.dark .dash-table-card,
+html.dark .stat,
+html.dark .center-box {
   background: #111827 !important;
   border-color: #1e293b !important;
   color: #f1f5f9 !important;
+}
+html.dark .form-card h3 {
+  border-bottom-color: #1e293b !important;
+}
+html.dark .dashboard-menu-link {
+  color: #cbd5e1 !important;
+}
+html.dark .dashboard-menu-link:hover {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+}
+html.dark .dashboard-menu-link.active {
+  background: #0c233a !important;
+  color: #38bdf8 !important;
+}
+html.dark .dash-stat-number {
+  color: #f8fafc !important;
+}
+html.dark .dash-stat-title {
+  color: #94a3b8 !important;
+}
+html.dark .dash-table th {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+html.dark .dash-table td {
+  color: #e2e8f0 !important;
+  border-color: #1e293b !important;
+}
+html.dark .dash-alert-warn,
+html.dark .notice.warn {
+  background: #271f0e !important;
+  border-color: #854d0e !important;
+  color: #fde68a !important;
+}
+html.dark .dash-alert-success,
+html.dark .notice.ok,
+html.dark .alert-box.success {
+  background: #0b291e !important;
+  border-color: #047857 !important;
+  color: #a7f3d0 !important;
+}
+html.dark .dash-alert-danger,
+html.dark .notice.bad,
+html.dark .alert-box.error {
+  background: #2b1418 !important;
+  border-color: #7f1d1d !important;
+  color: #fecaca !important;
+}
+html.dark .notice.info {
+  background: #0c233a !important;
+  border-color: #0369a1 !important;
+  color: #bae6fd !important;
 }
 html.dark .popular-tag,
 html.dark .pillar-filter-pill,
@@ -323,7 +383,10 @@ html.dark .section-heading,
 html.dark .why-title,
 html.dark .story-lead,
 html.dark .m-value,
-html.dark .art-header {
+html.dark .art-header,
+html.dark .form-title,
+html.dark .input-group label,
+html.dark .audience-card h3 {
   color: #f8fafc !important;
 }
 html.dark .faq-answer,
@@ -346,9 +409,66 @@ html.dark .art-content,
 html.dark .styled-list,
 html.dark .support-text,
 html.dark .form-desc,
-html.dark .platform-version {
+html.dark .platform-version,
+html.dark .audience-card p {
   color: #cbd5e1 !important;
 }
+html.dark .search-input-box input,
+html.dark .faq-search-box input {
+  background: transparent !important;
+  color: #f1f5f9 !important;
+}
+html.dark .input-group input,
+html.dark .input-group textarea {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+html.dark .q-icon {
+  background: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+html.dark .faq-item.active .q-icon {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+html.dark .faq-item.active .q-title {
+  color: #38bdf8 !important;
+}
+html.dark .story-tag {
+  background: #0c233a !important;
+  color: #38bdf8 !important;
+}
+html.dark .ch-badge {
+  background: #0b291e !important;
+  color: #4ade80 !important;
+}
+html.dark .phone-bg {
+  background: #0c233a !important;
+  border-color: #0369a1 !important;
+  color: #38bdf8 !important;
+}
+html.dark .email-bg {
+  background: #2b1418 !important;
+  border-color: #7f1d1d !important;
+  color: #f87171 !important;
+}
+html.dark .address-bg {
+  background: #0b291e !important;
+  border-color: #047857 !important;
+  color: #4ade80 !important;
+}
+html.dark .channel-bale:hover,
+html.dark .channel-tg:hover,
+html.dark .channel-ig:hover {
+  background: #263549 !important;
+  border-color: #38bdf8 !important;
+}
+html.dark .badge-gov { background: #2b1418 !important; color: #fca5a5 !important; }
+html.dark .badge-import { background: #0c233a !important; color: #7dd3fc !important; }
+html.dark .badge-prod { background: #271f0e !important; color: #fde68a !important; }
+html.dark .badge-health { background: #0b291e !important; color: #86efac !important; }
+html.dark .badge-carton { background: #1e1b4b !important; color: #c4b5fd !important; }
 html.dark .prohibit-item {
   background: #2b1418 !important;
   border-color: #7f1d1d !important;
@@ -410,8 +530,31 @@ html.dark table td {
 html.dark [style*="background:#fff"],
 html.dark [style*="background:#ffffff"],
 html.dark [style*="background: #fff"],
-html.dark [style*="background: #ffffff"] {
+html.dark [style*="background: #ffffff"],
+html.dark [style*="background:white"],
+html.dark [style*="background: white"] {
   background: #111827 !important;
+}
+html.dark [style*="background:#eff6ff"],
+html.dark [style*="background: #eff6ff"] {
+  background: #0c233a !important;
+  color: #38bdf8 !important;
+}
+html.dark [style*="background:#fef3c7"],
+html.dark [style*="background: #fef3c7"] {
+  background: #271f0e !important;
+  color: #fde68a !important;
+}
+html.dark [style*="background:#f0fdf4"],
+html.dark [style*="background: #f0fdf4"] {
+  background: #0b291e !important;
+  color: #4ade80 !important;
+}
+html.dark [style*="color:#0369a1"] {
+  color: #38bdf8 !important;
+}
+html.dark [style*="color:#15803d"] {
+  color: #4ade80 !important;
 }
 html.dark [style*="background:#f8fafc"],
 html.dark [style*="background: #f8fafc"],
