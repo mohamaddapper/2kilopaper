@@ -179,7 +179,7 @@
 }
 </style>
 
-<div style="max-width:920px;margin:20px auto">
+<div class="page-wrapper" style="margin:20px 0 48px">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
     <h2 style="margin:0;font-size:22px;color:var(--primary)">{{ $company->exists ? 'ویرایش شرکت' : 'ثبت نام و اطلاعات شرکت' }}</h2>
     <a href="{{ route('dashboard') }}" class="btn ghost small">بازگشت به میز کار</a>

@@ -19,7 +19,7 @@
 
   <!-- فرم جستجو و فیلترهای هوشمند -->
   <form method="get" action="{{ route('jobs.index') }}" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:24px">
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:center">
+    <div class="jobs-search-grid">
       <input name="q" value="{{ request('q') }}" placeholder="عنوان شغل، تخصص، دستگاه (مثال: اپراتور دایکات، کارشناس فروش...)" style="width:100%;border:1px solid var(--border)">
       
       <select name="cat" style="border:1px solid var(--border)">

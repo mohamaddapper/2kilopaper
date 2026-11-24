@@ -26,16 +26,14 @@ if (file_exists(__DIR__ . '/../laravel-app/vendor/autoload.php')) {
     die('<h3 style="color:red;font-family:tahoma;direction:rtl">خطا: پوشه vendor یا پروژه لاراول پیدا نشد!</h3>');
 }
 
-// Auto-sync public files if public_html is separate from laravel-app
-if ($baseDir === __DIR__ . '/../laravel-app') {
+// Auto-sync public files if public_html is separate from repo base directory
+if ($baseDir !== __DIR__ && file_exists($baseDir . '/public/assets/style.css')) {
+    if (!file_exists(__DIR__ . '/assets')) {
+        @mkdir(__DIR__ . '/assets', 0755, true);
+    }
+    @copy($baseDir . '/public/assets/style.css', __DIR__ . '/assets/style.css');
     if (file_exists($baseDir . '/public/index.php')) {
         @copy($baseDir . '/public/index.php', __DIR__ . '/index.php');
-    }
-    if (file_exists($baseDir . '/public/assets/style.css')) {
-        if (!file_exists(__DIR__ . '/assets')) {
-            @mkdir(__DIR__ . '/assets', 0755, true);
-        }
-        @copy($baseDir . '/public/assets/style.css', __DIR__ . '/assets/style.css');
     }
 }
 

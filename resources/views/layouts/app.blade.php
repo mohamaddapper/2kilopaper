@@ -50,15 +50,17 @@
   @yield('content')
 </main>
 <footer style="text-align:center;padding:32px 0 24px;color:var(--muted);font-size:13px;border-top:1px solid var(--border);margin-top:40px">
-  <div style="display:flex;justify-content:center;gap:18px;margin-bottom:12px;flex-wrap:wrap">
-    <a href="{{ route('home') }}" style="color:var(--muted);text-decoration:none">صفحه اصلی</a>
-    <a href="{{ route('directory') }}" style="color:var(--muted);text-decoration:none">دایرکتوری شرکت‌ها</a>
-    <a href="{{ route('jobs.index') }}" style="color:var(--muted);text-decoration:none">فرصت‌های شغلی</a>
-    <a href="{{ route('subscription.fee') }}" style="color:var(--muted);text-decoration:none">هزینه اشتراک‌ها</a>
-    <a href="{{ route('advertising') }}" style="color:var(--muted);text-decoration:none">تعرفه تبلیغات</a>
-  </div>
-  <div>
-    © {{ config('app.name') }} · مرکز صنعت کاغذ، چاپ و بسته‌بندی ایران
+  <div class="container">
+    <div style="display:flex;justify-content:center;gap:18px;margin-bottom:12px;flex-wrap:wrap">
+      <a href="{{ route('home') }}" style="color:var(--muted);text-decoration:none">صفحه اصلی</a>
+      <a href="{{ route('directory') }}" style="color:var(--muted);text-decoration:none">دایرکتوری شرکت‌ها</a>
+      <a href="{{ route('jobs.index') }}" style="color:var(--muted);text-decoration:none">فرصت‌های شغلی</a>
+      <a href="{{ route('subscription.fee') }}" style="color:var(--muted);text-decoration:none">هزینه اشتراک‌ها</a>
+      <a href="{{ route('advertising') }}" style="color:var(--muted);text-decoration:none">تعرفه تبلیغات</a>
+    </div>
+    <div>
+      © {{ config('app.name') }} · مرکز صنعت کاغذ، چاپ و بسته‌بندی ایران
+    </div>
   </div>
 </footer>
 </body>

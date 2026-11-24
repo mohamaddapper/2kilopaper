@@ -17,7 +17,7 @@
 
   <!-- نوار فیلتر و جستجو -->
   <form method="get" action="{{ route('admin.jobs') }}" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:18px">
-    <div style="display:grid;grid-template-columns:2fr 1fr auto auto;gap:10px;align-items:center">
+    <div class="admin-filter-grid">
       
       <input name="q" value="{{ request('q') }}" placeholder="جستجو بر اساس عنوان شغلی، نام شرکت یا توضیحات..." style="border:1px solid #cbd5e1">
 

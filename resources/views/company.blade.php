@@ -23,7 +23,7 @@
 @endpush
 
 @section('content')
-<div style="max-width:1050px;margin:15px auto">
+<div class="page-wrapper" style="margin:16px 0 40px">
 
   <!-- هدر پروفایل شرکت -->
   <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px">
@@ -35,7 +35,7 @@
       @endif
     </div>
 
-    <div style="flex:1;min-width:250px">
+    <div style="flex:1;min-width:200px">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
         @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->is_admin))
@@ -120,7 +120,7 @@
   @endif
 
   <!-- چیدمان دو ستونه محتوا -->
-  <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+  <div class="company-content-grid">
     
     <!-- ستون اصلی (راست) -->
     <div>

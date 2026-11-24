@@ -12,8 +12,8 @@
 
   <!-- نوار جستجو -->
   <form method="get" action="{{ route('admin.users') }}" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:18px">
-    <div style="display:grid;grid-template-columns:3fr auto;gap:10px;align-items:center">
-      <input name="q" value="{{ request('q') }}" placeholder="جستجو بر اساس شماره موبایل یا نام کاربر..." style="border:1px solid #cbd5e1">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <input name="q" value="{{ request('q') }}" placeholder="جستجو بر اساس شماره موبایل یا نام کاربر..." style="flex:1;min-width:200px;border:1px solid #cbd5e1">
       <button type="submit" class="btn" style="background:var(--admin-primary);padding:9px 24px">جستجو</button>
     </div>
   </form>

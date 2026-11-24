@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'متقاضیان آگهی ' . $job->title, 'dashboardNav' => true])
 
 @section('content')
-<div style="max-width:1100px;margin:24px auto 48px">
+<div class="page-wrapper" style="margin:24px 0 48px">
   
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <div>

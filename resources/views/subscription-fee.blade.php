@@ -4,7 +4,7 @@
 ])
 
 @section('content')
-<div style="max-width:1100px;margin:24px auto 60px">
+<div class="page-wrapper" style="margin:24px 0 60px">
 
   <!-- بنر هدر و معرفی ارزش افزوده -->
   <div style="text-align:center;padding:36px 20px;background:#fff;border:1px solid var(--border);border-radius:16px;margin-bottom:32px;box-shadow:0 2px 10px rgba(0,0,0,0.02)">
@@ -189,7 +189,7 @@
   <div class="card" style="padding:28px;background:#fff;border-radius:14px;border:1px solid var(--border);margin-bottom:30px">
     <h3 style="margin:0 0 16px;font-size:18px;color:var(--text)">کدام اشتراک برای شما مناسب‌تر است؟</h3>
     
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;font-size:14px;color:#334155;line-height:1.8">
+    <div class="grid-2" style="font-size:14px;color:#334155;line-height:1.8">
       <div>
         <p style="margin:0 0 12px">
           <b>اشتراک ۳ ماهه؛ شروع با دوره کوتاه‌تر:</b> با ۳ میلیون تومان، ۹۰ روز از امکانات گالری، کاتالوگ، انتشار آگهی استخدام، حذف تبلیغات رقبا و جایگاه بالاتر از شرکت‌های رایگان بهره‌مند شوید.

@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => $job->exists ? 'ویرایش آگهی استخدام' : 'درج آگهی استخدام جدید', 'dashboardNav' => true])
 
 @section('content')
-<div style="max-width:960px;margin:24px auto 48px">
+<div class="page-wrapper" style="margin:24px 0 48px">
   
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
     <div>
@@ -36,7 +36,7 @@
         ۱. عنوان و هویت کارفرما
       </h3>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="grid-2" style="margin-bottom:16px">
         <div>
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">
             عنوان آگهی شغلی <span style="color:red">*</span>
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div class="grid-3">
         <div>
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">دسته‌بندی تخصصی</label>
           <select name="category_id" style="width:100%">
@@ -112,7 +112,7 @@
         ۲. محل کار و موقعیت جغرافیایی
       </h3>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="grid-3" style="margin-bottom:16px">
         <div>
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">نوع محل کار <span style="color:red">*</span></label>
           <select name="workplace_type" required style="width:100%">
@@ -152,7 +152,7 @@
         ۳. حقوق، مزایا و تسهیلات رفاهی
       </h3>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px">
+      <div class="grid-3" style="margin-bottom:18px">
         <div>
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">نوع حقوق پیشنهادی <span style="color:red">*</span></label>
           <select name="salary_type" id="salary_type_select" required style="width:100%">
@@ -235,7 +235,7 @@
         ۴. شرایط احراز و مهارت‌های فنی
       </h3>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="grid-3" style="margin-bottom:16px">
         <div>
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">سابقه کار مورد نیاز <span style="color:red">*</span></label>
           <select name="experience_years" required style="width:100%">
@@ -286,7 +286,7 @@
         ۵. نحوه دریافت رزومه و ارتباط با کارجویان
       </h3>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="grid-3" style="margin-bottom:16px">
         <div>
           <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">روش ارتباطی اصلی</label>
           <select name="contact_type" style="width:100%">

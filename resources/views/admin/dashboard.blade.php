@@ -155,7 +155,7 @@
   </div>
 
   <!-- دو ستون: آخرین آگهی‌های شغلی و آخرین رزومه‌ها -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px">
+  <div class="grid-2" style="gap:20px;margin-top:20px">
     
     <!-- آخرین آگهی‌های استخدام -->
     <div class="admin-table-card">

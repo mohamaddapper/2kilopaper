@@ -4,7 +4,7 @@
 ])
 
 @section('content')
-<div style="max-width:1100px;margin:24px auto 60px">
+<div class="page-wrapper" style="margin:24px 0 60px">
 
   <!-- بنر هدر و معرفی -->
   <div style="text-align:center;padding:36px 20px;background:#fff;border:1px solid var(--border);border-radius:16px;margin-bottom:32px;box-shadow:0 2px 10px rgba(0,0,0,0.02)">
@@ -139,7 +139,7 @@
   </div>
 
   <!-- سایر جایگاه‌های تبلیغاتی بنری و سوشال -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:36px">
+  <div class="grid-2" style="margin-bottom:36px">
     
     <div class="card" style="padding:24px;background:#fff;border-radius:14px;border:1px solid var(--border)">
       <h3 style="margin:0 0 12px;font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px">

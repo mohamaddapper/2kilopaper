@@ -19,7 +19,7 @@
     <span style="color:var(--text);font-weight:600">{{ $job->title }}</span>
   </div>
 
-  <div class="layout" style="grid-template-columns:1fr 320px;gap:24px;align-items:start">
+  <div class="job-detail-layout">
     
     <!-- محتوای اصلی شغل (سمت راست در RTL) -->
     <div>
@@ -219,7 +219,7 @@
         <form method="post" action="{{ route('jobs.apply', $job) }}" enctype="multipart/form-data">
           @csrf
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="grid-2" style="margin-bottom:14px">
             <div>
               <label style="display:block;margin-bottom:6px;font-size:13px;font-weight:600">نام و نام خانوادگی <span style="color:red">*</span></label>
               <input name="full_name" required placeholder="مثال: علی احمدی" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px">
@@ -231,7 +231,7 @@
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="grid-3" style="margin-bottom:14px">
             <div>
               <label style="display:block;margin-bottom:6px;font-size:13px">سال تولد</label>
               <input name="birth_year" placeholder="مثال: 1370" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px">
@@ -260,7 +260,7 @@
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="grid-2" style="margin-bottom:14px">
             <div>
               <label style="display:block;margin-bottom:6px;font-size:13px">آخرین شرکت یا کارخانه محل کار</label>
               <input name="last_company" placeholder="مثال: کارتن میهن، چاپ افست آریا..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px">
