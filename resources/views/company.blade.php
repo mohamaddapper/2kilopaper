@@ -520,10 +520,10 @@
             <label for="short_link_input" style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px">
               🔗 لینک کوتاه صفحه:
             </label>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <input type="text" id="short_link_input" value="{{ url('/?p=' . $company->id) }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:8px 10px;border-radius:6px;font-size:12.5px;width:100%;color:#1e293b;font-family:inherit;box-sizing:border-box">
-              <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" style="background:#0284c7;font-size:12.5px;padding:8px 12px;width:100%;font-weight:700;cursor:pointer;text-align:center">
-                برای کپی کلیک کنید
+            <div style="display:flex;gap:6px;align-items:center">
+              <input type="text" id="short_link_input" value="{{ url('/?p=' . $company->id) }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:7px 10px;border-radius:6px;font-size:12px;flex:1;min-width:0;color:#1e293b;font-family:inherit;box-sizing:border-box">
+              <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" style="background:#0284c7;font-size:12px;padding:7px 14px;white-space:nowrap;font-weight:700;cursor:pointer;flex-shrink:0;border-radius:6px">
+                کپی
               </button>
             </div>
           </div>
