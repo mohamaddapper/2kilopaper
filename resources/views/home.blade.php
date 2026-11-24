@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
 @section('hero')
-<!-- اسلایدر بنرهای تمام‌عرض بالای صفحه اصلی (ارتفاع ۵۰۰ پیکسل، چسبیده به دو طرف بدون فاصله) -->
+<!-- اسلایدر بنرهای بالای صفحه اصلی (ارتفاع ۵۰۰ پیکسل با استایل ورق‌خور و نمایش بنرهای قبل و بعد) -->
 <section class="home-slider-section">
+  
+  <!-- دکمه‌های ناوبری اسلایدر در کناره‌های چپ و راست -->
+  <button type="button" class="home-slider-arrow home-slider-prev" onclick="moveHomeSlider(-1)" aria-label="بنر قبلی" title="بنر قبلی">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+  </button>
+  <button type="button" class="home-slider-arrow home-slider-next" onclick="moveHomeSlider(1)" aria-label="بنر بعدی" title="بنر بعدی">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  </button>
+
+  <!-- کادر تمام‌عرض اسلایدر -->
   <div class="home-slider-wrapper" id="homeSliderWrapper">
-
-    <!-- دکمه‌های ناوبری اسلایدر در کناره‌های چپ و راست -->
-    <button type="button" class="home-slider-arrow home-slider-prev" onclick="moveHomeSlider(-1)" aria-label="بنر قبلی" title="بنر قبلی">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    </button>
-    <button type="button" class="home-slider-arrow home-slider-next" onclick="moveHomeSlider(1)" aria-label="بنر بعدی" title="بنر بعدی">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
-
-    <!-- ترک اسلایدها با سرریز مخفی -->
     <div class="home-slider-track" id="homeSliderTrack">
 
       <!-- آیتم ۰: کلون اسلاید ۵ (جهت چرخش بی‌نهایت بدون پرش) -->
@@ -21,7 +21,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #881337 0%, #be123c 55%, #e11d48 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>📢</span>
@@ -46,7 +46,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0284c7 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>📦</span>
@@ -71,7 +71,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #451a03 0%, #92400e 55%, #d97706 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>⭐</span>
@@ -96,7 +96,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #064e3b 0%, #047857 55%, #059669 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>💼</span>
@@ -121,7 +121,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #312e81 0%, #4338ca 55%, #6366f1 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>🚀</span>
@@ -146,7 +146,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #881337 0%, #be123c 55%, #e11d48 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>📢</span>
@@ -171,7 +171,7 @@
         <div class="home-banner-card" style="background:linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0284c7 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
-          <div class="home-banner-container">
+          <div class="home-banner-inner">
             <div class="home-banner-content">
               <div class="home-banner-badge">
                 <span>📦</span>
@@ -192,17 +192,17 @@
       </div>
 
     </div>
-
-    <!-- نشانگرهای دایره‌ای (۵ دات در پایین بنرها) -->
-    <div class="home-slider-dots">
-      <span class="home-slider-dot active" onclick="goToHomeSlide(0)" title="بنر ۱"></span>
-      <span class="home-slider-dot" onclick="goToHomeSlide(1)" title="بنر ۲"></span>
-      <span class="home-slider-dot" onclick="goToHomeSlide(2)" title="بنر ۳"></span>
-      <span class="home-slider-dot" onclick="goToHomeSlide(3)" title="بنر ۴"></span>
-      <span class="home-slider-dot" onclick="goToHomeSlide(4)" title="بنر ۵"></span>
-    </div>
-
   </div>
+
+  <!-- نشانگرهای دایره‌ای (۵ دات در پایین اسلایدر) -->
+  <div class="home-slider-dots">
+    <span class="home-slider-dot active" onclick="goToHomeSlide(0)" title="بنر ۱"></span>
+    <span class="home-slider-dot" onclick="goToHomeSlide(1)" title="بنر ۲"></span>
+    <span class="home-slider-dot" onclick="goToHomeSlide(2)" title="بنر ۳"></span>
+    <span class="home-slider-dot" onclick="goToHomeSlide(3)" title="بنر ۴"></span>
+    <span class="home-slider-dot" onclick="goToHomeSlide(4)" title="بنر ۵"></span>
+  </div>
+
 </section>
 
 <!-- بخش جستجو و معرفی سایت -->
@@ -229,14 +229,15 @@
 @endif
 
 <style>
-/* استایل‌های بنرهای اسلایدی تمام‌عرض ۵۰۰ پیکسلی، چسبیده به دو طرف بدون فاصله */
+/* استایل‌های اسلایدر تمام‌عرض ۵۰۰ پیکسلی با اثر ورق‌خور و نمایش بنرهای قبل و بعد (Center Mode Peek) */
 .home-slider-section {
   width: 100%;
   position: relative;
   overflow: hidden;
   margin: 0;
-  padding: 0;
-  background: #0f172a;
+  padding: 16px 0 24px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
 }
 .home-slider-wrapper {
   width: 100%;
@@ -245,29 +246,45 @@
   position: relative;
   margin: 0;
   padding: 0;
-  direction: ltr; /* جهت محاسبه ریاضی دقیق و مستقل از جهت صفحه */
+  direction: ltr; /* جهت محاسبه ریاضی دقیق و مستقل از مرورگر */
 }
 .home-slider-track {
   display: flex;
+  align-items: center;
   height: 500px;
   margin: 0;
   padding: 0;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: transform;
 }
 .home-slider-item {
-  width: 100%;
-  flex: 0 0 100%;
+  flex-shrink: 0;
   height: 500px;
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  transition: transform 0.45s ease, opacity 0.45s ease, filter 0.45s ease;
   user-select: none;
+}
+.home-slider-item.is-active {
+  transform: scale(1);
+  opacity: 1;
+  filter: brightness(1);
+  z-index: 5;
+}
+.home-slider-item.is-peek {
+  transform: scale(0.92);
+  opacity: 0.55;
+  filter: brightness(0.85);
+  cursor: pointer;
+  z-index: 1;
+}
+.home-slider-item.is-peek:hover {
+  opacity: 0.75;
 }
 .home-banner-card {
   width: 100%;
   height: 500px;
   position: relative;
+  border-radius: 18px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -277,12 +294,12 @@
   text-align: right;
   margin: 0;
   padding: 0;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.28), 0 8px 16px -6px rgba(0, 0, 0, 0.15);
 }
-.home-banner-container {
+.home-banner-inner {
   width: 100%;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 48px;
+  height: 100%;
+  padding: 48px 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -296,23 +313,23 @@
   pointer-events: none;
 }
 .decor-1 {
-  width: 500px;
-  height: 500px;
+  width: 480px;
+  height: 480px;
   background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%);
   top: -120px;
   left: -100px;
 }
 .decor-2 {
-  width: 400px;
-  height: 400px;
+  width: 380px;
+  height: 380px;
   background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
-  bottom: -100px;
+  bottom: -90px;
   right: 15%;
 }
 .home-banner-content {
   position: relative;
   z-index: 2;
-  max-width: 720px;
+  max-width: 680px;
 }
 .home-banner-badge {
   display: inline-flex;
@@ -331,7 +348,7 @@
 }
 .home-banner-title {
   margin: 0 0 16px;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 900;
   line-height: 1.35;
   color: #ffffff;
@@ -342,7 +359,6 @@
   font-size: 16px;
   color: rgba(255, 255, 255, 0.95);
   line-height: 1.8;
-  max-width: 680px;
 }
 .home-banner-btn {
   background: #ffffff !important;
@@ -380,11 +396,11 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
   color: #0f172a;
   display: flex;
   align-items: center;
@@ -397,58 +413,47 @@
 .home-slider-arrow:hover {
   background: #ffffff;
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
   color: #0284c7;
 }
 .home-slider-prev {
-  right: 24px;
+  right: 20px;
 }
 .home-slider-next {
-  left: 24px;
+  left: 20px;
 }
 .home-slider-dots {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  z-index: 20;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 18px;
 }
 .home-slider-dot {
   width: 9px;
   height: 9px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.45);
+  background: #cbd5e1;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 .home-slider-dot.active {
   width: 28px;
-  background: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  background: #0284c7;
 }
 
 @media (max-width: 900px) {
-  .home-banner-container {
-    padding: 0 32px;
+  .home-banner-inner {
+    padding: 32px 36px;
   }
   .home-banner-title {
-    font-size: 26px;
+    font-size: 24px;
   }
   .home-banner-desc {
-    font-size: 14.5px;
+    font-size: 14px;
   }
   .home-banner-graphic {
-    font-size: 90px;
+    font-size: 85px;
     margin-right: 20px;
   }
 }
@@ -458,10 +463,10 @@
   .home-slider-track,
   .home-slider-item,
   .home-banner-card {
-    height: 460px;
+    height: 440px;
   }
-  .home-banner-container {
-    padding: 0 20px;
+  .home-banner-inner {
+    padding: 24px 20px;
   }
   .home-banner-badge {
     font-size: 11.5px;
@@ -469,7 +474,7 @@
     margin-bottom: 14px;
   }
   .home-banner-title {
-    font-size: 21px;
+    font-size: 20px;
     margin-bottom: 12px;
     line-height: 1.4;
   }
@@ -512,19 +517,51 @@ document.addEventListener('DOMContentLoaded', function () {
   let isAnimating = false;
   let autoPlayTimer = null;
 
-  function updatePosition(animate = true) {
+  function getSlideDimensions() {
     const wrapperW = wrapper.offsetWidth;
-    const translateX = - (currentTrackIndex * wrapperW);
+    const isMobile = window.innerWidth <= 768;
+    const isSmallMobile = window.innerWidth <= 480;
+
+    // بنر وسط حدود ۷۰٪ صفحه را پر می‌کند و ۱۵٪ از چپ و ۱۵٪ از راست به بنرهای قبلی و بعدی اختصاص می‌یابد
+    let slideRatio = 0.70;
+    if (isSmallMobile) {
+      slideRatio = 0.88;
+    } else if (isMobile) {
+      slideRatio = 0.80;
+    }
+
+    const slideW = Math.floor(wrapperW * slideRatio);
+    const gap = isMobile ? 12 : 20;
+    return { wrapperW, slideW, gap };
+  }
+
+  function applyDimensions() {
+    const { slideW, gap } = getSlideDimensions();
+    items.forEach((item, idx) => {
+      item.style.width = slideW + 'px';
+      if (idx < items.length - 1) {
+        item.style.marginRight = gap + 'px';
+      } else {
+        item.style.marginRight = '0px';
+      }
+    });
+  }
+
+  function updatePosition(animate = true) {
+    const { wrapperW, slideW, gap } = getSlideDimensions();
+    const centerOffset = (wrapperW - slideW) / 2;
+    const itemLeft = currentTrackIndex * (slideW + gap);
+    const translateX = centerOffset - itemLeft;
 
     if (animate) {
-      track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+      track.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
     } else {
       track.style.transition = 'none';
     }
 
     track.style.transform = 'translateX(' + translateX + 'px)';
 
-    // به‌روزرسانی نشانگر دات‌های پایین بنر
+    // تعیین ایندکس اسلاید واقعی برای دات‌ها (۰ تا ۴)
     let realIndex = 0;
     if (currentTrackIndex === 0) {
       realIndex = 4;
@@ -533,6 +570,16 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       realIndex = currentTrackIndex - 1;
     }
+
+    items.forEach((item, idx) => {
+      if (idx === currentTrackIndex) {
+        item.classList.add('is-active');
+        item.classList.remove('is-peek');
+      } else {
+        item.classList.remove('is-active');
+        item.classList.add('is-peek');
+      }
+    });
 
     dots.forEach((dot, dotIdx) => {
       if (dotIdx === realIndex) {
@@ -574,6 +621,20 @@ document.addEventListener('DOMContentLoaded', function () {
     startAutoPlay();
   };
 
+  // کلیک روی بنرهای کناری به صورت مستقیم آن بنر را به وسط می‌آورد
+  items.forEach((item, idx) => {
+    item.addEventListener('click', function (e) {
+      if (idx !== currentTrackIndex) {
+        if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+          e.preventDefault();
+          stopAutoPlay();
+          moveTo(idx);
+          startAutoPlay();
+        }
+      }
+    });
+  });
+
   function startAutoPlay() {
     stopAutoPlay();
     autoPlayTimer = setInterval(function () {
@@ -588,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // توقف پخش خودکار هنگام هاور ماوس
+  // توقف پخش خودکار هنگام هاور ماوس روی اسلایدر
   wrapper.addEventListener('mouseenter', stopAutoPlay);
   wrapper.addEventListener('mouseleave', startAutoPlay);
 
@@ -604,7 +665,6 @@ document.addEventListener('DOMContentLoaded', function () {
     touchEndX = e.changedTouches[0].clientX;
     const diff = touchEndX - touchStartX;
     if (Math.abs(diff) > 40) {
-      // در ساختار راست به چپ: سوایپ به راست = بنر قبلی، سوایپ به چپ = بنر بعدی
       if (diff > 0) {
         moveTo(currentTrackIndex - 1);
       } else {
@@ -619,11 +679,13 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
+      applyDimensions();
       updatePosition(false);
     }, 100);
   });
 
   // اجرای اولیه
+  applyDimensions();
   updatePosition(false);
   startAutoPlay();
 });
