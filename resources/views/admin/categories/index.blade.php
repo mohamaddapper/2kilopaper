@@ -15,7 +15,7 @@
       <select name="pillar" style="padding:9px 12px;border:1px solid #cbd5e1;border-radius:8px;font-family:inherit;background:#fff">
         <option value="">همه شاخه‌های اصلی</option>
         @foreach($pillars as $p)
-          <option value="{{ $p->id }}" @selected(request('pillar') == $p->id)>{{ $p->icon }} {{ $p->name }}</option>
+          <option value="{{ $p->id }}" @selected(request('pillar') == $p->id)>{{ $p->name }}</option>
         @endforeach
       </select>
       <button type="submit" class="btn" style="background:var(--admin-primary);padding:9px 20px">فیلتر</button>

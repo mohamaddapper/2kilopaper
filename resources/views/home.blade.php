@@ -280,24 +280,24 @@
   </div>
 
   @php
- $catIcons = [
- 41 => ['icon' => '', 'color' => '#2563eb', 'bg' => '#eff6ff'], // جعبه کارتن
- 130 => ['icon' => '', 'color' => '#0891b2', 'bg' => '#ecfeff'], // چاپ تبلیغاتی
- 124 => ['icon' => '', 'color' => '#4f46e5', 'bg' => '#eef2ff'], // چاپ افست
- 128 => ['icon' => '', 'color' => '#059669', 'bg' => '#ecfdf5'], // چاپ لیبل و برچسب
- 129 => ['icon' => '', 'color' => '#9333ea', 'bg' => '#faf5ff'], // چاپ جعبه و بسته بندی
- 40 => ['icon' => '', 'color' => '#d97706', 'bg' => '#fffbeb'], // ورق کارتن
- 62 => ['icon' => '', 'color' => '#e11d48', 'bg' => '#fff1f2'], // جعبه مقوایی
- 56 => ['icon' => '', 'color' => '#475569', 'bg' => '#f1f5f9'], // ماشین آلات
- ];
- @endphp
+  $catIcons = [
+      41 => ['icon' => svg_icon('box', 22), 'color' => '#2563eb', 'bg' => '#eff6ff'], // جعبه کارتن
+      130 => ['icon' => svg_icon('megaphone', 22), 'color' => '#0891b2', 'bg' => '#ecfeff'], // چاپ تبلیغاتی
+      124 => ['icon' => svg_icon('printer', 22), 'color' => '#4f46e5', 'bg' => '#eef2ff'], // چاپ افست
+      128 => ['icon' => svg_icon('tag', 22), 'color' => '#059669', 'bg' => '#ecfdf5'], // چاپ لیبل و برچسب
+      129 => ['icon' => svg_icon('gift', 22), 'color' => '#9333ea', 'bg' => '#faf5ff'], // چاپ جعبه و بسته بندی
+      40 => ['icon' => svg_icon('file-text', 22), 'color' => '#d97706', 'bg' => '#fffbeb'], // ورق کارتن
+      62 => ['icon' => svg_icon('factory', 22), 'color' => '#e11d48', 'bg' => '#fff1f2'], // جعبه مقوایی
+      56 => ['icon' => svg_icon('settings', 22), 'color' => '#475569', 'bg' => '#f1f5f9'], // ماشین آلات
+  ];
+  @endphp
 
   <div class="core-cat-grid">
     @foreach($coreCategories as $cat)
-      @php $meta = $catIcons[$cat->id] ?? ['icon' => '', 'color' => '#1f5fa8', 'bg' => '#f0f7ff']; @endphp
+      @php $meta = $catIcons[$cat->id] ?? ['icon' => svg_icon('folder', 22), 'color' => '#1f5fa8', 'bg' => '#f0f7ff']; @endphp
       <a href="{{ route('directory', ['cat' => $cat->id]) }}" class="core-cat-card">
         <div class="core-cat-icon" style="background:{{ $meta['bg'] }};color:{{ $meta['color'] }}">
-          <span>{{ $meta['icon'] }}</span>
+          <span style="display:inline-flex;align-items:center">{!! $meta['icon'] !!}</span>
         </div>
         <div class="core-cat-info">
           <h3 class="core-cat-name">{{ $cat->name }}</h3>

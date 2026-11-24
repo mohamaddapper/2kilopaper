@@ -106,7 +106,7 @@
           @foreach($roleGroups as $group)
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <span class="badge" style="background:{{ $group['bg'] }};color:{{ $group['color'] }};border:1px solid {{ $group['border'] }};font-weight:800;font-size:12px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px">
-                <span>{{ $group['icon'] }}</span>
+                <span style="display:inline-flex;align-items:center">{!! $group['icon'] !!}</span>
                 <span>{{ $group['label'] }}:</span>
               </span>
               @foreach($group['items'] as $catItem)
@@ -255,7 +255,7 @@
               <div style="background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:14px">
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
                   <div style="display:flex;align-items:center;gap:6px">
-                    <span style="font-size:19px">{{ $tInfo['icon'] }}</span>
+                    <span style="display:inline-flex;align-items:center;color:var(--primary)">{!! $tInfo['icon'] !!}</span>
                     <b style="color:var(--primary);font-size:15px">
                       {{ $tInfo['title'] }}
                     </b>
