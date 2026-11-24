@@ -205,11 +205,24 @@ class DashboardController extends Controller
         }
         $company->categories()->sync($syncData);
 
-        if ($r->user()->isAdmin()) {
-            $redirectUrl = $r->input('redirect_to');
-            if ($redirectUrl && Str::startsWith($redirectUrl, '/')) {
-                return redirect($redirectUrl)->with('ok', "اطلاعات شرکت «{$company->name}» با موفقیت ویرایش و ذخیره شد.");
+        $returnTo = (string) ($r->input('return_to') ?: $r->input('redirect_to', ''));
+        if ($returnTo !== '') {
+            $appHost = parse_url(url('/'), PHP_URL_HOST);
+            $retHost = parse_url($returnTo, PHP_URL_HOST);
+            $isSafeLocal = (str_starts_with($returnTo, '/') && !str_starts_with($returnTo, '//'))
+                || ($retHost && $appHost && strcasecmp($retHost, $appHost) === 0);
+
+            if ($isSafeLocal) {
+                $retPath = (string) parse_url($returnTo, PHP_URL_PATH);
+                if (str_starts_with(urldecode($retPath), '/company/')) {
+                    $company->refresh();
+                    $returnTo = $company->url;
+                }
+                return redirect($returnTo)->with('ok', "اطلاعات شرکت «{$company->name}» با موفقیت ویرایش و ذخیره شد.");
             }
+        }
+
+        if ($r->user()->isAdmin()) {
             return redirect()->route('admin.companies')->with('ok', "اطلاعات شرکت «{$company->name}» با موفقیت ویرایش و ذخیره شد.");
         }
 
