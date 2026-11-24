@@ -18,7 +18,7 @@
 
       <!-- آیتم ۰: کلون اسلاید ۵ (جهت چرخش بی‌نهایت بدون پرش) -->
       <div class="home-slider-item" data-clone="5">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #881337 0%, #be123c 55%, #e11d48 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #be123c 0%, #e11d48 50%, #f43f5e 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -43,7 +43,7 @@
 
       <!-- اسلاید ۱: دایرکتوری و جستجوی جامع شرکت‌ها -->
       <div class="home-slider-item" data-index="0">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0284c7 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #0284c7 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -68,7 +68,7 @@
 
       <!-- اسلاید ۲: ارتقای اشتراک طلایی و فروش ویژه -->
       <div class="home-slider-item" data-index="1">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #451a03 0%, #92400e 55%, #d97706 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #b45309 0%, #d97706 45%, #f59e0b 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -93,7 +93,7 @@
 
       <!-- اسلاید ۳: کاریابی و استخدام تخصصی صنعت -->
       <div class="home-slider-item" data-index="2">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #064e3b 0%, #047857 55%, #059669 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #047857 0%, #059669 50%, #10b981 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -118,7 +118,7 @@
 
       <!-- اسلاید ۴: ثبت رایگان شرکت و کارگاه -->
       <div class="home-slider-item" data-index="3">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #312e81 0%, #4338ca 55%, #6366f1 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #818cf8 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -143,7 +143,7 @@
 
       <!-- اسلاید ۵: تبلیغات بنری و معرفی برند -->
       <div class="home-slider-item" data-index="4">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #881337 0%, #be123c 55%, #e11d48 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #be123c 0%, #e11d48 50%, #f43f5e 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -168,7 +168,7 @@
 
       <!-- آیتم ۶: کلون اسلاید ۱ (جهت چرخش بی‌نهایت بدون پرش) -->
       <div class="home-slider-item" data-clone="1">
-        <div class="home-banner-card" style="background:linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0284c7 100%)">
+        <div class="home-banner-card" style="background:linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #0284c7 100%)">
           <div class="banner-decor decor-1"></div>
           <div class="banner-decor decor-2"></div>
           <div class="home-banner-inner">
@@ -780,20 +780,20 @@
 
 <style>
 /* ==========================================================================
-   استایل‌های اسلایدر تمام‌عرض ۵۰۰ پیکسلی (Center Mode Peek)
+   استایل‌های اسلایدر تمام‌عرض ۴۵۰ پیکسلی (Center Mode Peek)
    ========================================================================== */
 .home-slider-section {
   width: 100%;
   position: relative;
   overflow: hidden;
   margin: 0;
-  padding: 16px 0 24px;
+  padding: 10px 0 16px;
   background: #f1f5f9;
   border-bottom: 1px solid #e2e8f0;
 }
 .home-slider-wrapper {
   width: 100%;
-  height: 500px;
+  height: 450px;
   overflow: hidden;
   position: relative;
   margin: 0;
@@ -803,7 +803,7 @@
 .home-slider-track {
   display: flex;
   align-items: center;
-  height: 500px;
+  height: 450px;
   margin: 0;
   padding: 0;
   transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
@@ -811,30 +811,28 @@
 }
 .home-slider-item {
   flex-shrink: 0;
-  height: 500px;
+  height: 450px;
   box-sizing: border-box;
-  transition: transform 0.45s ease, opacity 0.45s ease, filter 0.45s ease;
+  transition: transform 0.45s ease, opacity 0.45s ease;
   user-select: none;
 }
 .home-slider-item.is-active {
   transform: scale(1);
   opacity: 1;
-  filter: brightness(1);
   z-index: 5;
 }
 .home-slider-item.is-peek {
-  transform: scale(0.92);
-  opacity: 0.55;
-  filter: brightness(0.85);
+  transform: scale(0.93);
+  opacity: 0.65;
   cursor: pointer;
   z-index: 1;
 }
 .home-slider-item.is-peek:hover {
-  opacity: 0.75;
+  opacity: 0.85;
 }
 .home-banner-card {
   width: 100%;
-  height: 500px;
+  height: 450px;
   position: relative;
   border-radius: 18px;
   overflow: hidden;
@@ -846,7 +844,7 @@
   text-align: right;
   margin: 0;
   padding: 0;
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.28), 0 8px 16px -6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.16), 0 4px 12px -4px rgba(0, 0, 0, 0.08);
 }
 .home-banner-inner {
   width: 100%;
@@ -994,39 +992,39 @@
    استایل‌های بخش‌های جدید صفحه اصلی
    ========================================================================== */
 .home-section {
-  margin-top: 48px;
+  margin-top: 26px;
 }
 .home-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 .home-section-title {
   margin: 0;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: -0.3px;
 }
 .home-section-tag {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 2px 9px;
   border-radius: 20px;
   background: #eef2ff;
   color: #4338ca;
   border: 1px solid #e0e7ff;
 }
 .home-section-link {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--primary);
   display: inline-flex;
@@ -1040,24 +1038,24 @@
 }
 .home-section-desc-inline {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 /* ۱. بخش جستجو */
 .home-search-section {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 36px 32px 30px;
-  margin-top: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  padding: 24px 22px 20px;
+  margin-top: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
 }
 .search-title-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 8px;
+  gap: 14px;
+  margin-bottom: 6px;
 }
 .search-title-line {
   height: 1.5px;
@@ -1067,7 +1065,7 @@
 }
 .search-title-text {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: -0.4px;
@@ -1075,8 +1073,8 @@
 .search-subtitle {
   text-align: center;
   color: #64748b;
-  font-size: 14.5px;
-  margin: 0 auto 24px;
+  font-size: 13.5px;
+  margin: 0 auto 18px;
   max-width: 640px;
 }
 .home-search-bar {
@@ -1490,7 +1488,7 @@
 .showcase-tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 .showcase-tab {
@@ -1852,6 +1850,66 @@
 }
 
 @media (max-width: 768px) {
+  .home-slider-section {
+    padding: 8px 0 14px;
+  }
+  .home-banner-card {
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+  }
+  .home-banner-inner {
+    padding: 22px 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+  }
+  .home-banner-content {
+    max-width: 100%;
+    z-index: 2;
+  }
+  .home-banner-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    margin-bottom: 10px;
+  }
+  .home-banner-title {
+    font-size: 19px;
+    line-height: 1.38;
+    margin-bottom: 8px;
+    letter-spacing: normal;
+  }
+  .home-banner-desc {
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .home-banner-btn {
+    padding: 8px 16px;
+    font-size: 12.5px;
+    font-weight: 800;
+    border-radius: 8px;
+  }
+  .home-banner-graphic {
+    font-size: 64px;
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    margin: 0;
+    opacity: 0.15;
+  }
+  .home-slider-arrow {
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+  }
+  .home-slider-prev { right: 4px; }
+  .home-slider-next { left: 4px; }
+
   .jobs-dual-grid {
     grid-template-columns: 1fr;
   }
@@ -1939,22 +1997,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const isMobile = window.innerWidth <= 768;
     const isSmallMobile = window.innerWidth <= 480;
 
-    let slideRatio = 0.70;
+    let slideRatio = 0.72; // Desktop: 72% width leaves 14% peek on both sides
     if (isSmallMobile) {
-      slideRatio = 0.88;
+      slideRatio = 0.76; // Mobile: 76% width leaves 12% peek of previous banner on right and 12% on left
     } else if (isMobile) {
-      slideRatio = 0.80;
+      slideRatio = 0.74;
     }
 
     const slideW = Math.floor(wrapperW * slideRatio);
     const gap = isMobile ? 12 : 20;
-    return { wrapperW, slideW, gap };
+
+    // ارتفاع: در گوشی‌ها دقیقاً مربعی ۱۰۸۰ در ۱۰۸۰ متناسب با عرض (۱:۱)، در دسکتاپ ۴۵۰ پیکسل
+    let slideH = 450;
+    if (isMobile) {
+      slideH = slideW; // Exact 1080x1080 square proportion!
+    }
+
+    return { wrapperW, slideW, slideH, gap, isMobile };
   }
 
   function applyDimensions() {
-    const { slideW, gap } = getSlideDimensions();
+    const { slideW, slideH, gap } = getSlideDimensions();
+
+    wrapper.style.height = slideH + 'px';
+    track.style.height = slideH + 'px';
+
     items.forEach((item, idx) => {
       item.style.width = slideW + 'px';
+      item.style.height = slideH + 'px';
+      const card = item.querySelector('.home-banner-card');
+      if (card) {
+        card.style.height = slideH + 'px';
+      }
+
       if (idx < items.length - 1) {
         item.style.marginRight = gap + 'px';
       } else {
