@@ -445,13 +445,126 @@
 
     <!-- تب ۶: اشتراک و پرداخت -->
     <div id="tab-subscription" class="dashboard-tab-content" style="display:none">
-      <h2 style="margin:0 0 16px;font-size:18px">اشتراک و صورتحساب</h2>
-      <div class="dash-alert dash-alert-warn" style="margin-bottom:16px">
-        <b>اشتراک فعلی: نقره‌ای</b> — اعتبار باقی‌مانده: ۶ روز (انقضا: ۱۴۰۵/۰۸/۲۶)
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h2 style="margin:0 0 4px;font-size:18px">اشتراک و ارتقای خدمات</h2>
+          <p style="margin:0;font-size:13px;color:var(--muted)">مدیریت پلن‌ها، افزایش شانس دیده‌شدن و استفاده از تمام امکانات دایرکتوری</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <a href="{{ route('subscription.fee') }}" target="_blank" class="btn ghost small" style="font-size:12px">
+            تعرفه اشتراک‌ها ↗
+          </a>
+          <a href="{{ route('advertising') }}" target="_blank" class="btn ghost small" style="font-size:12px">
+            پلن‌های ویژه و تبلیغات ↗
+          </a>
+        </div>
       </div>
+
+      <!-- وضعیت اشتراک شرکت‌های کاربر -->
+      @if($companies->count() > 0)
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
+          @foreach($companies as $c)
+            <div class="card" style="padding:16px 20px;background:#fff;border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+              <div>
+                <b style="font-size:15px;color:var(--text)">{{ $c->name }}</b>
+                <div style="font-size:12.5px;color:var(--muted);margin-top:4px">
+                  وضعیت فعلی:
+                  @if($c->tier === 'gold')
+                    <span class="badge gold" style="font-size:11px">★ اشتراک طلایی (۱ ساله)</span>
+                  @elseif($c->tier === 'silver')
+                    <span class="badge silver" style="font-size:11px">★ اشتراک نقره‌ای (۶ ماهه)</span>
+                  @elseif($c->tier === 'bronze')
+                    <span class="badge bronze" style="font-size:11px">★ اشتراک برنزی (۳ ماهه)</span>
+                  @else
+                    <span class="badge" style="background:#f1f5f9;color:#64748b;font-size:11px">عادی (رایگان)</span>
+                  @endif
+
+                  @if($c->tier_expires_at)
+                    · <span style="color:#0284c7">اعتبار تا {{ $c->tier_expires_at->format('Y/m/d') }} ({{ $c->tier_expires_at->diffForHumans() }})</span>
+                  @endif
+                </div>
+              </div>
+
+              <div>
+                <a href="#plans_grid" class="btn small" style="background:var(--primary);font-size:12px">
+                  {{ $c->tier ? 'تمدید یا تغییر اشتراک' : 'ارتقا به اشتراک ویژه' }}
+                </a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      @endif
+
+      <!-- کارت‌های ۳ گانه اشتراک -->
+      <h3 style="margin:0 0 14px;font-size:16px;color:var(--text)" id="plans_grid">پلن‌های اشتراک ۲ کیلو کاغذ</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:28px">
+        
+        <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <span style="font-size:12px;color:var(--muted);font-weight:600">دوره کوتاه‌مدت</span>
+            <h4 style="margin:4px 0 10px;font-size:16px">اشتراک ۳ ماهه</h4>
+            <div style="font-size:20px;font-weight:800;color:var(--primary);margin-bottom:12px">
+              ۳/۰۰۰/۰۰۰ تومان
+            </div>
+            <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
+              <li>✓ درج تصاویر و گالری محصولات</li>
+              <li>✓ درج آگهی استخدام نامحدود</li>
+              <li>✓ افزودن کاتالوگ محصولات (PDF)</li>
+              <li>✓ حذف تبلیغات رقبا از صفحه شما</li>
+              <li>✓ جایگاه بالاتر از شرکت‌های عادی</li>
+            </ul>
+          </div>
+          <div style="margin-top:16px">
+            <a href="tel:02128421075" class="btn ghost small" style="width:100%;text-align:center;box-sizing:border-box">سفارش: ۰۲۱۲۸۴۲۱۰۷۵</a>
+          </div>
+        </div>
+
+        <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <span style="font-size:12px;color:var(--muted);font-weight:600">مدت بیشتر با تخفیف</span>
+            <h4 style="margin:4px 0 10px;font-size:16px">اشتراک ۶ ماهه</h4>
+            <div style="font-size:20px;font-weight:800;color:var(--primary);margin-bottom:12px">
+              ۴/۰۰۰/۰۰۰ تومان
+            </div>
+            <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
+              <li>✓ درج تصاویر و گالری محصولات</li>
+              <li>✓ درج آگهی استخدام نامحدود</li>
+              <li>✓ افزودن کاتالوگ محصولات (PDF)</li>
+              <li>✓ حذف تبلیغات رقبا از صفحه شما</li>
+              <li>✓ جایگاه بالاتر از شرکت‌های عادی</li>
+            </ul>
+          </div>
+          <div style="margin-top:16px">
+            <a href="tel:02128421075" class="btn ghost small" style="width:100%;text-align:center;box-sizing:border-box">سفارش: ۰۲۱۲۸۴۲۱۰۷۵</a>
+          </div>
+        </div>
+
+        <div class="card" style="padding:20px;background:#fefce8;border-radius:12px;border:2px solid #eab308;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <span style="font-size:12px;color:#854d0e;font-weight:700">★ کامل‌ترین و به‌صرفه‌ترین</span>
+            <h4 style="margin:4px 0 10px;font-size:16px;color:#713f12">اشتراک ۱ ساله (طلایی)</h4>
+            <div style="font-size:20px;font-weight:800;color:#854d0e;margin-bottom:12px">
+              ۵/۰۰۰/۰۰۰ تومان
+            </div>
+            <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#713f12">
+              <li>✓ تمام امکانات گالری، کاتالوگ و استخدام</li>
+              <li>✓ درج ویدیوی معرفی کالا و خدمات</li>
+              <li>✓ اطلاع‌رسانی پیامکی اختصاصی به مدیر</li>
+              <li>✓ حذف کامل تبلیغات رقبا</li>
+              <li>★ بالاترین اولویت در نتایج و نشان طلایی</li>
+            </ul>
+          </div>
+          <div style="margin-top:16px">
+            <a href="tel:02128421075" class="btn small" style="width:100%;text-align:center;background:#eab308;color:#000;font-weight:700;box-sizing:border-box">سفارش اشتراک ۱ ساله</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- تاریخچه پرداخت -->
       <div class="dash-table-card">
         <div style="padding:14px 18px;border-bottom:1px solid var(--border)">
-          <h3 style="margin:0;font-size:15px;color:var(--text)">تاریخچه پرداخت</h3>
+          <h3 style="margin:0;font-size:15px;color:var(--text)">تاریخچه تراکنش‌ها و پرداخت‌ها</h3>
         </div>
         <table class="dash-table">
           <thead>
@@ -464,10 +577,10 @@
           </thead>
           <tbody>
             <tr>
-              <td style="color:#475569">۱۴۰۵/۰۸/۰۱</td>
-              <td style="font-weight:600">اشتراک نقره‌ای</td>
-              <td style="font-weight:700">۵,۰۰۰,۰۰۰ تومان</td>
-              <td style="text-align:center"><span class="badge ok">موفق</span></td>
+              <td style="color:#475569">—</td>
+              <td style="color:var(--muted)">تراکنشی ثبت نشده است</td>
+              <td>—</td>
+              <td style="text-align:center"><span class="badge" style="background:#f1f5f9;color:#64748b">—</span></td>
             </tr>
           </tbody>
         </table>

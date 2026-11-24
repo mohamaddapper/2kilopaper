@@ -54,6 +54,16 @@ class SiteController extends Controller
         return view('company', compact('company'));
     }
 
+    public function subscriptionFee()
+    {
+        return view('subscription-fee');
+    }
+
+    public function advertising()
+    {
+        return view('advertising');
+    }
+
     public function sitemap()
     {
         $companies = Company::approved()->select('slug', 'updated_at')->get();

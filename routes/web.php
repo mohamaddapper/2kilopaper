@@ -10,6 +10,11 @@ Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::get('/directory', [SiteController::class, 'directory'])->name('directory');
 Route::get('/company/{company}', [SiteController::class, 'company'])->name('company');
 
+// تعرفه‌ها و تبلیغات
+Route::get('/subscription-fee', [SiteController::class, 'subscriptionFee'])->name('subscription.fee');
+Route::get('/pricing', fn() => redirect()->route('subscription.fee'));
+Route::get('/advertising', [SiteController::class, 'advertising'])->name('advertising');
+
 // کاریابی و فرصت‌های شغلی عمومی
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job:slug}', [JobController::class, 'show'])->name('jobs.show');
