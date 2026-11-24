@@ -277,17 +277,19 @@ html.dark .cat-search-dropdown,
 html.dark .location-card,
 html.dark .check-grid,
 html.dark .activity-pill,
-html.dark .phone-card,
-html.dark .phone-search-box,
-html.dark .app-card,
-html.dark .app-why-box,
+html.dark .about-story-card,
+html.dark .audience-card,
+html.dark .why-us-card,
+html.dark .platform-card,
+html.dark .app-benefits-section,
+html.dark .info-card,
+html.dark .faq-search-box,
 html.dark .faq-item,
-html.dark .faq-cat-card,
-html.dark .legal-card,
-html.dark .about-card,
-html.dark .contact-card,
-html.dark .plan-card,
-html.dark .ad-card {
+html.dark .faq-support-box,
+html.dark .org-card,
+html.dark .search-input-box,
+html.dark .privacy-card,
+html.dark .legal-content-card {
   background: #111827 !important;
   border-color: #1e293b !important;
   color: #f1f5f9 !important;
@@ -296,27 +298,70 @@ html.dark .popular-tag,
 html.dark .pillar-filter-pill,
 html.dark .cat-tag-chip,
 html.dark .cat-set-primary-btn,
-html.dark .phone-address,
-html.dark .phone-num-btn,
-html.dark .phone-santral-num,
-html.dark .ios-step-item,
-html.dark .ios-compat-note,
-html.dark .app-feature-list li,
-html.dark .footer-social-btn,
-html.dark .f-val,
-html.dark .footer-bottom-links a,
-html.dark .footer-links a {
-  background-color: #1e293b !important;
+html.dark .feat-row,
+html.dark .ios-step,
+html.dark .ios-status-badge,
+html.dark .channel-pill,
+html.dark .org-address-row,
+html.dark .call-btn,
+html.dark .copy-btn,
+html.dark .pill-link,
+html.dark .privacy-intro-box,
+html.dark .footer-social-btn {
+  background: #1e293b !important;
   border-color: #334155 !important;
   color: #e2e8f0 !important;
+}
+html.dark .faq-question,
+html.dark .q-title,
+html.dark .platform-title,
+html.dark .benefits-title,
+html.dark .info-card-title,
+html.dark .social-box-title,
+html.dark .org-title,
+html.dark .section-heading,
+html.dark .why-title,
+html.dark .story-lead,
+html.dark .m-value,
+html.dark .art-header {
+  color: #f8fafc !important;
+}
+html.dark .faq-answer,
+html.dark .story-text,
+html.dark .f-text,
+html.dark .feat-item,
+html.dark .step-desc,
+html.dark .ios-intro,
+html.dark .benefit-item,
+html.dark .social-sub,
+html.dark .m-label,
+html.dark .m-hint,
+html.dark .address-p,
+html.dark .ch-info,
+html.dark .ch-arrow,
+html.dark .org-subtitle-inline,
+html.dark .address-text,
+html.dark .phones-title,
+html.dark .art-content,
+html.dark .styled-list,
+html.dark .support-text,
+html.dark .form-desc,
+html.dark .platform-version {
+  color: #cbd5e1 !important;
+}
+html.dark .prohibit-item {
+  background: #2b1418 !important;
+  border-color: #7f1d1d !important;
+  color: #fecaca !important;
 }
 html.dark .footer-links a,
 html.dark .footer-bottom-links a,
 html.dark .f-val {
   background-color: transparent !important;
   border-color: transparent !important;
+  color: #cbd5e1 !important;
 }
-html.dark .phone-santral-box {
+html.dark .org-notice-box {
   background: #271f0e !important;
   border-color: #854d0e !important;
   color: #fde68a !important;
@@ -373,8 +418,27 @@ html.dark [style*="background: #f8fafc"],
 html.dark [style*="background:#fbfcfe"],
 html.dark [style*="background: #fbfcfe"],
 html.dark [style*="background:#f1f5f9"],
-html.dark [style*="background: #f1f5f9"] {
+html.dark [style*="background: #f1f5f9"],
+html.dark [style*="background:#e2e8f0"] {
   background: #1e293b !important;
+}
+html.dark [style*="background:#fffbeb"],
+html.dark [style*="background:#fefce8"],
+html.dark [style*="background:#fef9c3"] {
+  background: #231d0f !important;
+  border-color: #854d0e !important;
+  color: #fde68a !important;
+}
+html.dark [style*="background:#f0f9ff"],
+html.dark [style*="background:#e0f2fe"] {
+  background: #0c233a !important;
+  border-color: #0369a1 !important;
+  color: #bae6fd !important;
+}
+html.dark [style*="background:#ecfdf5"] {
+  background: #0b291e !important;
+  border-color: #047857 !important;
+  color: #a7f3d0 !important;
 }
 html.dark [style*="color:#0f172a"],
 html.dark [style*="color: #0f172a"],
