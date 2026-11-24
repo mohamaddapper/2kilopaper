@@ -379,10 +379,25 @@
     </a>
   </div>
 
-  <div class="grid">
-    @foreach($featured as $company)
-      @include('partials.card', ['company' => $company])
-    @endforeach
+  <!-- اسلایدر چرخشی شرکت‌های ویژه -->
+  <div class="company-carousel-wrap" data-carousel="featured">
+    <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCompanyRow('featured', -1)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+
+    <div class="company-carousel-viewport" id="carousel-featured">
+      <div class="company-carousel-track">
+        @foreach($featured as $company)
+          <div class="company-carousel-slide">
+            @include('partials.card', ['company' => $company])
+          </div>
+        @endforeach
+      </div>
+    </div>
+
+    <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCompanyRow('featured', 1)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
   </div>
 
   <!-- نوار ترغیب مدیران به ارتقای اشتراک -->
@@ -551,45 +566,101 @@
 
   <!-- محتوای تب ۱: کارتن -->
   <div class="showcase-content active" id="tab-carton">
-    <div class="grid">
-      @forelse($cartonCompanies as $company)
-        @include('partials.card', ['company' => $company])
-      @empty
-        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
-      @endforelse
+    <div class="company-carousel-wrap" data-carousel="carton">
+      <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCompanyRow('carton', -1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="company-carousel-viewport" id="carousel-carton">
+        <div class="company-carousel-track">
+          @forelse($cartonCompanies as $company)
+            <div class="company-carousel-slide">
+              @include('partials.card', ['company' => $company])
+            </div>
+          @empty
+            <p style="color:var(--muted);width:100%;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+          @endforelse
+        </div>
+      </div>
+
+      <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCompanyRow('carton', 1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
     </div>
   </div>
 
   <!-- محتوای تب ۲: کاغذ -->
   <div class="showcase-content" id="tab-paper">
-    <div class="grid">
-      @forelse($paperCompanies as $company)
-        @include('partials.card', ['company' => $company])
-      @empty
-        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
-      @endforelse
+    <div class="company-carousel-wrap" data-carousel="paper">
+      <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCompanyRow('paper', -1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="company-carousel-viewport" id="carousel-paper">
+        <div class="company-carousel-track">
+          @forelse($paperCompanies as $company)
+            <div class="company-carousel-slide">
+              @include('partials.card', ['company' => $company])
+            </div>
+          @empty
+            <p style="color:var(--muted);width:100%;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+          @endforelse
+        </div>
+      </div>
+
+      <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCompanyRow('paper', 1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
     </div>
   </div>
 
   <!-- محتوای تب ۳: چاپ -->
   <div class="showcase-content" id="tab-print">
-    <div class="grid">
-      @forelse($printCompanies as $company)
-        @include('partials.card', ['company' => $company])
-      @empty
-        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
-      @endforelse
+    <div class="company-carousel-wrap" data-carousel="print">
+      <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCompanyRow('print', -1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="company-carousel-viewport" id="carousel-print">
+        <div class="company-carousel-track">
+          @forelse($printCompanies as $company)
+            <div class="company-carousel-slide">
+              @include('partials.card', ['company' => $company])
+            </div>
+          @empty
+            <p style="color:var(--muted);width:100%;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+          @endforelse
+        </div>
+      </div>
+
+      <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCompanyRow('print', 1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
     </div>
   </div>
 
   <!-- محتوای تب ۴: ماشین آلات -->
   <div class="showcase-content" id="tab-machinery">
-    <div class="grid">
-      @forelse($machineryCompanies as $company)
-        @include('partials.card', ['company' => $company])
-      @empty
-        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
-      @endforelse
+    <div class="company-carousel-wrap" data-carousel="machinery">
+      <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCompanyRow('machinery', -1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="company-carousel-viewport" id="carousel-machinery">
+        <div class="company-carousel-track">
+          @forelse($machineryCompanies as $company)
+            <div class="company-carousel-slide">
+              @include('partials.card', ['company' => $company])
+            </div>
+          @empty
+            <p style="color:var(--muted);width:100%;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+          @endforelse
+        </div>
+      </div>
+
+      <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCompanyRow('machinery', 1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
     </div>
   </div>
 </section>
@@ -1455,6 +1526,107 @@
   display: block;
 }
 
+/* ==========================================================================
+   استایل‌های اسلایدر روان کارتهای شرکت‌ها (Carousel ۵ تایی با چرخش خودکار)
+   ========================================================================== */
+.company-carousel-wrap {
+  position: relative;
+  width: 100%;
+  margin: 14px 0 0;
+}
+.company-carousel-viewport {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 4px 14px;
+  -webkit-overflow-scrolling: touch;
+}
+.company-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+.company-carousel-track {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+.company-carousel-slide {
+  flex: 0 0 calc(20% - 13px);
+  min-width: calc(20% - 13px);
+  max-width: calc(20% - 13px);
+  box-sizing: border-box;
+  display: flex;
+}
+.company-carousel-slide > .company-card {
+  width: 100%;
+}
+@media (max-width: 1200px) {
+  .company-carousel-slide {
+    flex: 0 0 calc(25% - 12px);
+    min-width: calc(25% - 12px);
+    max-width: calc(25% - 12px);
+  }
+}
+@media (max-width: 992px) {
+  .company-carousel-slide {
+    flex: 0 0 calc(33.333% - 11px);
+    min-width: calc(33.333% - 11px);
+    max-width: calc(33.333% - 11px);
+  }
+}
+@media (max-width: 640px) {
+  .company-carousel-slide {
+    flex: 0 0 calc(50% - 8px);
+    min-width: calc(50% - 8px);
+    max-width: calc(50% - 8px);
+  }
+}
+@media (max-width: 420px) {
+  .company-carousel-slide {
+    flex: 0 0 78%;
+    min-width: 78%;
+    max-width: 78%;
+  }
+}
+
+.company-carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.company-carousel-nav-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 18px rgba(31, 95, 168, 0.25);
+}
+.company-carousel-nav-btn.prev-btn {
+  right: -12px;
+}
+.company-carousel-nav-btn.next-btn {
+  left: -12px;
+}
+@media (max-width: 768px) {
+  .company-carousel-nav-btn {
+    display: none;
+  }
+}
+
 /* ۷. شبکه ۱۲ استان برتر */
 .provinces-grid {
   display: grid;
@@ -1922,6 +2094,77 @@ document.addEventListener('DOMContentLoaded', function () {
   applyDimensions();
   updatePosition(false);
   startAutoPlay();
+});
+
+/* ==========================================================================
+   اسکریپت اسلایدر خودکار و کنترل دکمه‌های کارتهای شرکت‌ها (چرخشی و لمسی)
+   ========================================================================== */
+function slideCompanyRow(id, dir) {
+  const vp = document.getElementById('carousel-' + id);
+  if (!vp) return;
+  const slide = vp.querySelector('.company-carousel-slide');
+  const step = slide ? (slide.offsetWidth + 16) : 260;
+  const maxScroll = vp.scrollWidth - vp.clientWidth;
+  
+  if (maxScroll <= 5) return;
+
+  const isRTLNegative = (vp.scrollLeft <= 0);
+  const currentScroll = Math.abs(vp.scrollLeft);
+
+  if (dir > 0) {
+    // بعدی (حرکت به چپ در راست‌چین)
+    if (currentScroll >= maxScroll - 20) {
+      vp.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      const scrollAmount = isRTLNegative ? -step : step;
+      vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  } else {
+    // قبلی (حرکت به راست در راست‌چین)
+    if (currentScroll <= 20) {
+      const endPos = isRTLNegative ? -maxScroll : maxScroll;
+      vp.scrollTo({ left: endPos, behavior: 'smooth' });
+    } else {
+      const scrollAmount = isRTLNegative ? step : -step;
+      vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
+}
+
+// راه‌اندازی چرخش خودکار کاروسل‌های شرکت‌ها با توقف موقت روی هاور یا لمس
+document.addEventListener('DOMContentLoaded', function () {
+  const companyWraps = document.querySelectorAll('.company-carousel-wrap');
+  
+  companyWraps.forEach(wrap => {
+    let autoTimer = null;
+    const carouselId = wrap.getAttribute('data-carousel');
+    
+    function startAutoScroll() {
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = setInterval(() => {
+        // تنها در صورتی که کاروسل در معرض دید باشد (مثلاً تب فعال است)
+        if (wrap.offsetParent !== null) {
+          slideCompanyRow(carouselId, 1);
+        }
+      }, 3500);
+    }
+    
+    function stopAutoScroll() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+    }
+    
+    wrap.addEventListener('mouseenter', stopAutoScroll);
+    wrap.addEventListener('mouseleave', startAutoScroll);
+    wrap.addEventListener('touchstart', stopAutoScroll, { passive: true });
+    wrap.addEventListener('touchend', function () {
+      setTimeout(startAutoScroll, 2000);
+    }, { passive: true });
+
+    startAutoScroll();
+  });
 });
 </script>
 @endsection

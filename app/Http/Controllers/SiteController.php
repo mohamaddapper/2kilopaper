@@ -46,45 +46,45 @@ class SiteController extends Controller
         $featured = Company::approved()
             ->whereNotNull('tier')
             ->ranked()
-            ->with(['city', 'category', 'province'])
-            ->limit(8)
+            ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+            ->limit(15)
             ->get();
         
-        if ($featured->count() < 4) {
+        if ($featured->count() < 10) {
             $featured = Company::approved()
                 ->ranked()
-                ->with(['city', 'category', 'province'])
-                ->limit(8)
+                ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+                ->limit(15)
                 ->get();
         }
 
-        // شرکت‌های تخصصی برای تب‌های تفکیکی
+        // شرکت‌های تخصصی برای تب‌های تفکیکی (اسلایدرهای صفحه اصلی)
         $cartonCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%کارتن%')->orWhere('name', 'like', '%ورق%'))
             ->ranked()
-            ->with(['city', 'category'])
-            ->limit(4)
+            ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+            ->limit(12)
             ->get();
 
         $paperCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%کاغذ%')->orWhere('name', 'like', '%مقوا%'))
             ->ranked()
-            ->with(['city', 'category'])
-            ->limit(4)
+            ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+            ->limit(12)
             ->get();
 
         $machineryCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%ماشین%'))
             ->ranked()
-            ->with(['city', 'category'])
-            ->limit(4)
+            ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+            ->limit(12)
             ->get();
 
         $printCompanies = Company::approved()
             ->whereHas('category', fn($q) => $q->where('name', 'like', '%چاپ%'))
             ->ranked()
-            ->with(['city', 'category'])
-            ->limit(4)
+            ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+            ->limit(12)
             ->get();
 
         // فرصت‌های شغلی و رزومه‌های کارجویان

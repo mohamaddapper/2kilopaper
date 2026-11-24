@@ -30,9 +30,9 @@
   ];
   $currentTier = $tier ? ($tierStyles[$tier] ?? null) : null;
 
-  // دسته‌بندی‌ها یا خدمات خلاصه
+  // دسته‌بندی‌ها و ۲ زمینه فعالیت اول شرکت
   $categoriesText = '';
-  if ($company->relationLoaded('categories') && $company->categories->count()) {
+  if ($company->categories && $company->categories->count()) {
       $categoriesText = $company->categories->pluck('name')->take(2)->join('، ');
   } elseif (!empty($company->services) && is_array($company->services)) {
       $categoriesText = implode('، ', array_slice($company->services, 0, 2));
@@ -87,18 +87,18 @@
   <div style="padding:14px 14px 10px;display:flex;flex-direction:column;align-items:flex-start;text-align:right;flex:1;justify-content:space-between;background:#ffffff;box-sizing:border-box;direction:rtl">
     
     <div style="width:100%;text-align:right">
-      <!-- نام شرکت -->
-      <h3 style="margin:0 0 5px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.4;text-align:right;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden" title="{{ $company->name }}">
+      <!-- نام شرکت (بزرگ‌تر و واضح) -->
+      <h3 style="margin:0 0 6px;font-size:15.5px;font-weight:800;color:#0f172a;line-height:1.4;text-align:right;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden" title="{{ $company->name }}">
         {{ $company->name }}
       </h3>
       
-      <!-- دسته‌بندی و زمینه فعالیت -->
-      <p style="margin:0 0 4px;font-size:11.5px;color:#64748b;line-height:1.4;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ $categoriesText }}">
+      <!-- ۲ زمینه فعالیت اول زیر نام شرکت -->
+      <p style="margin:0 0 5px;font-size:12.5px;font-weight:600;color:#475569;line-height:1.45;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ $categoriesText }}">
         {{ $categoriesText }}
       </p>
 
-      <!-- موقعیت مکانی (شهر و استان) -->
-      <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;line-height:1.4;text-align:right">
+      <!-- موقعیت مکانی (شهر و استان - بزرگ‌تر و خواناتر) -->
+      <p style="margin:0 0 6px;font-size:12px;color:#64748b;line-height:1.4;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         {{ $company->city->name ?? 'ایران' }}
         @if($company->province && $company->city && $company->province->name !== $company->city->name)
           · {{ $company->province->name }}
@@ -107,15 +107,15 @@
     </div>
 
     <!-- ردیف آمار و بازدید پایین کارت (مشابه ۲ کیلو کاغذ) -->
-    <div style="width:100%;padding-top:8px;border-top:1px dashed #f1f5f9;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:auto">
-      <span style="display:inline-flex;align-items:center;gap:3px" title="علاقه‌مندی">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    <div style="width:100%;padding-top:8px;border-top:1px dashed #f1f5f9;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:#94a3b8;margin-top:auto">
+      <span style="display:inline-flex;align-items:center;gap:4px" title="علاقه‌مندی">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
         <span>{{ $likesCount }}</span>
       </span>
 
       <span style="display:inline-flex;align-items:center;gap:4px" title="تعداد بازدید">
         <span>{{ number_format($viewsCount) }}</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
       </span>
     </div>
 
