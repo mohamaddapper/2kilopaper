@@ -43,3 +43,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/jobs/{job}/applications', [EmployerJobController::class, 'applications'])->name('employer.jobs.applications');
     Route::post('/dashboard/applications/{application}/status', [EmployerJobController::class, 'updateApplicationStatus'])->name('employer.applications.status');
 });
+
+// پنل مدیریت ارشد سیستم
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/companies', [\App\Http\Controllers\Admin\AdminController::class, 'companies'])->name('companies');
+    Route::post('/companies/{company}/approve', [\App\Http\Controllers\Admin\AdminController::class, 'approveCompany'])->name('companies.approve');
+    Route::post('/companies/{company}/reject', [\App\Http\Controllers\Admin\AdminController::class, 'rejectCompany'])->name('companies.reject');
+    Route::post('/companies/{company}/tier', [\App\Http\Controllers\Admin\AdminController::class, 'updateTier'])->name('companies.tier');
+
+    Route::get('/jobs', [\App\Http\Controllers\Admin\AdminController::class, 'jobs'])->name('jobs');
+    Route::post('/jobs/{job}/toggle', [\App\Http\Controllers\Admin\AdminController::class, 'toggleJob'])->name('jobs.toggle');
+    Route::post('/jobs/{job}/immediate', [\App\Http\Controllers\Admin\AdminController::class, 'toggleImmediate'])->name('jobs.immediate');
+    Route::delete('/jobs/{job}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyJob'])->name('jobs.destroy');
+
+    Route::get('/applications', [\App\Http\Controllers\Admin\AdminController::class, 'applications'])->name('applications');
+    Route::get('/users', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
+    Route::post('/users/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminController::class, 'toggleUserAdmin'])->name('users.toggle-admin');
+});

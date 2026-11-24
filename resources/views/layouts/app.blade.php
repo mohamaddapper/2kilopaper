@@ -16,6 +16,9 @@
   <a class="logo" href="{{ route('home') }}">{{ config('app.name') }}</a>
   @if(!empty($dashboardNav))
     <div style="display:flex;align-items:center;gap:18px">
+      @if(auth()->check() && auth()->user()->isAdmin())
+        <a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-size:14px;font-weight:700;text-decoration:none">★ پنل مدیریت</a>
+      @endif
       <a href="{{ route('directory') }}" style="color:var(--muted);font-size:14px;text-decoration:none">دایرکتوری</a>
       <a href="{{ route('jobs.index') }}" style="color:var(--muted);font-size:14px;text-decoration:none">فرصت‌های شغلی</a>
       <form method="post" action="{{ route('logout') }}" style="display:inline;margin:0">
@@ -25,6 +28,9 @@
     </div>
   @else
     <ul>
+      @if(auth()->check() && auth()->user()->isAdmin())
+        <li><a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-weight:700">★ مدیریت</a></li>
+      @endif
       <li><a href="{{ route('directory') }}">دایرکتوری</a></li>
       <li><a href="{{ route('jobs.index') }}">فرصت‌های شغلی</a></li>
       @auth
