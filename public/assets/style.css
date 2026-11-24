@@ -468,8 +468,12 @@ html.dark .audience-card h3,
 html.dark .audience-card h4,
 html.dark .f-text strong,
 html.dark .cta-text strong,
-html.dark .ch-info strong {
+html.dark .ch-info strong,
+html.dark .support-text strong {
   color: #f8fafc !important;
+}
+html.dark .support-icon {
+  color: #38bdf8 !important;
 }
 html.dark .m-value {
   color: #38bdf8 !important;
@@ -704,8 +708,29 @@ html.dark [style*="border:1px solid #cbd5e1"],
 html.dark [style*="border:1px dashed #cbd5e1"],
 html.dark [style*="border-color:#e2e8f0"],
 html.dark [style*="border-bottom:1px solid #f1f5f9"],
-html.dark [style*="border-bottom:1.5px solid #f1f5f9"] {
+html.dark [style*="border-bottom:1.5px solid #f1f5f9"],
+html.dark [style*="border-top:1px dashed #f1f5f9"] {
   border-color: #334155 !important;
+}
+
+/* Company cards in Dark Mode */
+html.dark .company-card {
+  background: #111827 !important;
+}
+html.dark .company-card:not(.tier-card) {
+  border-color: #1e293b !important;
+}
+html.dark .company-card:hover {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5) !important;
+}
+html.dark .company-card > div:last-child {
+  background: #111827 !important;
+}
+html.dark .company-card > div:first-child {
+  border-bottom-color: #1e293b !important;
+}
+html.dark .company-card [style*="color:#e2e8f0"] {
+  color: #334155 !important;
 }
 
 /* Keep company logos on bright white background so transparent/white logos stay crisp */
