@@ -50,8 +50,8 @@
 
 <a href="{{ route('company', $company) }}" class="card company-card @if($tier) tier-card tier-{{ $tier }} @endif" style="color:inherit;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;position:relative;background:#fff;border-radius:14px;padding:0!important;overflow:hidden!important;transition:all 0.25s ease;@if($currentTier) border:{{ $currentTier['border'] }};box-shadow:{{ $currentTier['shadow'] }}; @else border:1px solid #e2e8f0; @endif">
   
-  <!-- بخش بالای کارت: کادر مربعی بزرگ لوگو -->
-  <div style="width:100%;aspect-ratio:1/1;position:relative;background:#ffffff;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:16px;box-sizing:border-box">
+  <!-- بخش بالای کارت: کادر مربعی بزرگ لوگو چسبیده به اطراف -->
+  <div style="width:100%;aspect-ratio:1/1;position:relative;background:#ffffff;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0!important;box-sizing:border-box">
     
     <!-- نشان سطح اشتراک (★ طلایی، نقره‌ای، برنزی) در گوشه چپ -->
     @if($tier && isset($tierTitles[$tier]))
@@ -71,34 +71,34 @@
       </div>
     @endif
 
-    <!-- تصویر لوگوی بزرگ و خوانا -->
+    <!-- تصویر لوگوی بزرگ و چسبیده به کادر -->
     @if($company->logo)
-      <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;transition:transform 0.3s ease">
+      <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease">
     @else
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;position:relative;width:100%;height:100%;user-select:none">
-        <span style="position:absolute;font-size:68px;font-weight:900;color:#f1f5f9;z-index:1">2K</span>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8;position:relative;width:100%;height:100%;user-select:none;background:#f8fafc">
+        <span style="position:absolute;font-size:68px;font-weight:900;color:#e2e8f0;z-index:1">2K</span>
         <span style="position:relative;z-index:2;font-size:14px;font-weight:800;color:#64748b">بدون تصویر!</span>
       </div>
     @endif
 
   </div>
 
-  <!-- بخش پایین کارت: اطلاعات شرکت -->
-  <div style="padding:14px 12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;justify-content:space-between;background:#ffffff;box-sizing:border-box">
+  <!-- بخش پایین کارت: اطلاعات شرکت (راست‌چین) -->
+  <div style="padding:14px 14px 10px;display:flex;flex-direction:column;align-items:flex-start;text-align:right;flex:1;justify-content:space-between;background:#ffffff;box-sizing:border-box;direction:rtl">
     
-    <div style="width:100%">
+    <div style="width:100%;text-align:right">
       <!-- نام شرکت -->
-      <h3 style="margin:0 0 5px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden" title="{{ $company->name }}">
+      <h3 style="margin:0 0 5px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.4;text-align:right;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden" title="{{ $company->name }}">
         {{ $company->name }}
       </h3>
       
       <!-- دسته‌بندی و زمینه فعالیت -->
-      <p style="margin:0 0 4px;font-size:11.5px;color:#64748b;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ $categoriesText }}">
+      <p style="margin:0 0 4px;font-size:11.5px;color:#64748b;line-height:1.4;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ $categoriesText }}">
         {{ $categoriesText }}
       </p>
 
       <!-- موقعیت مکانی (شهر و استان) -->
-      <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;line-height:1.4">
+      <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;line-height:1.4;text-align:right">
         {{ $company->city->name ?? 'ایران' }}
         @if($company->province && $company->city && $company->province->name !== $company->city->name)
           · {{ $company->province->name }}
