@@ -124,6 +124,15 @@ class AdminController extends Controller
         return back()->with('ok', "سطح اشتراک شرکت «{$company->name}» به {$tierText} تغییر یافت.");
     }
 
+    public function destroyCompany(Company $company)
+    {
+        $name = $company->name;
+        $company->categories()->detach();
+        $company->delete();
+
+        return back()->with('ok', "شرکت «{$name}» با موفقیت حذف گردید.");
+    }
+
     public function jobs(Request $request)
     {
         $query = JobPosting::with(['company', 'category', 'province', 'city', 'user']);

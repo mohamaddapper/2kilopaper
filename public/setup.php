@@ -129,8 +129,34 @@ try {
         echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
     }
 
+    // 5. Make Admin Tool
+    if ($action === 'make_admin' || !empty($_POST['admin_phone'])) {
+        $phoneInput = trim($_POST['admin_phone'] ?? ($_GET['phone'] ?? ''));
+        if (function_exists('normalize_phone')) {
+            $phoneInput = normalize_phone($phoneInput);
+        }
+        if ($phoneInput) {
+            $adminU = \App\Models\User::firstOrCreate(['phone' => $phoneInput]);
+            $adminU->is_admin = true;
+            $adminU->save();
+            echo '<div style="background:#f0fdf4;border:1.5px solid #22c55e;color:#15803d;padding:14px;border-radius:8px;margin:15px 0;font-weight:bold;font-size:14px">✓ شماره ' . htmlspecialchars($phoneInput) . ' با موفقیت به مدیر ارشد سیستم (Admin) ارتقا یافت! اکنون می‌توانید تمام شرکت‌ها را ویرایش و مدیریت کنید.</div>';
+        }
+    }
+
     echo '<p style="color:#16a34a;font-weight:bold;font-size:18px">✓ عملیات با موفقیت انجام شد!</p>';
-    echo '<p><a href="/dashboard" class="btn" style="background:#16a34a;padding:12px 24px;font-size:15px">ورود به پنل کاربری</a></p>';
+    echo '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:15px 0">';
+    echo '<a href="/admin/companies" class="btn" style="background:#0284c7;padding:10px 20px;font-size:14px">🏢 مدیریت و ویرایش تمام شرکت‌ها (پنل ادمین)</a>';
+    echo '<a href="/dashboard" class="btn" style="background:#16a34a;padding:10px 20px;font-size:14px">ورود به میز کار</a>';
+    echo '</div>';
+
+    // Form to grant Admin to any phone number
+    echo '<form method="post" action="setup.php?action=make_admin" style="margin-top:24px;background:#f8fafc;padding:16px;border:1px solid #cbd5e1;border-radius:8px">';
+    echo '<label style="font-weight:bold;font-size:13.5px;display:block;margin-bottom:6px;color:#0f172a">👑 ارتقای شماره همراه شما به مدیر ارشد سایت (Admin):</label>';
+    echo '<p style="font-size:12px;color:#64748b;margin:0 0 10px">اگر با شماره شخصی خود لاگین کرده‌اید و به پنل ادمین یا دکمه‌های ویرایش دسترسی ندارید، شماره خود را وارد کنید و دکمه را بزنید:</p>';
+    echo '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    echo '<input type="text" name="admin_phone" placeholder="شماره موبایل شما (مثال: 09121234567)" style="padding:9px 12px;border:1px solid #cbd5e1;border-radius:6px;flex:1;min-width:200px;direction:ltr;font-size:14px">';
+    echo '<button type="submit" class="btn" style="background:#0f172a;cursor:pointer;border:none">ثبت دسترسی ادمین کل</button>';
+    echo '</div></form>';
 } catch (\Throwable $e) {
     echo '<p style="color:#dc2626;font-weight:bold;font-size:16px">خطا در اجرای عملیات:</p>';
     echo '<pre style="color:#f87171;background:#450a0a">' . htmlspecialchars($e->getMessage()) . '</pre>';

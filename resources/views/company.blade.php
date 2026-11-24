@@ -38,7 +38,7 @@
     <div style="flex:1;min-width:200px">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
-        @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->is_admin))
+        @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()))
           <a href="{{ route('companies.edit', $company) }}" class="btn small ghost" style="font-size:12px;padding:3px 10px;font-weight:700">
             ✏️ ویرایش
           </a>
@@ -88,7 +88,7 @@
 
     <!-- دکمه‌های اقدام سریع -->
     <div style="display:flex;gap:8px;flex-direction:column;min-width:180px">
-      @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->is_admin))
+      @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()))
         <a href="{{ route('companies.edit', $company) }}" class="btn" style="background:#0284c7;text-align:center;font-weight:700;font-size:13.5px">
           ✏️ ویرایش اطلاعات شرکت
         </a>

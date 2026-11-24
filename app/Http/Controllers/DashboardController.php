@@ -94,13 +94,13 @@ class DashboardController extends Controller
 
     public function edit(Request $r, Company $company)
     {
-        abort_unless($company->user_id === $r->user()->id, 403);
+        abort_unless($company->user_id === $r->user()->id || $r->user()->isAdmin(), 403);
         return view('dashboard.form', $this->formData($company));
     }
 
     public function update(Request $r, Company $company)
     {
-        abort_unless($company->user_id === $r->user()->id, 403);
+        abort_unless($company->user_id === $r->user()->id || $r->user()->isAdmin(), 403);
         $data = $this->validated($r);
         $this->processLocations($r, $data);
 
@@ -121,6 +121,31 @@ class DashboardController extends Controller
             $data['gallery'] = array_slice($gallery, 0, 5);
         }
 
+        // Admin-only direct controls
+        if ($r->user()->isAdmin()) {
+            if ($r->has('status') && in_array($r->input('status'), ['pending', 'approved', 'rejected'])) {
+                $data['status'] = $r->input('status');
+            }
+            if ($r->has('tier')) {
+                $tier = $r->input('tier');
+                if (in_array($tier, ['gold', 'silver', 'bronze'])) {
+                    $data['tier'] = $tier;
+                    $months = (int) $r->input('tier_months', 12);
+                    $data['tier_expires_at'] = now()->addMonths(max(1, $months));
+                } else {
+                    $data['tier'] = null;
+                    $data['tier_expires_at'] = null;
+                }
+            }
+            if ($r->filled('user_phone')) {
+                $ownerPhone = normalize_phone((string) $r->input('user_phone'));
+                if (preg_match('/^09\d{9}$/', $ownerPhone)) {
+                    $owner = \App\Models\User::firstOrCreate(['phone' => $ownerPhone]);
+                    $data['user_id'] = $owner->id;
+                }
+            }
+        }
+
         $categoryIds = (array) $r->input('category_ids', []);
         $uniqueIds = array_slice(array_unique(array_filter(array_map('intval', $categoryIds))), 0, 10);
         if (!empty($uniqueIds[0])) {
@@ -137,6 +162,14 @@ class DashboardController extends Controller
             $syncData[$data['category_id']] = ['is_primary' => true];
         }
         $company->categories()->sync($syncData);
+
+        if ($r->user()->isAdmin()) {
+            $redirectUrl = $r->input('redirect_to');
+            if ($redirectUrl && Str::startsWith($redirectUrl, '/')) {
+                return redirect($redirectUrl)->with('ok', "اطلاعات شرکت «{$company->name}» با موفقیت ویرایش و ذخیره شد.");
+            }
+            return redirect()->route('admin.companies')->with('ok', "اطلاعات شرکت «{$company->name}» با موفقیت ویرایش و ذخیره شد.");
+        }
 
         return redirect()->route('dashboard')->with('ok', 'تغییرات با موفقیت ذخیره شد.');
     }
@@ -367,13 +400,13 @@ class DashboardController extends Controller
             'locations.*.type' => 'required|string|max:50',
             'locations.*.province_id' => 'required|exists:provinces,id',
             'locations.*.city_id' => 'required|exists:cities,id',
-            'locations.*.address' => 'required|string|max:500',
-            'locations.*.phone' => 'nullable|string|max:40',
-            'locations.*.phone2' => 'nullable|string|max:40',
+            'locations.*.address' => 'nullable|string|max:1000',
+            'locations.*.phone' => 'nullable|string|max:190',
+            'locations.*.phone2' => 'nullable|string|max:190',
             'locations.*.is_primary' => 'nullable',
             'primary_location_index' => 'nullable|integer',
             'description' => 'nullable|string|max:10000',
-            'phone' => 'nullable|string|max:30',
+            'phone' => 'nullable|string|max:190',
             'email' => 'nullable|email|max:100',
             'website' => 'nullable|url|max:255',
             'phones' => 'nullable|array',

@@ -180,9 +180,17 @@
 </style>
 
 <div class="page-wrapper" style="margin:20px 0 48px">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-    <h2 style="margin:0;font-size:22px;color:var(--primary)">{{ $company->exists ? 'ویرایش شرکت' : 'ثبت نام و اطلاعات شرکت' }}</h2>
-    <a href="{{ route('dashboard') }}" class="btn ghost small">بازگشت به میز کار</a>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+    <h2 style="margin:0;font-size:22px;color:var(--primary)">{{ $company->exists ? 'ویرایش شرکت: ' . $company->name : 'ثبت نام و اطلاعات شرکت' }}</h2>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      @if(auth()->check() && auth()->user()->isAdmin())
+        <a href="{{ route('admin.companies') }}" class="btn ghost small" style="border-color:#0284c7;color:#0284c7;font-weight:700">👑 بازگشت به مدیریت شرکت‌ها</a>
+        @if($company->exists)
+          <a href="{{ route('company', $company) }}" target="_blank" class="btn ghost small">مشاهده در سایت ↗</a>
+        @endif
+      @endif
+      <a href="{{ route('dashboard') }}" class="btn ghost small">بازگشت به میز کار</a>
+    </div>
   </div>
 
   @if(isset($errors) && $errors->any())
@@ -250,6 +258,46 @@
         }
       }
     @endphp
+
+    @if(auth()->check() && auth()->user()->isAdmin() && $company->exists)
+      <!-- بخش ویژه دسترسی مدیریت ارشد سایت -->
+      <div class="form-card" style="background:#f0f9ff;border:1.5px solid #0284c7;margin-bottom:24px">
+        <h3 style="color:#0369a1;margin-bottom:8px">
+          <span>👑 تنظیمات اختصاصی مالک و مدیر ارشد سایت (Admin)</span>
+          <span class="badge" style="background:#0284c7;color:#fff">اختیارات ادمین</span>
+        </h3>
+        <p style="font-size:13px;color:#0369a1;margin:0 0 16px">
+          شما با دسترسی مدیریت کل به این شرکت دسترسی دارید. می‌توانید وضعیت، سطح اشتراک و کاربر مالک را مستقیماً مدیریت کنید.
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px">
+          <div>
+            <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">وضعیت انتشار در دایرکتوری</label>
+            <select name="status" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit">
+              <option value="approved" @selected(old('status', $company->status) === 'approved')>✓ تأیید و منتشرشده</option>
+              <option value="pending" @selected(old('status', $company->status) === 'pending')>⏳ در انتظار بررسی</option>
+              <option value="rejected" @selected(old('status', $company->status) === 'rejected')>✕ معلق / رد شده</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">سطح اشتراک ویژه (Tier)</label>
+            <select name="tier" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit">
+              <option value="" @selected(!old('tier', $company->tier))>پلن عادی (رایگان)</option>
+              <option value="gold" @selected(old('tier', $company->tier) === 'gold')>★ اشتراک ویژه طلایی</option>
+              <option value="silver" @selected(old('tier', $company->tier) === 'silver')>★ اشتراک ویژه نقره‌ای</option>
+              <option value="bronze" @selected(old('tier', $company->tier) === 'bronze')>★ اشتراک ویژه برنزی</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">شماره موبایل کاربر مالک</label>
+            <input type="text" name="user_phone" value="{{ old('user_phone', $company->user?->phone) }}" placeholder="مثال: 09121234567" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;direction:ltr;text-align:right">
+            <span style="display:block;font-size:11.5px;color:#64748b;margin-top:3px">برای واگذاری یا انتقال شرکت به اکانت کاربری مشخص</span>
+          </div>
+        </div>
+      </div>
+    @endif
 
     <!-- بخش ۱: اطلاعات پایه -->
     <div class="form-card">
@@ -377,8 +425,8 @@
 
             <!-- ردیف آدرس دقیق -->
             <div class="field fade-in" id="loc_addr_wrap_{{ $idx }}" style="display:none;margin-top:6px">
-              <label>آدرس دقیق پستی <span style="color:red">*</span></label>
-              <input name="locations[{{ $idx }}][address]" id="loc_addr_{{ $idx }}" value="{{ $loc['address'] ?? '' }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
+              <label>آدرس دقیق پستی (اختیاری)</label>
+              <input name="locations[{{ $idx }}][address]" id="loc_addr_{{ $idx }}" value="{{ $loc['address'] ?? '' }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
             </div>
 
             <!-- تلفن‌های اختصاصی این مکان (۲ فیلد) -->
@@ -1169,8 +1217,8 @@ function addNewLocation() {
       </div>
 
       <div class="field fade-in" id="loc_addr_wrap_${idx}" style="display:none;margin-top:6px">
-        <label>آدرس دقیق پستی <span style="color:red">*</span></label>
-        <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲" required>
+        <label>آدرس دقیق پستی (اختیاری)</label>
+        <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
       </div>
 
       <div class="form-row" style="margin-bottom:0;margin-top:10px">

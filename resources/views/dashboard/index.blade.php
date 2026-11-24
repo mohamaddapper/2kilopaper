@@ -35,6 +35,15 @@
       <a href="javascript:void(0)" onclick="switchTab('messages')" id="nav-messages" class="dashboard-menu-link">
         <span>پیام‌ها و اعلان‌ها</span>
       </a>
+      @if(auth()->user()->isAdmin())
+        <hr style="margin:10px 0;border:none;border-top:1px solid #e2e8f0">
+        <a href="{{ route('admin.dashboard') }}" class="dashboard-menu-link" style="background:#eff6ff;color:#0369a1;font-weight:700">
+          <span>👑 پنل مدیریت کل سایت</span>
+        </a>
+        <a href="{{ route('admin.companies') }}" class="dashboard-menu-link" style="background:#f0fdf4;color:#15803d;font-weight:700">
+          <span>🏢 مدیریت و ویرایش ۹۱۹ شرکت</span>
+        </a>
+      @endif
     </nav>
   </aside>
 
@@ -212,9 +221,14 @@
 
     <!-- تب ۲: شرکت‌های من -->
     <div id="tab-companies" class="dashboard-tab-content" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <h2 style="margin:0;font-size:18px">شرکت‌های من</h2>
-        <a class="btn" href="{{ route('companies.create') }}">+ ثبت شرکت جدید</a>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          @if(auth()->user()->isAdmin())
+            <a class="btn" href="{{ route('admin.companies') }}" style="background:#0284c7;font-weight:700">🏢 مدیریت و ویرایش تمام شرکت‌ها</a>
+          @endif
+          <a class="btn" href="{{ route('companies.create') }}">+ ثبت شرکت جدید</a>
+        </div>
       </div>
       <div class="dash-table-card">
         @if($companies->count() > 0)

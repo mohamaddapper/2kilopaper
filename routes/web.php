@@ -56,6 +56,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/companies/{company}/approve', [\App\Http\Controllers\Admin\AdminController::class, 'approveCompany'])->name('companies.approve');
     Route::post('/companies/{company}/reject', [\App\Http\Controllers\Admin\AdminController::class, 'rejectCompany'])->name('companies.reject');
     Route::post('/companies/{company}/tier', [\App\Http\Controllers\Admin\AdminController::class, 'updateTier'])->name('companies.tier');
+    Route::delete('/companies/{company}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyCompany'])->name('companies.destroy');
 
     Route::get('/jobs', [\App\Http\Controllers\Admin\AdminController::class, 'jobs'])->name('jobs');
     Route::post('/jobs/{job}/toggle', [\App\Http\Controllers\Admin\AdminController::class, 'toggleJob'])->name('jobs.toggle');

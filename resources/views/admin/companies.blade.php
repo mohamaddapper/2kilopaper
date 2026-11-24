@@ -163,9 +163,15 @@
                   نمایش ↗
                 </a>
 
-                <a href="{{ route('companies.edit', $c) }}" target="_blank" class="btn-action" style="background:#f1f5f9;color:#334155">
+                <a href="{{ route('companies.edit', $c) }}" target="_blank" class="btn-action" style="background:#0284c7;color:#fff;font-weight:700" title="ویرایش کامل مشخصات شرکت">
                   ✏️ ویرایش
                 </a>
+
+                <form method="post" action="{{ route('admin.companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn-action btn-reject" style="background:#fee2e2;color:#991b1b;border-color:#fecaca" title="حذف شرکت">🗑️</button>
+                </form>
               </div>
             </td>
           </tr>
