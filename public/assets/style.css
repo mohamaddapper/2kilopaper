@@ -295,10 +295,82 @@ html.dark .dashboard-sidebar-card,
 html.dark .dash-stat-box,
 html.dark .dash-table-card,
 html.dark .stat,
-html.dark .center-box {
+html.dark .center-box,
+html.dark .jobs-col,
+html.dark .showcase-tab,
+html.dark .province-card,
+html.dark .knowledge-card {
   background: #111827 !important;
   border-color: #1e293b !important;
   color: #f1f5f9 !important;
+}
+html.dark .home-slider-section {
+  background: #0b1120 !important;
+  border-bottom-color: #1e293b !important;
+}
+html.dark .org-card-header {
+  background: #1e293b !important;
+  border-bottom-color: #334155 !important;
+}
+html.dark .home-section-title,
+html.dark .search-title-text,
+html.dark .core-cat-name,
+html.dark .job-item-title,
+html.dark .province-name,
+html.dark .knowledge-title {
+  color: #f8fafc !important;
+}
+html.dark .search-subtitle,
+html.dark .search-chips-label,
+html.dark .core-cat-count,
+html.dark .job-item-company,
+html.dark .knowledge-desc,
+html.dark .stat-counter-label {
+  color: #94a3b8 !important;
+}
+html.dark .search-title-line,
+html.dark .stat-counter-item:not(:last-child)::after {
+  background: #1e293b !important;
+}
+html.dark .home-section-tag,
+html.dark .search-chip,
+html.dark .province-badge,
+html.dark .company-carousel-nav-btn {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+html.dark .search-chip:hover,
+html.dark .showcase-tab:hover {
+  background: #334155 !important;
+  color: #38bdf8 !important;
+}
+html.dark .showcase-tab.active {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+html.dark .job-item-card {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+html.dark .job-item-card:hover {
+  background: #263549 !important;
+  border-color: var(--primary) !important;
+}
+html.dark .jobs-col-head,
+html.dark .jobs-col-footer {
+  border-color: #1e293b !important;
+}
+html.dark .vip-cta-bar {
+  background: linear-gradient(135deg, #271f0e 0%, #3b2d13 100%) !important;
+  border-color: #854d0e !important;
+}
+html.dark .vip-cta-text strong {
+  color: #fde68a !important;
+}
+html.dark .vip-cta-text span {
+  color: #fcd34d !important;
 }
 html.dark .form-card h3 {
   border-bottom-color: #1e293b !important;
