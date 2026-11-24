@@ -662,6 +662,13 @@
         <div class="card" style="margin-bottom:20px">
           <h3 style="margin-top:0;font-size:16px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:8px">{!! svg_icon('users', 15) !!} افراد کلیدی و مسئولین</h3>
           <ul style="list-style:none;padding:0;margin:0;font-size:13.5px">
+            @if(data_get($company->contacts, 'owner_name'))
+              <li style="padding:8px 0;border-bottom:1px dashed var(--border)">
+                <div style="color:var(--muted)">مالک شرکت:</div>
+                <b>{{ data_get($company->contacts, 'owner_name') }}</b>
+              </li>
+            @endif
+
             @if(data_get($company->contacts, 'ceo_name'))
               <li style="padding:8px 0;border-bottom:1px dashed var(--border)">
                 <div style="color:var(--muted)">مدیرعامل:</div>
@@ -740,14 +747,21 @@
           </ul>
 
           @if(data_get($company->tech_specs, 'certificates'))
-            <div style="margin-top:12px">
-              <span style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px">گواهینامه‌ها:</span>
-              <div style="display:flex;gap:4px;flex-wrap:wrap">
-                @foreach((array)data_get($company->tech_specs, 'certificates') as $cert)
-                  <span class="badge ok" style="font-size:11px">{{ $cert }}</span>
-                @endforeach
+            @php
+              $rawCerts = data_get($company->tech_specs, 'certificates');
+              $certItems = is_array($rawCerts) ? $rawCerts : preg_split('/[;,،]+/u', (string) $rawCerts, -1, PREG_SPLIT_NO_EMPTY);
+              $certItems = array_values(array_filter(array_map('trim', $certItems)));
+            @endphp
+            @if(!empty($certItems))
+              <div style="margin-top:12px">
+                <span style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px">گواهینامه‌ها:</span>
+                <div style="display:flex;gap:4px;flex-wrap:wrap">
+                  @foreach($certItems as $cert)
+                    <span class="badge ok" style="font-size:11px">{{ $cert }}</span>
+                  @endforeach
+                </div>
               </div>
-            </div>
+            @endif
           @endif
         </div>
       @endif
@@ -757,6 +771,23 @@
         <div class="card" style="margin-bottom:20px">
           <h3 style="margin-top:0;font-size:16px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:8px">{!! svg_icon('smartphone', 15) !!} شبکه‌های اجتماعی</h3>
           <div style="display:flex;gap:8px;flex-direction:column;margin-top:8px">
+            @if(data_get($company->socials, 'whatsapp'))
+              @php
+                $waRaw = trim((string) data_get($company->socials, 'whatsapp'));
+                if (str_starts_with($waRaw, 'http')) {
+                    $waUrl = $waRaw;
+                } else {
+                    $waDigits = preg_replace('/\D+/', '', fa_to_en_digits($waRaw));
+                    if (str_starts_with($waDigits, '0')) {
+                        $waDigits = '98' . substr($waDigits, 1);
+                    } elseif (str_starts_with($waDigits, '9') && strlen($waDigits) === 10) {
+                        $waDigits = '98' . $waDigits;
+                    }
+                    $waUrl = 'https://wa.me/' . $waDigits;
+                }
+              @endphp
+              <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="btn ghost small" style="text-align:center;border-color:#86efac;color:#15803d;background:#f0fdf4">{!! svg_icon('message', 15) !!} واتساپ</a>
+            @endif
             @if(data_get($company->socials, 'instagram'))
               <a href="https://instagram.com/{{ ltrim(data_get($company->socials, 'instagram'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center">{!! svg_icon('camera', 15) !!} اینستاگرام</a>
             @endif

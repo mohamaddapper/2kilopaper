@@ -253,7 +253,10 @@
  $sVal = fn($sub, $k) => old("socials.{$k}", data_get($company->socials, $k));
  $hasAct = fn($type) => in_array($type, old('activity_types', (array)($company->activity_types ?? [])));
  $hasServ = fn($srv) => in_array($srv, old('services', (array)($company->services ?? [])));
- $hasCert = fn($cert) => in_array($cert, (array)old('tech_specs.certificates', (array)(data_get($company->tech_specs, 'certificates') ?? [])));
+ $rawCerts = old('tech_specs.certificates', data_get($company->tech_specs, 'certificates'));
+ $certList = is_array($rawCerts) ? $rawCerts : preg_split('/[;,،]+/u', (string) $rawCerts, -1, PREG_SPLIT_NO_EMPTY);
+ $certList = array_values(array_filter(array_map('trim', $certList)));
+ $hasCert = fn($cert) => in_array($cert, $certList, true);
 
  // Initialize location list
  $locList = old('locations', $company->locations);
@@ -639,6 +642,11 @@
       <div style="margin-top:14px;background:#fbfcfe;border:1px solid var(--border);border-radius:10px;padding:16px">
         <h4 style="margin:0 0 12px;font-size:14.5px;color:var(--text)">{!! svg_icon('users', 15) !!} مشخصات مدیران و مسئولین شرکت:</h4>
         
+        <div class="field" style="margin-bottom:12px">
+          <label>نام و نام خانوادگی مالک شرکت / کسب‌وکار</label>
+          <input name="contacts[owner_name]" value="{{ $cVal('contacts', 'owner_name') }}" placeholder="مثال: آقای محمدی">
+        </div>
+
         <div class="form-row" style="margin-bottom:12px">
           <div class="field" style="margin-bottom:0">
             <label>نام و نام خانوادگی مدیرعامل</label>
@@ -718,8 +726,24 @@
         <label>گواهینامه‌های کیفی و استانداردها:</label>
         <div class="check-grid">
           @php
- $certs = ['ISO 9001', 'ISO 14001', 'ISO 45001', 'ISO 22000', 'نشان استاندارد ملی', 'سیب سلامت / بهداشت', 'پروانه بهره‌برداری'];
- @endphp
+          $certs = [
+              'ISO 45001:2018',
+              'ISO 45001:2015',
+              'ISO 18001:2007',
+              'ISO 14001:2015',
+              'ISO 14001:2026',
+              'ISO 10004:2012',
+              'ISO 10002:2018',
+              'ISO 10002:2014',
+              'ISO 9001:2015',
+              'ISO 9001:2008',
+              'IMS',
+              'HSE',
+              'نشان استاندارد',
+              'سیب سلامت',
+          ];
+          $certs = array_values(array_unique(array_merge($certs, $certList)));
+          @endphp
           @foreach($certs as $cert)
             <label class="check-item">
               <input type="checkbox" name="tech_specs[certificates][]" value="{{ $cert }}" @checked($hasCert($cert))>
@@ -807,18 +831,22 @@
         </div>
       </div>
 
-      <div class="form-row-3" style="margin-top:10px">
+      <div class="form-row" style="margin-top:10px">
+        <div class="field">
+          <label>شماره واتساپ</label>
+          <input name="socials[whatsapp]" value="{{ $sVal('socials', 'whatsapp') }}" placeholder="مثال: 09123456789" dir="ltr" style="text-align:left">
+        </div>
         <div class="field">
           <label>آیدی اینستاگرام</label>
-          <input name="socials[instagram]" value="{{ $sVal('socials', 'instagram') }}" placeholder="مثال: 2kilopaper">
+          <input name="socials[instagram]" value="{{ $sVal('socials', 'instagram') }}" placeholder="مثال: 2kilopaper" dir="ltr" style="text-align:left">
         </div>
         <div class="field">
           <label>کانال یا آیدی تلگرام</label>
-          <input name="socials[telegram]" value="{{ $sVal('socials', 'telegram') }}" placeholder="مثال: kilopaper2">
+          <input name="socials[telegram]" value="{{ $sVal('socials', 'telegram') }}" placeholder="مثال: kilopaper2" dir="ltr" style="text-align:left">
         </div>
         <div class="field">
           <label>شناسه پیام‌رسان بله یا ایتا</label>
-          <input name="socials[bale]" value="{{ $sVal('socials', 'bale') }}" placeholder="مثال: ble.ir/2kilopaper">
+          <input name="socials[bale]" value="{{ $sVal('socials', 'bale') }}" placeholder="مثال: ble.ir/2kilopaper" dir="ltr" style="text-align:left">
         </div>
       </div>
     </div>
