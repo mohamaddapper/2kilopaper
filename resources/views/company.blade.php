@@ -536,22 +536,19 @@
     </div>
   </div>
 
-  <!-- بخش شرکت‌های مشابه و هم‌رسته (اسلایدر ۶ تایی با چرخش خودکار) -->
+  <!-- بخش شرکت‌های مشابه (اسلایدر ۶ تایی با چرخش خودکار) -->
   @if(isset($similarCompanies) && $similarCompanies->count())
     <section class="similar-companies-section" style="margin-top:40px;padding-top:28px;border-top:1.5px dashed #e2e8f0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
         <div>
-          <h2 style="margin:0 0 4px;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
+          <h2 style="margin:0;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
             <span>🏭</span>
-            <span>شرکت‌های مشابه و هم‌رسته</span>
+            <span>شرکت‌های مشابه</span>
           </h2>
-          <span style="font-size:13px;color:#64748b">
-            واحدهای صنعتی فعال در زمینه {{ $company->category->name ?? 'صنایع کارتن، کاغذ و چاپ' }}
-          </span>
         </div>
         @if($company->category_id)
           <a href="{{ route('directory', ['cat' => $company->category_id]) }}" style="font-size:13px;font-weight:700;color:var(--primary);display:inline-flex;align-items:center;gap:4px">
-            <span>مشاهده همه شرکت‌های این رسته</span>
+            <span>مشاهده همه</span>
             <span>←</span>
           </a>
         @endif
