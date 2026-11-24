@@ -781,7 +781,7 @@
           </div>
 
           <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px dashed var(--border)">
-            <span>⏰ به‌روزرسانی:</span>
+            <span>{!! svg_icon('clock', 15) !!} به‌روزرسانی:</span>
             <span style="font-weight:700;color:var(--text)">{{ jalali_date($company->updated_at) }}</span>
           </div>
 

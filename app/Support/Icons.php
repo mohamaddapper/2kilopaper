@@ -91,6 +91,7 @@ class Icons
             '🖼' => 'image',
             '🎥' => 'video',
             '⏳' => 'clock',
+            '⏰' => 'clock',
             '🔒' => 'lock',
             '🛡️' => 'shield',
             '🛡' => 'shield',
