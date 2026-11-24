@@ -117,9 +117,9 @@
 
 <style>
 .privacy-page-container {
-  max-width: 960px;
-  margin: 32px auto 60px;
-  padding: 0 16px;
+  width: 100%;
+  margin: 24px 0 60px;
+  padding: 0;
 }
 .privacy-hero {
   background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #059669 100%);

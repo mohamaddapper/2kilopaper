@@ -139,9 +139,9 @@
 
 <style>
 .legal-page-container {
-  max-width: 960px;
-  margin: 32px auto 60px;
-  padding: 0 16px;
+  width: 100%;
+  margin: 24px 0 60px;
+  padding: 0;
 }
 .legal-hero {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);

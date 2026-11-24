@@ -132,9 +132,9 @@
 
 <style>
 .about-container {
-  max-width: 1040px;
-  margin: 32px auto 60px;
-  padding: 0 16px;
+  width: 100%;
+  margin: 24px 0 60px;
+  padding: 0;
 }
 .about-hero {
   background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0284c7 100%);

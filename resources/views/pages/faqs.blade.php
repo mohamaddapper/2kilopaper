@@ -174,9 +174,9 @@
 
 <style>
 .faq-container {
-  max-width: 920px;
-  margin: 32px auto 60px;
-  padding: 0 16px;
+  width: 100%;
+  margin: 24px 0 60px;
+  padding: 0;
 }
 .faq-hero {
   background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #0284c7 100%);
