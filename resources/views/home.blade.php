@@ -204,32 +204,501 @@
   </div>
 
 </section>
-
-<!-- بخش جستجو و معرفی سایت -->
-<section class="hero"><div class="container">
-  <h1>دایرکتوری کاغذ، چاپ و بسته‌بندی ایران</h1>
-  <p>شرکت، تأمین‌کننده و نیروی متخصص را پیدا کنید</p>
-  <form class="search" action="{{ route('directory') }}">
-    <input name="q" placeholder="نام شرکت یا محصول...">
-    <button class="btn" style="background:#fff;color:var(--primary)">جستجو</button>
-  </form>
-</div></section>
 @endsection
 
 @section('content')
-<h2>دسته‌بندی‌ها</h2>
-<div class="grid">
-@foreach($categories as $c)
-  <a class="card" href="{{ route('directory', ['cat' => $c->id]) }}" style="color:inherit"><h3>{{ $c->name }}</h3></a>
-@endforeach
-</div>
+
+<!-- ۱. بخش جستجوی متمرکز (دنبال چی می‌گردی؟) با الهام از ساختار سایت اصلی -->
+<section class="home-search-section">
+  <div class="search-title-wrap">
+    <div class="search-title-line"></div>
+    <h2 class="search-title-text">دنبال چی می‌گردی؟</h2>
+    <div class="search-title-line"></div>
+  </div>
+  <p class="search-subtitle">جستجو در میان بیش از ۹۰۰ کارخانه، تولیدکننده و تأمین‌کننده فعال صنعت کارتن، چاپ و بسته‌بندی ایران</p>
+
+  <form class="home-search-bar" action="{{ route('directory') }}" method="get">
+    <div class="search-input-field">
+      <span class="search-icon">🔍</span>
+      <input type="text" name="q" placeholder="جستجو برای نام شرکت، نوع جعبه، ورق کارتن، رسته یا محصول..." value="{{ request('q') }}">
+    </div>
+
+    <div class="search-select-field">
+      <select name="cat" aria-label="انتخاب دسته‌بندی">
+        <option value="">همه دسته‌بندی‌ها</option>
+        @foreach($categories as $c)
+          <option value="{{ $c->id }}" @selected(request('cat') == $c->id)>{{ $c->name }}</option>
+        @endforeach
+      </select>
+    </div>
+
+    <div class="search-select-field">
+      <select name="province" aria-label="انتخاب استان">
+        <option value="">همه استان‌ها</option>
+        @foreach($searchProvinces as $p)
+          <option value="{{ $p->id }}" @selected(request('province') == $p->id)>{{ $p->name }}</option>
+        @endforeach
+      </select>
+    </div>
+
+    <button type="submit" class="btn search-submit-btn">
+      <span>جستجو</span>
+    </button>
+  </form>
+
+  <!-- برچسب‌ها و چیپ‌های جستجوی پرطرفدار صنعت -->
+  <div class="search-chips-wrap">
+    <span class="search-chips-label">جستجوهای پرطرفدار:</span>
+    <a href="{{ route('directory', ['q' => 'جعبه کارتن']) }}" class="search-chip">#جعبه_کارتن</a>
+    <a href="{{ route('directory', ['q' => 'ورق ۵ لایه']) }}" class="search-chip">#ورق_۵_لایه</a>
+    <a href="{{ route('directory', ['q' => 'ورق ۳ لایه']) }}" class="search-chip">#ورق_۳_لایه</a>
+    <a href="{{ route('directory', ['q' => 'کاغذ کرافت']) }}" class="search-chip">#کاغذ_کرافت</a>
+    <a href="{{ route('directory', ['q' => 'فلوتینگ']) }}" class="search-chip">#فلوتینگ</a>
+    <a href="{{ route('directory', ['q' => 'چاپ افست']) }}" class="search-chip">#چاپ_افست</a>
+    <a href="{{ route('directory', ['q' => 'چاپ فلکسو']) }}" class="search-chip">#چاپ_فلکسو</a>
+    <a href="{{ route('directory', ['q' => 'ماشین آلات']) }}" class="search-chip">#ماشین‌آلات</a>
+    <a href="{{ route('directory', ['q' => 'چاپ لیبل']) }}" class="search-chip">#چاپ_لیبل</a>
+  </div>
+</section>
+
+<!-- ۲. بخش ۸ رسته صنعتی اصلی (شبکه دسترسی سریع با تعداد شرکت‌ها) -->
+<section class="home-section">
+  <div class="home-section-header">
+    <div class="header-right">
+      <h2 class="home-section-title">رسته‌های اصلی صنعت</h2>
+      <span class="home-section-tag">پرطرفدارترین بخش‌ها</span>
+    </div>
+    <a href="{{ route('directory') }}" class="home-section-link">
+      <span>مشاهده همه دسته‌بندی‌ها</span>
+      <span style="font-size:16px">←</span>
+    </a>
+  </div>
+
+  @php
+    $catIcons = [
+        41 => ['icon' => '📦', 'color' => '#2563eb', 'bg' => '#eff6ff'], // جعبه کارتن
+        130 => ['icon' => '📢', 'color' => '#0891b2', 'bg' => '#ecfeff'], // چاپ تبلیغاتی
+        124 => ['icon' => '🖨️', 'color' => '#4f46e5', 'bg' => '#eef2ff'], // چاپ افست
+        128 => ['icon' => '🏷️', 'color' => '#059669', 'bg' => '#ecfdf5'], // چاپ لیبل و برچسب
+        129 => ['icon' => '🛍️', 'color' => '#9333ea', 'bg' => '#faf5ff'], // چاپ جعبه و بسته بندی
+        40 => ['icon' => '📄', 'color' => '#d97706', 'bg' => '#fffbeb'], // ورق کارتن
+        62 => ['icon' => '🎁', 'color' => '#e11d48', 'bg' => '#fff1f2'], // جعبه مقوایی
+        56 => ['icon' => '⚙️', 'color' => '#475569', 'bg' => '#f1f5f9'], // ماشین آلات
+    ];
+  @endphp
+
+  <div class="core-cat-grid">
+    @foreach($coreCategories as $cat)
+      @php $meta = $catIcons[$cat->id] ?? ['icon' => '🏭', 'color' => '#1f5fa8', 'bg' => '#f0f7ff']; @endphp
+      <a href="{{ route('directory', ['cat' => $cat->id]) }}" class="core-cat-card">
+        <div class="core-cat-icon" style="background:{{ $meta['bg'] }};color:{{ $meta['color'] }}">
+          <span>{{ $meta['icon'] }}</span>
+        </div>
+        <div class="core-cat-info">
+          <h3 class="core-cat-name">{{ $cat->name }}</h3>
+          <span class="core-cat-count">{{ number_format($cat->companies_count) }} شرکت فعال</span>
+        </div>
+        <span class="core-cat-arrow" style="color:{{ $meta['color'] }}">←</span>
+      </a>
+    @endforeach
+  </div>
+</section>
+
+<!-- ۳. بخش ۳ بنر تبلیغاتی هم‌سطح (مشابه بنرهای ۳ گانه صفحه اصلی ۲ کیلو کاغذ) -->
+<section class="home-section">
+  <div class="triple-banners-grid">
+    
+    <!-- بنر ۱: نگین کوثر پارس -->
+    <div class="ad-promo-card promo-blue">
+      <div class="promo-badge">تولیدکننده برتر صنعت</div>
+      <h3 class="promo-title">نگین کوثر پارس</h3>
+      <p class="promo-desc">تولید انواع کاغذ تست لاینر، شبه‌کرافت و فلوتینگ با استانداردهای صنعتی و کیفیت پایدار</p>
+      <div class="promo-action">
+        <a href="{{ route('directory', ['q' => 'نگین کوثر پارس']) }}" class="promo-btn">
+          <span>اطلاعات تماس و استعلام</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- بنر ۲: اپلیکیشن ۲ کیلو کاغذ -->
+    <div class="ad-promo-card promo-green">
+      <div class="promo-badge">نسخه تلفن همراه</div>
+      <h3 class="promo-title">اپ ۲ کیلو کاغذ</h3>
+      <p class="promo-desc">دسترسی لحظه‌ای به شماره تلفن کارخانجات، نقشه جغرافیایی واحدها و ثبت آگهی‌های اختصاصی</p>
+      <div class="promo-action">
+        <a href="#app-download" class="promo-btn">
+          <span>دانلود مستقیم اپلیکیشن</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- بنر ۳: سرویس پیامکی و استعلام آنلاین -->
+    <div class="ad-promo-card promo-amber">
+      <div class="promo-badge">استعلام بدون واسطه</div>
+      <h3 class="promo-title">سامانه هوشمند استعلام</h3>
+      <p class="promo-desc">دریافت مستقیم پیش‌فاکتور قیمت ورق و کارتن از تولیدکنندگان سراسر کشور بدون پرداخت کمیسیون</p>
+      <div class="promo-action">
+        <a href="{{ route('directory') }}" class="promo-btn">
+          <span>شروع استعلام آنلاین</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ۴. بخش شرکت‌های ویژه (ویژه‌های طلایی و نقره‌ای با پاسخگویی سریع) -->
 @if($featured->count())
-<h2 style="margin-top:32px">شرکت‌های ویژه</h2>
-<div class="grid">@foreach($featured as $company)@include('partials.card')@endforeach</div>
+<section class="home-section">
+  <div class="home-section-header">
+    <div class="header-right">
+      <h2 class="home-section-title">
+        <span style="color:#f59e0b;margin-left:4px">★</span>
+        شرکت‌های ویژه و منتخب صنعت
+      </h2>
+      <span class="home-section-tag" style="background:#fef3c7;color:#92400e;border-color:#fcd34d">تأییدشده و پاسخگو</span>
+    </div>
+    <a href="{{ route('directory') }}" class="home-section-link">
+      <span>مشاهده همه شرکت‌ها</span>
+      <span style="font-size:16px">←</span>
+    </a>
+  </div>
+
+  <div class="grid">
+    @foreach($featured as $company)
+      @include('partials.card', ['company' => $company])
+    @endforeach
+  </div>
+
+  <!-- نوار ترغیب مدیران به ارتقای اشتراک -->
+  <div class="vip-cta-bar">
+    <div class="vip-cta-text">
+      <strong>شما هم مدیر یا تولیدکننده در این صنعت هستید؟</strong>
+      <span>با دریافت اشتراک طلایی، در رتبه اول نتایج جستجو و دید هزاران خریدار روزانه قرار بگیرید.</span>
+    </div>
+    <a href="{{ route('subscription.fee') }}" class="btn vip-cta-btn">
+      <span>تعرفه‌های اشتراک طلایی</span>
+      <span>←</span>
+    </a>
+  </div>
+</section>
 @endif
 
+<!-- ۵. بخش کاریابی و استخدام دو ستونه (آگهی‌های استخدام + رزومه کارجویان) -->
+<section class="home-section">
+  <div class="jobs-dual-grid">
+    
+    <!-- ستون راست: آگهی‌های استخدام -->
+    <div class="jobs-col">
+      <div class="jobs-col-head">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:20px">💼</span>
+          <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">فرصت‌های شغلی جدید</h3>
+        </div>
+        <a href="{{ route('jobs.index') }}" style="font-size:13px;font-weight:700;color:var(--primary)">همه آگهی‌ها ←</a>
+      </div>
+
+      <div class="jobs-list">
+        @forelse($recentJobs as $job)
+          <a href="{{ route('jobs.show', $job) }}" class="job-item-card">
+            <div class="job-item-main">
+              <h4 class="job-item-title">{{ $job->title }}</h4>
+              <p class="job-item-company">
+                {{ $job->company->name ?? 'کارخانه معتبر صنعتی' }} · 📍 {{ $job->province->name ?? 'ایران' }}
+              </p>
+            </div>
+            <div class="job-item-badges">
+              @if($job->is_immediate)
+                <span class="badge" style="background:#fee2e2;color:#b91c1c;font-size:11px">فوری</span>
+              @endif
+              <span class="badge" style="background:#eef2ff;color:#4338ca;font-size:11px">
+                {{ $job->job_type ?? 'تمام وقت' }}
+              </span>
+            </div>
+          </a>
+        @empty
+          <div class="job-empty-box">
+            <p>در حال حاضر آگهی استخدامی فعالی ثبت نشده است.</p>
+          </div>
+        @endforelse
+      </div>
+
+      <div class="jobs-col-footer">
+        <a href="{{ route('employer.jobs.create') }}" class="btn ghost small" style="width:100%;text-align:center">
+          + ثبت رایگان آگهی استخدام نیرو
+        </a>
+      </div>
+    </div>
+
+    <!-- ستون چپ: بانک رزومه متخصصین صنعت -->
+    <div class="jobs-col">
+      <div class="jobs-col-head">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:20px">👤</span>
+          <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">رزومه متخصصین و کارجویان</h3>
+        </div>
+        <a href="{{ route('jobs.index') }}" style="font-size:13px;font-weight:700;color:var(--primary)">بانک کارجویان ←</a>
+      </div>
+
+      <div class="jobs-list">
+        @forelse($recentResumes as $resume)
+          <div class="job-item-card" style="cursor:default">
+            <div class="job-item-main">
+              <h4 class="job-item-title">{{ $resume->full_name }}</h4>
+              <p class="job-item-company">
+                {{ $resume->education ?? 'متخصص صنعت کارتن و چاپ' }} · 📍 {{ $resume->province->name ?? 'ایران' }}
+              </p>
+            </div>
+            <div class="job-item-badges">
+              <span class="badge" style="background:#ecfdf5;color:#047857;font-size:11px">
+                {{ $resume->experience_years ? $resume->experience_years . ' سال سابقه' : 'آماده به کار' }}
+              </span>
+            </div>
+          </div>
+        @empty
+          <div class="job-empty-box">
+            <p>در حال حاضر رزومه‌ای برای نمایش وجود ندارد.</p>
+          </div>
+        @endforelse
+      </div>
+
+      <div class="jobs-col-footer">
+        <a href="{{ route('jobs.index') }}" class="btn ghost small" style="width:100%;text-align:center">
+          + ثبت رزومه کاری برای شرکت‌ها
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ۶. بخش ۲ بنر عریض میانی (حامیان برتر صنعت مشابه ۲ کیلو کاغذ) -->
+<section class="home-section">
+  <div class="dual-banners-grid">
+    
+    <!-- بنر ۱: شهباز صنعت آسیا -->
+    <div class="dual-banner-box banner-shahbaz">
+      <div class="dual-banner-content">
+        <span class="dual-banner-badge">تولیدکننده تخصصی ورق</span>
+        <h3 class="dual-banner-title">شهباز صنعت آسیا</h3>
+        <p class="dual-banner-desc">تولیدکننده انواع سینگل فیس فلوت‌های E, B, C, F در عرض ۱۰۰ تا ۱۶۰ سانتیمتر به صورت رول و شیت</p>
+        <a href="{{ route('directory', ['q' => 'شهباز صنعت آسیا']) }}" class="btn dual-banner-btn">
+          <span>مشاهده و سفارش</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- بنر ۲: مواد شیمیایی و سولفات آلومینیوم -->
+    <div class="dual-banner-box banner-alum">
+      <div class="dual-banner-content">
+        <span class="dual-banner-badge">مواد اولیه و شیمیایی</span>
+        <h3 class="dual-banner-title">تولید سولفات آلومینیوم</h3>
+        <p class="dual-banner-desc">تولید منعقدکننده‌های ویژه صنایع کاغذسازی، مقوا و تصفیه پساب کارخانجات با خلوص بالا و مطابق استاندارد</p>
+        <a href="{{ route('directory', ['q' => 'سولفات']) }}" class="btn dual-banner-btn">
+          <span>استعلام قیمت و ارسال نمونه</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ۷. نمایشگاه تفکیکی صنعت با تب‌های زنده (Vanilla JS) -->
+<section class="home-section">
+  <div class="home-section-header">
+    <div class="header-right">
+      <h2 class="home-section-title">نمایشگاه تفکیکی شرکت‌ها</h2>
+      <span class="home-section-tag">بر اساس رسته فعالیت</span>
+    </div>
+  </div>
+
+  <!-- تب‌های انتخاب رسته -->
+  <div class="showcase-tabs">
+    <button type="button" class="showcase-tab active" onclick="switchShowcaseTab('carton', this)">
+      <span>📦</span>
+      <span>ورق و کارتن‌سازی</span>
+    </button>
+    <button type="button" class="showcase-tab" onclick="switchShowcaseTab('paper', this)">
+      <span>📜</span>
+      <span>کاغذ و مقوا</span>
+    </button>
+    <button type="button" class="showcase-tab" onclick="switchShowcaseTab('print', this)">
+      <span>🖨️</span>
+      <span>چاپ و بسته‌بندی</span>
+    </button>
+    <button type="button" class="showcase-tab" onclick="switchShowcaseTab('machinery', this)">
+      <span>⚙️</span>
+      <span>ماشین‌آلات و تجهیزات</span>
+    </button>
+  </div>
+
+  <!-- محتوای تب ۱: کارتن -->
+  <div class="showcase-content active" id="tab-carton">
+    <div class="grid">
+      @forelse($cartonCompanies as $company)
+        @include('partials.card', ['company' => $company])
+      @empty
+        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+      @endforelse
+    </div>
+  </div>
+
+  <!-- محتوای تب ۲: کاغذ -->
+  <div class="showcase-content" id="tab-paper">
+    <div class="grid">
+      @forelse($paperCompanies as $company)
+        @include('partials.card', ['company' => $company])
+      @empty
+        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+      @endforelse
+    </div>
+  </div>
+
+  <!-- محتوای تب ۳: چاپ -->
+  <div class="showcase-content" id="tab-print">
+    <div class="grid">
+      @forelse($printCompanies as $company)
+        @include('partials.card', ['company' => $company])
+      @empty
+        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+      @endforelse
+    </div>
+  </div>
+
+  <!-- محتوای تب ۴: ماشین آلات -->
+  <div class="showcase-content" id="tab-machinery">
+    <div class="grid">
+      @forelse($machineryCompanies as $company)
+        @include('partials.card', ['company' => $company])
+      @empty
+        <p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">شرکتی در این دسته یافت نشد.</p>
+      @endforelse
+    </div>
+  </div>
+</section>
+
+<!-- ۸. بخش ۱۲ قطب صنعتی برتر کشور (تفکیک جغرافیایی کارخانجات) -->
+<section class="home-section">
+  <div class="home-section-header">
+    <div class="header-right">
+      <h2 class="home-section-title">قطب‌های صنعتی برتر کشور</h2>
+      <span class="home-section-tag">پوشش سراسری</span>
+    </div>
+    <span class="home-section-desc-inline">دسترسی مستقیم به کارخانجات بر اساس استان</span>
+  </div>
+
+  <div class="provinces-grid">
+    @foreach($topProvinces as $province)
+      <a href="{{ route('directory', ['province' => $province->id]) }}" class="province-card">
+        <div class="province-card-right">
+          <span class="province-pin">📍</span>
+          <span class="province-name">{{ $province->name }}</span>
+        </div>
+        <span class="province-badge">{{ number_format($province->companies_count) }} واحد</span>
+      </a>
+    @endforeach
+  </div>
+</section>
+
+<!-- ۹. بخش دانشنامه و مقالات تخصصی خریداران صنعت -->
+<section class="home-section">
+  <div class="home-section-header">
+    <div class="header-right">
+      <h2 class="home-section-title">دانشنامه و راهنمای تخصصی</h2>
+      <span class="home-section-tag">راهنمای خریداران</span>
+    </div>
+  </div>
+
+  <div class="knowledge-grid">
+    
+    <div class="knowledge-card">
+      <div class="knowledge-tag">اصول فنی ورق‌سازی</div>
+      <h3 class="knowledge-title">راهنمای محاسبه گراماژ و مقاومت فلوت در جعبه‌های صادراتی</h3>
+      <p class="knowledge-desc">تفاوت مقاومت کارتن‌های فلوت B، C و ترکیب فلوت BC در برابر ضربه، ارتعاشات حمل‌ونقل و رطوبت سردخانه‌ها.</p>
+      <div class="knowledge-link">
+        <span>مطالعه راهنما</span>
+        <span>←</span>
+      </div>
+    </div>
+
+    <div class="knowledge-card">
+      <div class="knowledge-tag">مواد اولیه کاغذ</div>
+      <h3 class="knowledge-title">تفاوت کاغذ لاینر، کرافت خالص و فلوتینگ در استحکام کارتن</h3>
+      <p class="knowledge-desc">چگونه با انتخاب ترکیب صحیح لایه‌های داخلی و خارجی، وزن بسته‌بندی را کاهش داده و استحکام جعبه را دوچندان کنیم؟</p>
+      <div class="knowledge-link">
+        <span>مطالعه راهنما</span>
+        <span>←</span>
+      </div>
+    </div>
+
+    <div class="knowledge-card">
+      <div class="knowledge-tag">فناوری‌های چاپ</div>
+      <h3 class="knowledge-title">انتخاب مناسب‌ترین شیوه چاپ: افست، فلکسو یا سیلک؟</h3>
+      <p class="knowledge-desc">بررسی اقتصادی تیراژ، رزولوشن مورد نیاز، سلفون‌کشی و یووی موضعی در بسته‌بندی محصولات صنایع غذایی و دارویی.</p>
+      <div class="knowledge-link">
+        <span>مطالعه راهنما</span>
+        <span>←</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ۱۰. کادر فراخوان نصب اپلیکیشن و کانال تلگرام ۲ کیلو کاغذ -->
+<section class="home-section" id="app-download">
+  <div class="app-cta-banner">
+    <div class="app-cta-content">
+      <div class="app-cta-badge">همراه هوشمند صنعت</div>
+      <h2 class="app-cta-title">اپلیکیشن اختصاصی ۲ کیلو کاغذ را نصب کنید</h2>
+      <p class="app-cta-desc">بانک اطلاعات بیش از ۹۰۰ شرکت، استعلام لحظه‌ای قیمت، فرصت‌های شغلی و دسترسی آفلاین به تلفن کارخانجات همگی در جیب شما.</p>
+      <div class="app-cta-actions">
+        <a href="{{ route('home') }}" class="btn app-btn-white">
+          <span>دانلود مستقیم اپلیکیشن</span>
+          <span>📥</span>
+        </a>
+        <a href="https://t.me" target="_blank" rel="noopener" class="btn app-btn-trans">
+          <span>عضویت در کانال تلگرام قیمت‌ها</span>
+          <span>✈️</span>
+        </a>
+      </div>
+    </div>
+    <div class="app-cta-icon-box">
+      <span style="font-size:100px;opacity:0.35">📱</span>
+    </div>
+  </div>
+</section>
+
+<!-- ۱۱. نوار آمار و اعتبار پلتفرم (۴ شاخص کلیدی اعتماد) -->
+<section class="home-section">
+  <div class="stats-counter-strip">
+    <div class="stat-counter-item">
+      <div class="stat-counter-num">۹۰۰+</div>
+      <div class="stat-counter-label">کارخانه و تولیدکننده فعال</div>
+    </div>
+    <div class="stat-counter-item">
+      <div class="stat-counter-num">۳۱</div>
+      <div class="stat-counter-label">استان تحت پوشش سراسری</div>
+    </div>
+    <div class="stat-counter-item">
+      <div class="stat-counter-num">۲۵۰+</div>
+      <div class="stat-counter-label">رسته و کالای تخصصی کاغذ و چاپ</div>
+    </div>
+    <div class="stat-counter-item">
+      <div class="stat-counter-num">۱۰۰٪</div>
+      <div class="stat-counter-label">ارتباط مستقیم و بدون واسطه</div>
+    </div>
+  </div>
+</section>
+
 <style>
-/* استایل‌های اسلایدر تمام‌عرض ۵۰۰ پیکسلی با اثر ورق‌خور و نمایش بنرهای قبل و بعد (Center Mode Peek) */
+/* ==========================================================================
+   استایل‌های اسلایدر تمام‌عرض ۵۰۰ پیکسلی (Center Mode Peek)
+   ========================================================================== */
 .home-slider-section {
   width: 100%;
   position: relative;
@@ -246,7 +715,7 @@
   position: relative;
   margin: 0;
   padding: 0;
-  direction: ltr; /* جهت محاسبه ریاضی دقیق و مستقل از مرورگر */
+  direction: ltr;
 }
 .home-slider-track {
   display: flex;
@@ -416,12 +885,8 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
   color: #0284c7;
 }
-.home-slider-prev {
-  right: 20px;
-}
-.home-slider-next {
-  left: 20px;
-}
+.home-slider-prev { right: 20px; }
+.home-slider-next { left: 20px; }
 .home-slider-dots {
   display: flex;
   justify-content: center;
@@ -442,68 +907,823 @@
   background: #0284c7;
 }
 
-@media (max-width: 900px) {
-  .home-banner-inner {
-    padding: 32px 36px;
+/* ==========================================================================
+   استایل‌های بخش‌های جدید صفحه اصلی
+   ========================================================================== */
+.home-section {
+  margin-top: 48px;
+}
+.home-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.home-section-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+}
+.home-section-tag {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #e0e7ff;
+}
+.home-section-link {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+.home-section-link:hover {
+  transform: translateX(-4px);
+}
+.home-section-desc-inline {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ۱. بخش جستجو */
+.home-search-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 36px 32px 30px;
+  margin-top: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+.search-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.search-title-line {
+  height: 1.5px;
+  background: #e2e8f0;
+  flex: 1;
+  max-width: 140px;
+}
+.search-title-text {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+}
+.search-subtitle {
+  text-align: center;
+  color: #64748b;
+  font-size: 14.5px;
+  margin: 0 auto 24px;
+  max-width: 640px;
+}
+.home-search-bar {
+  display: flex;
+  gap: 10px;
+  max-width: 980px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.search-input-field {
+  flex: 2.5;
+  min-width: 250px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input-field input {
+  width: 100%;
+  padding: 13px 42px 13px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input-field input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(31, 95, 168, 0.15);
+}
+.search-icon {
+  position: absolute;
+  right: 14px;
+  font-size: 16px;
+  pointer-events: none;
+}
+.search-select-field {
+  flex: 1.2;
+  min-width: 160px;
+}
+.search-select-field select {
+  width: 100%;
+  padding: 13px 14px 13px 36px !important;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  height: 100%;
+}
+.search-submit-btn {
+  padding: 13px 32px;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+}
+.search-chips-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed #e2e8f0;
+}
+.search-chips-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+.search-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.search-chip:hover {
+  background: #e2e8f0;
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* ۲. شبکه ۸ رسته اصلی */
+.core-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.core-cat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.core-cat-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+.core-cat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.core-cat-info {
+  flex: 1;
+  min-width: 0;
+}
+.core-cat-name {
+  margin: 0 0 4px;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.core-cat-count {
+  font-size: 12px;
+  color: #64748b;
+}
+.core-cat-arrow {
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 0.6;
+  transition: transform 0.2s;
+}
+.core-cat-card:hover .core-cat-arrow {
+  opacity: 1;
+  transform: translateX(-4px);
+}
+
+/* ۳. سه بنر تبلیغاتی */
+.triple-banners-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.ad-promo-card {
+  border-radius: 16px;
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s;
+}
+.ad-promo-card:hover {
+  transform: translateY(-3px);
+}
+.promo-blue {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0369a1 100%);
+  color: #ffffff;
+}
+.promo-green {
+  background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+  color: #ffffff;
+}
+.promo-amber {
+  background: linear-gradient(135deg, #78350f 0%, #d97706 100%);
+  color: #ffffff;
+}
+.promo-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  margin-bottom: 14px;
+}
+.promo-title {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.promo-desc {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.92);
+}
+.promo-action {
+  margin-top: auto;
+}
+.promo-btn {
+  background: #ffffff;
+  color: #0f172a !important;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.promo-btn:hover {
+  background: #f8fafc;
+}
+
+/* نوار ترغیب مدیران به ویژه کردن شرکت */
+.vip-cta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1.5px solid #fcd34d;
+  border-radius: 14px;
+  padding: 16px 24px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.vip-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.vip-cta-text strong {
+  font-size: 15px;
+  color: #78350f;
+}
+.vip-cta-text span {
+  font-size: 13px;
+  color: #92400e;
+}
+.vip-cta-btn {
+  background: #d97706 !important;
+  color: #ffffff !important;
+  font-weight: 800;
+  padding: 10px 22px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.vip-cta-btn:hover {
+  background: #b45309 !important;
+}
+
+/* ۴. بخش استخدام دو ستونه */
+.jobs-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.jobs-col {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+}
+.jobs-col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.job-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+.job-item-card:hover {
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+.job-item-main {
+  min-width: 0;
+  flex: 1;
+}
+.job-item-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.job-item-company {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+.job-item-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.job-empty-box {
+  padding: 24px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13.5px;
+}
+.jobs-col-footer {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* ۵. دو بنر میانی عریض */
+.dual-banners-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.dual-banner-box {
+  border-radius: 16px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+}
+.banner-shahbaz {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-right: 5px solid #38bdf8;
+}
+.banner-alum {
+  background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+  border-right: 5px solid #4ade80;
+}
+.dual-banner-badge {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  margin-bottom: 12px;
+}
+.dual-banner-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.dual-banner-desc {
+  margin: 0 0 22px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.92);
+}
+.dual-banner-btn {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ۶. تب‌های نمایشگاه */
+.showcase-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.showcase-tab {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #334155;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.showcase-tab:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+.showcase-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(31, 95, 168, 0.25);
+}
+.showcase-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.showcase-content.active {
+  display: block;
+}
+
+/* ۷. شبکه ۱۲ استان برتر */
+.provinces-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.province-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+.province-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.province-card-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.province-pin {
+  font-size: 16px;
+}
+.province-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.province-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* ۸. دانشنامه و راهنماها */
+.knowledge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.knowledge-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s;
+}
+.knowledge-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transform: translateY(-3px);
+}
+.knowledge-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+.knowledge-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.5;
+}
+.knowledge-desc {
+  margin: 0 0 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #64748b;
+}
+.knowledge-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+}
+
+/* ۹. بنر دانلود اپلیکیشن */
+.app-cta-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 20px;
+  padding: 44px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+.app-cta-content {
+  max-width: 600px;
+  position: relative;
+  z-index: 2;
+}
+.app-cta-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+.app-cta-title {
+  margin: 0 0 12px;
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffffff;
+}
+.app-cta-desc {
+  margin: 0 0 24px;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #cbd5e1;
+}
+.app-cta-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.app-btn-white {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 800;
+  padding: 11px 24px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-btn-trans {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-weight: 700;
+  padding: 11px 22px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-btn-trans:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+.app-cta-icon-box {
+  position: relative;
+  z-index: 1;
+}
+
+/* ۱۰. نوار آمار */
+.stats-counter-strip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 28px 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  text-align: center;
+}
+.stat-counter-item {
+  position: relative;
+}
+.stat-counter-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: #e2e8f0;
+}
+.stat-counter-num {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 6px;
+  letter-spacing: -1px;
+}
+.stat-counter-label {
+  font-size: 13.5px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   رسپانسیو و بهینه‌سازی موبایل و تبلت
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .core-cat-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .home-banner-title {
-    font-size: 24px;
+  .triple-banners-grid {
+    grid-template-columns: 1fr;
   }
-  .home-banner-desc {
-    font-size: 14px;
+  .provinces-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
-  .home-banner-graphic {
-    font-size: 85px;
-    margin-right: 20px;
+  .knowledge-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 680px) {
-  .home-slider-wrapper,
-  .home-slider-track,
-  .home-slider-item,
-  .home-banner-card {
-    height: 440px;
+@media (max-width: 768px) {
+  .jobs-dual-grid {
+    grid-template-columns: 1fr;
   }
-  .home-banner-inner {
-    padding: 24px 20px;
+  .dual-banners-grid {
+    grid-template-columns: 1fr;
   }
-  .home-banner-badge {
-    font-size: 11.5px;
-    padding: 5px 12px;
-    margin-bottom: 14px;
+  .provinces-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .home-banner-title {
-    font-size: 20px;
-    margin-bottom: 12px;
-    line-height: 1.4;
+  .stats-counter-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
   }
-  .home-banner-desc {
-    font-size: 13px;
-    margin-bottom: 20px;
-    line-height: 1.6;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .home-banner-btn {
-    font-size: 13.5px;
-    padding: 10px 20px;
-  }
-  .home-banner-graphic {
+  .stat-counter-item:not(:last-child)::after {
     display: none;
   }
-  .home-slider-arrow {
-    width: 36px;
-    height: 36px;
+  .home-search-section {
+    padding: 24px 18px;
   }
-  .home-slider-prev { right: 8px; }
-  .home-slider-next { left: 8px; }
+  .search-input-field {
+    flex: 1 1 100%;
+  }
+  .search-select-field {
+    flex: 1 1 48%;
+  }
+  .search-submit-btn {
+    flex: 1 1 100%;
+  }
+  .app-cta-banner {
+    padding: 30px 24px;
+  }
+  .app-cta-icon-box {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .core-cat-grid {
+    grid-template-columns: 1fr;
+  }
+  .provinces-grid {
+    grid-template-columns: 1fr;
+  }
+  .search-select-field {
+    flex: 1 1 100%;
+  }
 }
 </style>
 
 <script>
+/* اسکریپت تب‌های نمایشگاه */
+function switchShowcaseTab(tabKey, btn) {
+  document.querySelectorAll('.showcase-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.showcase-content').forEach(c => c.classList.remove('active'));
+  
+  btn.classList.add('active');
+  const target = document.getElementById('tab-' + tabKey);
+  if (target) {
+    target.classList.add('active');
+  }
+}
+
+/* اسکریپت اسلایدر ۵۰۰ پیکسلی Center Mode Peek */
 document.addEventListener('DOMContentLoaded', function () {
   const wrapper = document.getElementById('homeSliderWrapper');
   const track = document.getElementById('homeSliderTrack');
@@ -513,7 +1733,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
   if (!wrapper || !track || items.length === 0) return;
 
-  let currentTrackIndex = 1; // شروع از اسلاید واقعی ۱ (ایندکس ۱ در ترک)
+  let currentTrackIndex = 1;
   let isAnimating = false;
   let autoPlayTimer = null;
 
@@ -522,7 +1742,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const isMobile = window.innerWidth <= 768;
     const isSmallMobile = window.innerWidth <= 480;
 
-    // بنر وسط حدود ۷۰٪ صفحه را پر می‌کند و ۱۵٪ از چپ و ۱۵٪ از راست به بنرهای قبلی و بعدی اختصاص می‌یابد
     let slideRatio = 0.70;
     if (isSmallMobile) {
       slideRatio = 0.88;
@@ -561,7 +1780,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     track.style.transform = 'translateX(' + translateX + 'px)';
 
-    // تعیین ایندکس اسلاید واقعی برای دات‌ها (۰ تا ۴)
     let realIndex = 0;
     if (currentTrackIndex === 0) {
       realIndex = 4;
@@ -599,12 +1817,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   track.addEventListener('transitionend', function () {
     isAnimating = false;
-    // چرخش پیوسته و بدون پرش (Infinite Loop)
     if (currentTrackIndex === 0) {
-      currentTrackIndex = totalRealSlides; // پرش به اسلاید ۵ بدون انیمیشن
+      currentTrackIndex = totalRealSlides;
       updatePosition(false);
     } else if (currentTrackIndex === totalRealSlides + 1) {
-      currentTrackIndex = 1; // پرش به اسلاید ۱ بدون انیمیشن
+      currentTrackIndex = 1;
       updatePosition(false);
     }
   });
@@ -621,7 +1838,6 @@ document.addEventListener('DOMContentLoaded', function () {
     startAutoPlay();
   };
 
-  // کلیک روی بنرهای کناری به صورت مستقیم آن بنر را به وسط می‌آورد
   items.forEach((item, idx) => {
     item.addEventListener('click', function (e) {
       if (idx !== currentTrackIndex) {
@@ -649,11 +1865,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // توقف پخش خودکار هنگام هاور ماوس روی اسلایدر
   wrapper.addEventListener('mouseenter', stopAutoPlay);
   wrapper.addEventListener('mouseleave', startAutoPlay);
 
-  // سوایپ لمسی برای گوشی‌ها و تبلت‌ها
   let touchStartX = 0;
   let touchEndX = 0;
   wrapper.addEventListener('touchstart', function (e) {
@@ -674,7 +1888,6 @@ document.addEventListener('DOMContentLoaded', function () {
     startAutoPlay();
   });
 
-  // رسپانسیو بودن هنگام تغییر اندازه پنجره
   let resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
@@ -684,7 +1897,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 100);
   });
 
-  // اجرای اولیه
   applyDimensions();
   updatePosition(false);
   startAutoPlay();
