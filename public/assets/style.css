@@ -264,3 +264,149 @@ html.dark h1, html.dark h2, html.dark h3, html.dark h4 {
 html.dark .badge {
   border-color: #334155;
 }
+
+/* Dark Mode: All Sections, Cards, Forms, Info Pages & Inline Styles */
+html.dark .home-search-section,
+html.dark .core-cat-card,
+html.dark .stats-counter-strip,
+html.dark .job-mini-card,
+html.dark .resume-mini-card,
+html.dark .directory-filter-bar,
+html.dark .cat-search-box,
+html.dark .cat-search-dropdown,
+html.dark .location-card,
+html.dark .check-grid,
+html.dark .activity-pill,
+html.dark .phone-card,
+html.dark .phone-search-box,
+html.dark .app-card,
+html.dark .app-why-box,
+html.dark .faq-item,
+html.dark .faq-cat-card,
+html.dark .legal-card,
+html.dark .about-card,
+html.dark .contact-card,
+html.dark .plan-card,
+html.dark .ad-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+html.dark .popular-tag,
+html.dark .pillar-filter-pill,
+html.dark .cat-tag-chip,
+html.dark .cat-set-primary-btn,
+html.dark .phone-address,
+html.dark .phone-num-btn,
+html.dark .phone-santral-num,
+html.dark .ios-step-item,
+html.dark .ios-compat-note,
+html.dark .app-feature-list li,
+html.dark .footer-social-btn,
+html.dark .f-val,
+html.dark .footer-bottom-links a,
+html.dark .footer-links a {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+html.dark .footer-links a,
+html.dark .footer-bottom-links a,
+html.dark .f-val {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+html.dark .phone-santral-box {
+  background: #271f0e !important;
+  border-color: #854d0e !important;
+  color: #fde68a !important;
+}
+html.dark .cat-search-item:hover,
+html.dark .cat-search-item.highlighted,
+html.dark .pillar-filter-pill:hover,
+html.dark .pillar-filter-pill.active {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+html.dark .cat-search-item.is-selected {
+  background: #0f291e !important;
+}
+html.dark .btn.ghost {
+  border-color: #334155;
+  color: #e2e8f0;
+  background: transparent;
+}
+html.dark .btn.ghost:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+html.dark .header-add-btn,
+html.dark .theme-toggle-btn,
+html.dark .mobile-menu-toggle {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+html.dark .footer-bottom-bar {
+  border-top-color: #1e293b;
+}
+html.dark table th {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+html.dark table td {
+  border-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* Override common inline light surfaces & dark text in Dark Mode */
+html.dark [style*="background:#fff"],
+html.dark [style*="background:#ffffff"],
+html.dark [style*="background: #fff"],
+html.dark [style*="background: #ffffff"] {
+  background: #111827 !important;
+}
+html.dark [style*="background:#f8fafc"],
+html.dark [style*="background: #f8fafc"],
+html.dark [style*="background:#fbfcfe"],
+html.dark [style*="background: #fbfcfe"],
+html.dark [style*="background:#f1f5f9"],
+html.dark [style*="background: #f1f5f9"] {
+  background: #1e293b !important;
+}
+html.dark [style*="color:#0f172a"],
+html.dark [style*="color: #0f172a"],
+html.dark [style*="color:#1e293b"],
+html.dark [style*="color: #1e293b"],
+html.dark [style*="color:#1d2733"],
+html.dark [style*="color: #1d2733"] {
+  color: #f1f5f9 !important;
+}
+html.dark [style*="color:#334155"],
+html.dark [style*="color: #334155"],
+html.dark [style*="color:#475569"],
+html.dark [style*="color: #475569"] {
+  color: #cbd5e1 !important;
+}
+html.dark [style*="color:#64748b"],
+html.dark [style*="color: #64748b"] {
+  color: #94a3b8 !important;
+}
+html.dark [style*="border:1px solid #e2e8f0"],
+html.dark [style*="border: 1px solid #e2e8f0"],
+html.dark [style*="border:1.5px solid #e2e8f0"],
+html.dark [style*="border:1px solid #cbd5e1"],
+html.dark [style*="border:1px dashed #cbd5e1"],
+html.dark [style*="border-color:#e2e8f0"],
+html.dark [style*="border-bottom:1px solid #f1f5f9"],
+html.dark [style*="border-bottom:1.5px solid #f1f5f9"] {
+  border-color: #334155 !important;
+}
+
+/* Keep company logos on bright white background so transparent/white logos stay crisp */
+html.dark .logo-box,
+html.dark .company-card > div:first-child {
+  background: #ffffff !important;
+}
