@@ -93,6 +93,17 @@
           </select>
         </div>
       </div>
+
+      <!-- نشان آگهی فوری -->
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f1f5f9">
+        <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;user-select:none">
+          <input type="checkbox" name="is_immediate" value="1" @checked(old('is_immediate', $job->is_immediate)) style="width:18px!important;height:18px!important;accent-color:#d97706;cursor:pointer;margin:0">
+          <div>
+            <span style="font-size:13.5px;font-weight:700;color:#92400e;display:block">⚡ نیاز فوری به جذب نیرو (نشان آگهی فوری)</span>
+            <span style="font-size:12px;color:#b45309;display:block;margin-top:2px">این آگهی با برچسب برجسته قرمز «فوری» در صدر فرصت‌های شغلی نمایش داده می‌شود.</span>
+          </div>
+        </label>
+      </div>
     </div>
 
     <!-- بخش ۲: محل کار و موقعیت جغرافیایی -->
@@ -294,13 +305,6 @@
           <label style="display:block;margin-bottom:6px;font-size:13px">شماره واتساپ یا بله</label>
           <input name="contact_whatsapp" value="{{ old('contact_whatsapp', $job->contact_whatsapp) }}" placeholder="مثال: 09121234567" style="width:100%;border:1px solid var(--border)">
         </div>
-      </div>
-
-      <div style="background:#f8fafc;padding:12px 16px;border-radius:8px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="checkbox" name="is_immediate" value="1" @checked(old('is_immediate', $job->is_immediate))>
-          <span>⚡ <b>نشان آگهی فوری:</b> این آگهی نیاز فوری به جذب نیرو دارد و با برچسب برجسته نمایش داده می‌شود.</span>
-        </label>
       </div>
     </div>
 

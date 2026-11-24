@@ -42,32 +42,41 @@
       <button type="submit" class="btn" style="padding:10px 22px">جستجو</button>
     </div>
 
-    <!-- تگ‌های فیلتر سریع امکانات کارخانه‌ای -->
-    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid #f1f5f9;font-size:13px">
-      <span style="color:var(--muted);font-weight:600">فیلترهای فوری:</span>
+    <!-- فیلترهای سریع و امکانات -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid #f1f5f9;font-size:13px">
+      <span style="color:var(--muted);font-weight:700;font-size:12.5px">⚡ فیلتر سریع:</span>
       
-      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-        <input type="checkbox" name="has_service" value="1" @checked(request('has_service')) onchange="this.form.submit()">
-        <span>🚌 سرویس رفت‌وآمد</span>
+      <!-- فقط آگهی‌های فوری -->
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 14px;border-radius:20px;background:{{ request('immediate') ? '#fef2f2' : '#f8fafc' }};border:1px solid {{ request('immediate') ? '#f87171' : '#e2e8f0' }};transition:all .15s;white-space:nowrap;user-select:none">
+        <input type="checkbox" name="immediate" value="1" @checked(request('immediate')) onchange="this.form.submit()" style="accent-color:#ef4444;width:16px;height:16px;margin:0;cursor:pointer">
+        <span style="font-size:12.5px;font-weight:{{ request('immediate') ? '700' : '600' }};color:{{ request('immediate') ? '#dc2626' : '#475569' }};white-space:nowrap">🚨 فقط آگهی‌های فوری</span>
       </label>
 
-      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-        <input type="checkbox" name="has_meal" value="1" @checked(request('has_meal')) onchange="this.form.submit()">
-        <span>🍽️ وعده غذایی (ناهار)</span>
+      <span style="color:#cbd5e1;margin:0 2px">|</span>
+      <span style="color:var(--muted);font-weight:600;font-size:12px">امکانات کارخانه:</span>
+
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:20px;background:{{ request('has_service') ? '#eff6ff' : '#f8fafc' }};border:1px solid {{ request('has_service') ? '#3b82f6' : '#e2e8f0' }};transition:all .15s;white-space:nowrap;user-select:none">
+        <input type="checkbox" name="has_service" value="1" @checked(request('has_service')) onchange="this.form.submit()" style="accent-color:#0284c7;width:16px;height:16px;margin:0;cursor:pointer">
+        <span style="font-size:12.5px;font-weight:{{ request('has_service') ? '700' : '500' }};color:{{ request('has_service') ? '#0369a1' : '#475569' }};white-space:nowrap">🚌 سرویس رفت‌وآمد</span>
       </label>
 
-      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-        <input type="checkbox" name="has_accommodation" value="1" @checked(request('has_accommodation')) onchange="this.form.submit()">
-        <span>🛏️ دارای خوابگاه / اسکان</span>
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:20px;background:{{ request('has_meal') ? '#f0fdf4' : '#f8fafc' }};border:1px solid {{ request('has_meal') ? '#22c55e' : '#e2e8f0' }};transition:all .15s;white-space:nowrap;user-select:none">
+        <input type="checkbox" name="has_meal" value="1" @checked(request('has_meal')) onchange="this.form.submit()" style="accent-color:#16a34a;width:16px;height:16px;margin:0;cursor:pointer">
+        <span style="font-size:12.5px;font-weight:{{ request('has_meal') ? '700' : '500' }};color:{{ request('has_meal') ? '#15803d' : '#475569' }};white-space:nowrap">🍽️ وعده غذایی</span>
       </label>
 
-      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-        <input type="checkbox" name="has_bonus" value="1" @checked(request('has_bonus')) onchange="this.form.submit()">
-        <span>💰 پاداش تولید / پورسانت</span>
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:20px;background:{{ request('has_accommodation') ? '#faf5ff' : '#f8fafc' }};border:1px solid {{ request('has_accommodation') ? '#a855f7' : '#e2e8f0' }};transition:all .15s;white-space:nowrap;user-select:none">
+        <input type="checkbox" name="has_accommodation" value="1" @checked(request('has_accommodation')) onchange="this.form.submit()" style="accent-color:#9333ea;width:16px;height:16px;margin:0;cursor:pointer">
+        <span style="font-size:12.5px;font-weight:{{ request('has_accommodation') ? '700' : '500' }};color:{{ request('has_accommodation') ? '#7e22ce' : '#475569' }};white-space:nowrap">🛏️ دارای خوابگاه</span>
       </label>
 
-      @if(request()->hasAny(['q', 'cat', 'province', 'has_service', 'has_meal', 'has_accommodation', 'has_bonus']))
-        <a href="{{ route('jobs.index') }}" style="color:#ef4444;margin-right:auto;text-decoration:none">✕ پاک‌سازی فیلترها</a>
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:20px;background:{{ request('has_bonus') ? '#fffbeb' : '#f8fafc' }};border:1px solid {{ request('has_bonus') ? '#f59e0b' : '#e2e8f0' }};transition:all .15s;white-space:nowrap;user-select:none">
+        <input type="checkbox" name="has_bonus" value="1" @checked(request('has_bonus')) onchange="this.form.submit()" style="accent-color:#d97706;width:16px;height:16px;margin:0;cursor:pointer">
+        <span style="font-size:12.5px;font-weight:{{ request('has_bonus') ? '700' : '500' }};color:{{ request('has_bonus') ? '#b45309' : '#475569' }};white-space:nowrap">💰 پاداش تولید</span>
+      </label>
+
+      @if(request()->hasAny(['q', 'cat', 'province', 'immediate', 'has_service', 'has_meal', 'has_accommodation', 'has_bonus']))
+        <a href="{{ route('jobs.index') }}" style="color:#ef4444;font-size:12px;margin-right:auto;text-decoration:none;font-weight:600;padding:4px 10px;border-radius:6px;background:#fef2f2;white-space:nowrap">✕ حذف همه فیلترها</a>
       @endif
     </div>
   </form>

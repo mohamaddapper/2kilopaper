@@ -56,6 +56,11 @@ class JobController extends Controller
             $query->where('experience_years', $exp);
         }
 
+        // Immediate / Urgent jobs filter
+        if ($request->boolean('immediate')) {
+            $query->where('is_immediate', true);
+        }
+
         // Perks & Benefits filters (JSON queries)
         if ($request->boolean('has_service')) {
             $query->where('benefits->has_service', true);
