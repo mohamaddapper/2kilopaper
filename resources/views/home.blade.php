@@ -787,7 +787,7 @@
   position: relative;
   overflow: hidden;
   margin: 0;
-  padding: 10px 0 16px;
+  padding: 24px 0 32px;
   background: #f1f5f9;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -822,8 +822,8 @@
   z-index: 5;
 }
 .home-slider-item.is-peek {
-  transform: scale(0.93);
-  opacity: 0.65;
+  transform: scale(0.96);
+  opacity: 0.8;
   cursor: pointer;
   z-index: 1;
 }
@@ -992,39 +992,39 @@
    استایل‌های بخش‌های جدید صفحه اصلی
    ========================================================================== */
 .home-section {
-  margin-top: 26px;
+  margin-top: 48px;
 }
 .home-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 10px;
 }
 .header-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .home-section-title {
   margin: 0;
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: -0.3px;
 }
 .home-section-tag {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 2px 9px;
+  padding: 3px 10px;
   border-radius: 20px;
   background: #eef2ff;
   color: #4338ca;
   border: 1px solid #e0e7ff;
 }
 .home-section-link {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--primary);
   display: inline-flex;
@@ -1038,24 +1038,24 @@
 }
 .home-section-desc-inline {
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 /* ۱. بخش جستجو */
 .home-search-section {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 24px 22px 20px;
-  margin-top: 16px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  border-radius: 18px;
+  padding: 34px 30px 28px;
+  margin-top: 36px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 .search-title-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  margin-bottom: 6px;
+  gap: 16px;
+  margin-bottom: 8px;
 }
 .search-title-line {
   height: 1.5px;
@@ -1065,7 +1065,7 @@
 }
 .search-title-text {
   margin: 0;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: -0.4px;
@@ -1073,8 +1073,8 @@
 .search-subtitle {
   text-align: center;
   color: #64748b;
-  font-size: 13.5px;
-  margin: 0 auto 18px;
+  font-size: 14.5px;
+  margin: 0 auto 24px;
   max-width: 640px;
 }
 .home-search-bar {
@@ -1488,7 +1488,7 @@
 .showcase-tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 .showcase-tab {
@@ -1545,13 +1545,13 @@
 }
 .company-carousel-track {
   display: flex;
-  gap: 14px;
+  gap: 10px;
   align-items: stretch;
 }
 .company-carousel-slide {
-  flex: 0 0 calc((100% - 70px) / 6);
-  min-width: calc((100% - 70px) / 6);
-  max-width: calc((100% - 70px) / 6);
+  flex: 0 0 calc((100% - 50px) / 6);
+  min-width: calc((100% - 50px) / 6);
+  max-width: calc((100% - 50px) / 6);
   box-sizing: border-box;
   display: flex;
 }
@@ -1560,26 +1560,26 @@
 }
 @media (max-width: 1024px) {
   .company-carousel-slide {
-    flex: 0 0 calc((100% - 42px) / 4);
-    min-width: calc((100% - 42px) / 4);
-    max-width: calc((100% - 42px) / 4);
+    flex: 0 0 calc((100% - 30px) / 4);
+    min-width: calc((100% - 30px) / 4);
+    max-width: calc((100% - 30px) / 4);
   }
 }
 @media (max-width: 768px) {
   .company-carousel-track {
-    gap: 12px;
+    gap: 8px;
   }
   .company-carousel-slide {
-    flex: 0 0 calc((100% - 24px) / 3);
-    min-width: calc((100% - 24px) / 3);
-    max-width: calc((100% - 24px) / 3);
+    flex: 0 0 calc((100% - 16px) / 3);
+    min-width: calc((100% - 16px) / 3);
+    max-width: calc((100% - 16px) / 3);
   }
 }
 @media (max-width: 540px) {
   .company-carousel-slide {
-    flex: 0 0 calc((100% - 12px) / 2);
-    min-width: calc((100% - 12px) / 2);
-    max-width: calc((100% - 12px) / 2);
+    flex: 0 0 calc((100% - 8px) / 2);
+    min-width: calc((100% - 8px) / 2);
+    max-width: calc((100% - 8px) / 2);
   }
 }
 @media (max-width: 380px) {
@@ -1997,15 +1997,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const isMobile = window.innerWidth <= 768;
     const isSmallMobile = window.innerWidth <= 480;
 
-    let slideRatio = 0.72; // Desktop: 72% width leaves 14% peek on both sides
+    let slideRatio = 0.80; // Desktop: 80% width with 10px gap between banners
     if (isSmallMobile) {
-      slideRatio = 0.76; // Mobile: 76% width leaves 12% peek of previous banner on right and 12% on left
+      slideRatio = 0.80; // Mobile: 80% width leaves 10% peek of adjacent banners with 8px gap
     } else if (isMobile) {
-      slideRatio = 0.74;
+      slideRatio = 0.78;
     }
 
     const slideW = Math.floor(wrapperW * slideRatio);
-    const gap = isMobile ? 12 : 20;
+    const gap = isMobile ? 8 : 10; // کاهش فاصله چپ و راست بنرها از همدیگر
 
     // ارتفاع: در گوشی‌ها دقیقاً مربعی ۱۰۸۰ در ۱۰۸۰ متناسب با عرض (۱:۱)، در دسکتاپ ۴۵۰ پیکسل
     let slideH = 450;
@@ -2181,7 +2181,8 @@ function slideCompanyRow(id, dir) {
   const vp = document.getElementById('carousel-' + id);
   if (!vp) return;
   const slide = vp.querySelector('.company-carousel-slide');
-  const step = slide ? (slide.offsetWidth + 14) : 200;
+  const gap = window.innerWidth <= 768 ? 8 : 10;
+  const step = slide ? (slide.offsetWidth + gap) : 200;
   const maxScroll = vp.scrollWidth - vp.clientWidth;
   
   if (maxScroll <= 5) return;
