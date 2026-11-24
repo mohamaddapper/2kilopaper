@@ -66,9 +66,14 @@ class Company extends Model
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {
         $field = $field ?? $this->getRouteKeyName();
-        return $query->where(function ($q) use ($field, $value) {
-            $q->where($field, urldecode((string) $value))
-              ->orWhere($field, (string) $value);
+        $raw = (string) $value;
+        $decoded = urldecode($raw);
+        $doubleDecoded = urldecode($decoded);
+
+        return $query->where(function ($q) use ($field, $raw, $decoded, $doubleDecoded) {
+            $q->where($field, $raw)
+              ->orWhere($field, $decoded)
+              ->orWhere($field, $doubleDecoded);
         });
     }
 

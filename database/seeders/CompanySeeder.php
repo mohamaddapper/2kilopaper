@@ -84,9 +84,14 @@ class CompanySeeder extends Seeder
                 }
 
                 // Slug handling
-                $slug = trim($row['post_slug'] ?? '');
-                if (!$slug) {
+                $rawSlug = trim($row['post_slug'] ?? '');
+                if ($rawSlug) {
+                    $slug = urldecode($rawSlug);
+                } else {
                     $slug = Str::slug($name);
+                    if (!$slug) {
+                        $slug = preg_replace('/\s+/u', '-', trim($name));
+                    }
                     if (!$slug) {
                         $slug = 'company-' . ($row['post_id'] ?? ($index + 1));
                     }
