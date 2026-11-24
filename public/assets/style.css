@@ -460,12 +460,30 @@ html.dark .org-title,
 html.dark .section-heading,
 html.dark .why-title,
 html.dark .story-lead,
-html.dark .m-value,
+html.dark .story-header h2,
 html.dark .art-header,
 html.dark .form-title,
 html.dark .input-group label,
-html.dark .audience-card h3 {
+html.dark .audience-card h3,
+html.dark .audience-card h4,
+html.dark .f-text strong,
+html.dark .cta-text strong,
+html.dark .ch-info strong {
   color: #f8fafc !important;
+}
+html.dark .m-value {
+  color: #38bdf8 !important;
+}
+html.dark .submit-org-cta {
+  background: #111827 !important;
+  border-color: #334155 !important;
+}
+html.dark .contact-method-item {
+  border-bottom-color: #1e293b !important;
+}
+html.dark .cta-text span,
+html.dark .ch-info span {
+  color: #94a3b8 !important;
 }
 html.dark .faq-answer,
 html.dark .story-text,
