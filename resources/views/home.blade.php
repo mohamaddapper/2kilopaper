@@ -1851,7 +1851,7 @@
 
 @media (max-width: 768px) {
   .home-slider-section {
-    padding: 8px 0 14px;
+    padding: 24px 0 20px; /* فاصله مناسب از منوی بالای سایت در موبایل */
   }
   .home-banner-card {
     aspect-ratio: 1 / 1;
@@ -1997,20 +1997,32 @@ document.addEventListener('DOMContentLoaded', function () {
     const isMobile = window.innerWidth <= 768;
     const isSmallMobile = window.innerWidth <= 480;
 
-    let slideRatio = 0.80; // Desktop: 80% width with 10px gap between banners
-    if (isSmallMobile) {
-      slideRatio = 0.80; // Mobile: 80% width leaves 10% peek of adjacent banners with 8px gap
-    } else if (isMobile) {
-      slideRatio = 0.78;
-    }
+    // فاصله افقی (گپ) بین بنرها دقیقاً ۱۰ پیکسل
+    const gap = 10;
 
-    const slideW = Math.floor(wrapperW * slideRatio);
-    const gap = isMobile ? 8 : 10; // کاهش فاصله چپ و راست بنرها از همدیگر
+    let slideW;
+    let slideH;
 
-    // ارتفاع: در گوشی‌ها دقیقاً مربعی ۱۰۸۰ در ۱۰۸۰ متناسب با عرض (۱:۱)، در دسکتاپ ۴۵۰ پیکسل
-    let slideH = 450;
     if (isMobile) {
-      slideH = slideW; // Exact 1080x1080 square proportion!
+      // در گوشی: بنر اصلی بزرگ‌تر باشد (۸۸٪ عرض صفحه)، گپ ۱۰ پیکسل
+      const mobileRatio = isSmallMobile ? 0.88 : 0.86;
+      slideW = Math.floor(wrapperW * mobileRatio);
+      // نسبت ۱:۱ مربعی ۱۰۸۰ در ۱۰۸۰ در گوشی متناسب با عرض
+      slideH = slideW;
+    } else {
+      // در دسکتاپ: اندازه بنر اسلایدی از عرض باکس اصلی سایت بیشتر نشود و دقیقاً با آن یکی باشد
+      const mainContainer = document.querySelector('main.container');
+      let maxSiteBoxW = 1160;
+      if (mainContainer) {
+        const cs = window.getComputedStyle(mainContainer);
+        const pl = parseFloat(cs.paddingLeft) || 20;
+        const pr = parseFloat(cs.paddingRight) || 20;
+        maxSiteBoxW = Math.round(mainContainer.clientWidth - pl - pr);
+      }
+
+      // عرض بنر اسلایدی از عرض باکس اصلی فراتر نرود و با آن تراز باشد
+      slideW = Math.min(maxSiteBoxW, Math.floor(wrapperW * 0.86));
+      slideH = 450;
     }
 
     return { wrapperW, slideW, slideH, gap, isMobile };
