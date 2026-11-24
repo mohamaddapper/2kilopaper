@@ -335,9 +335,15 @@ html.dark .stat-counter-item:not(:last-child)::after {
 html.dark .home-section-tag,
 html.dark .search-chip,
 html.dark .province-badge,
-html.dark .company-carousel-nav-btn {
+html.dark .company-carousel-nav-btn,
+html.dark .core-cat-icon {
   background: #1e293b !important;
   border-color: #334155 !important;
+}
+html.dark .home-section-tag,
+html.dark .search-chip,
+html.dark .province-badge,
+html.dark .company-carousel-nav-btn {
   color: #cbd5e1 !important;
 }
 html.dark .search-chip:hover,
