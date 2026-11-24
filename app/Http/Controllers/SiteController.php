@@ -168,8 +168,35 @@ class SiteController extends Controller
     {
         abort_unless($company->status === 'approved', 404);
         \App\Services\ViewTracker::track($company, 'company', $company->user_id);
-        $company->load(['city', 'category', 'categories' => fn($q) => $q->with('parent')]);
-        return view('company', compact('company'));
+        $company->load(['city', 'category', 'province', 'categories' => fn($q) => $q->with('parent')]);
+
+        // یافتن شرکت‌های مشابه و هم‌رسته بر اساس دسته‌بندی و زمینه‌های فعالیت مشترک
+        $categoryIds = $company->categories->pluck('id')->push($company->category_id)->filter()->unique();
+
+        $similarCompanies = Company::approved()
+            ->where('id', '!=', $company->id)
+            ->where(function ($q) use ($categoryIds) {
+                $q->whereIn('category_id', $categoryIds)
+                  ->orWhereHas('categories', fn($cQ) => $cQ->whereIn('categories.id', $categoryIds));
+            })
+            ->ranked()
+            ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+            ->limit(18)
+            ->get();
+
+        // اگر تعداد شرکت‌های مشابه برای چرخش اسلایدر کم بود، شرکت‌های فعال دیگر اضافه شوند
+        if ($similarCompanies->count() < 12) {
+            $excludeIds = $similarCompanies->pluck('id')->push($company->id);
+            $extraCompanies = Company::approved()
+                ->whereNotIn('id', $excludeIds)
+                ->ranked()
+                ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+                ->limit(18 - $similarCompanies->count())
+                ->get();
+            $similarCompanies = $similarCompanies->concat($extraCompanies);
+        }
+
+        return view('company', compact('company', 'similarCompanies'));
     }
 
     public function subscriptionFee()

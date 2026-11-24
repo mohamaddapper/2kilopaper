@@ -533,7 +533,210 @@
     </div>
   </div>
 
+  <!-- بخش شرکت‌های مشابه و هم‌رسته (اسلایدر ۶ تایی با چرخش خودکار) -->
+  @if(isset($similarCompanies) && $similarCompanies->count())
+    <section class="similar-companies-section" style="margin-top:40px;padding-top:28px;border-top:1.5px dashed #e2e8f0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+        <div>
+          <h2 style="margin:0 0 4px;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
+            <span>🏭</span>
+            <span>شرکت‌های مشابه و هم‌رسته</span>
+          </h2>
+          <span style="font-size:13px;color:#64748b">
+            واحدهای صنعتی فعال در زمینه {{ $company->category->name ?? 'صنایع کارتن، کاغذ و چاپ' }}
+          </span>
+        </div>
+        @if($company->category_id)
+          <a href="{{ route('directory', ['cat' => $company->category_id]) }}" style="font-size:13px;font-weight:700;color:var(--primary);display:inline-flex;align-items:center;gap:4px">
+            <span>مشاهده همه شرکت‌های این رسته</span>
+            <span>←</span>
+          </a>
+        @endif
+      </div>
+
+      <div class="company-carousel-wrap" data-carousel="similar">
+        <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideSimilarRow(-1)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+
+        <div class="company-carousel-viewport" id="carousel-similar">
+          <div class="company-carousel-track">
+            @foreach($similarCompanies as $similar)
+              <div class="company-carousel-slide">
+                @include('partials.card', ['company' => $similar])
+              </div>
+            @endforeach
+          </div>
+        </div>
+
+        <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideSimilarRow(1)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+      </div>
+    </section>
+
+    <style>
+    /* استایل‌های کاروسل ۶ تایی شرکت‌های مشابه */
+    .company-carousel-wrap {
+      position: relative;
+      width: 100%;
+      margin: 14px 0 0;
+    }
+    .company-carousel-viewport {
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 8px 4px 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .company-carousel-viewport::-webkit-scrollbar {
+      display: none;
+    }
+    .company-carousel-track {
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .company-carousel-slide {
+      flex: 0 0 calc((100% - 70px) / 6);
+      min-width: calc((100% - 70px) / 6);
+      max-width: calc((100% - 70px) / 6);
+      box-sizing: border-box;
+      display: flex;
+    }
+    .company-carousel-slide > .company-card {
+      width: 100%;
+    }
+    @media (max-width: 1024px) {
+      .company-carousel-slide {
+        flex: 0 0 calc((100% - 42px) / 4);
+        min-width: calc((100% - 42px) / 4);
+        max-width: calc((100% - 42px) / 4);
+      }
+    }
+    @media (max-width: 768px) {
+      .company-carousel-track {
+        gap: 12px;
+      }
+      .company-carousel-slide {
+        flex: 0 0 calc((100% - 24px) / 3);
+        min-width: calc((100% - 24px) / 3);
+        max-width: calc((100% - 24px) / 3);
+      }
+      .company-carousel-nav-btn {
+        display: none;
+      }
+    }
+    @media (max-width: 540px) {
+      .company-carousel-slide {
+        flex: 0 0 calc((100% - 12px) / 2);
+        min-width: calc((100% - 12px) / 2);
+        max-width: calc((100% - 12px) / 2);
+      }
+    }
+    @media (max-width: 380px) {
+      .company-carousel-slide {
+        flex: 0 0 75%;
+        min-width: 75%;
+        max-width: 75%;
+      }
+    }
+
+    .company-carousel-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      color: #1e293b;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .company-carousel-nav-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 6px 18px rgba(31, 95, 168, 0.25);
+    }
+    .company-carousel-nav-btn.prev-btn {
+      right: -12px;
+    }
+    .company-carousel-nav-btn.next-btn {
+      left: -12px;
+    }
+    </style>
+  @endif
+
   <script>
+  function slideSimilarRow(dir) {
+    const vp = document.getElementById('carousel-similar');
+    if (!vp) return;
+    const slide = vp.querySelector('.company-carousel-slide');
+    const step = slide ? (slide.offsetWidth + 14) : 200;
+    const maxScroll = vp.scrollWidth - vp.clientWidth;
+    if (maxScroll <= 5) return;
+
+    const isRTLNegative = (vp.scrollLeft <= 0);
+    const currentScroll = Math.abs(vp.scrollLeft);
+
+    if (dir > 0) {
+      if (currentScroll >= maxScroll - 20) {
+        vp.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const scrollAmount = isRTLNegative ? -step : step;
+        vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    } else {
+      if (currentScroll <= 20) {
+        const endPos = isRTLNegative ? -maxScroll : maxScroll;
+        vp.scrollTo({ left: endPos, behavior: 'smooth' });
+      } else {
+        const scrollAmount = isRTLNegative ? step : -step;
+        vp.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+  }
+
+  // راه‌اندازی چرخش خودکار اسلایدر شرکت‌های مشابه
+  document.addEventListener('DOMContentLoaded', function () {
+    const wrap = document.querySelector('.company-carousel-wrap[data-carousel="similar"]');
+    if (!wrap) return;
+
+    let timer = null;
+    function startAutoScroll() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => {
+        slideSimilarRow(1);
+      }, 3500);
+    }
+
+    function stopAutoScroll() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    wrap.addEventListener('mouseenter', stopAutoScroll);
+    wrap.addEventListener('mouseleave', startAutoScroll);
+    wrap.addEventListener('touchstart', stopAutoScroll, { passive: true });
+    wrap.addEventListener('touchend', () => {
+      setTimeout(startAutoScroll, 2000);
+    }, { passive: true });
+
+    startAutoScroll();
+  });
   function copyShortLink() {
     const input = document.getElementById('short_link_input');
     const btn = document.getElementById('copy_short_link_btn');
