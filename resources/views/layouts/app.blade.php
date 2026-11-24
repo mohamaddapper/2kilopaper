@@ -640,6 +640,14 @@ html.dark .theme-icon-moon { display: none !important; }
   gap: 2px;
   z-index: 200;
 }
+.header-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
 .header-user-actions .header-dropdown-menu {
   right: auto;
   left: 0;
