@@ -113,7 +113,7 @@
 
                 <div style="display:flex;align-items:center;gap:10px;margin-top:6px;font-size:13.5px;color:var(--muted);flex-wrap:wrap">
                   @if($job->company)
-                    <a href="{{ route('company', $job->company) }}" style="color:var(--primary);font-weight:600;text-decoration:none">
+                    <a href="{{ $job->company->url }}" style="color:var(--primary);font-weight:600;text-decoration:none">
                       🏢 {{ $job->company->name }}
                     </a>
                   @else

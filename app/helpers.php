@@ -1,4 +1,23 @@
 <?php
+if (!function_exists('company_url')) {
+    function company_url($company): string
+    {
+        if ($company instanceof \App\Models\Company) {
+            return $company->url;
+        }
+        if (is_string($company) || is_numeric($company)) {
+            $raw = (string) $company;
+            $decoded = urldecode($raw);
+            $c = \App\Models\Company::where('slug', $raw)
+                ->orWhere('slug', $decoded)
+                ->when(is_numeric($raw), fn($q) => $q->orWhere('id', (int) $raw))
+                ->first();
+            return $c ? $c->url : route('company', ['role' => 'شرکت', 'category' => 'عمومی', 'company' => $raw]);
+        }
+        return url('/directory');
+    }
+}
+
 if (!function_exists('slugify')) {
     function slugify(string $s): string
     {

@@ -17,6 +17,24 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production') && is_dir(base_path('../public_html'))) {
             $this->app->usePublicPath(base_path('../public_html'));
         }
+
+        $this->app->extend('url', function ($url, $app) {
+            $custom = new \App\Routing\UrlGenerator(
+                $app['router']->getRoutes(),
+                $app->rebinding('request', function ($app, $request) {
+                    $app['url']->setRequest($request);
+                }),
+                $app['config']['app.asset_url']
+            );
+            $custom->setSessionResolver(function () use ($app) {
+                return $app['session'] ?? null;
+            });
+            $custom->setKeyResolver(function () use ($app) {
+                $config = $app->make('config');
+                return [$config->get('app.key'), ...($config->get('app.previous_keys') ?? [])];
+            });
+            return $custom;
+        });
     }
 
     /**

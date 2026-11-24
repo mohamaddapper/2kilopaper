@@ -65,7 +65,7 @@
 
             <td>
               @if($j->company)
-                <a href="{{ route('company', $j->company) }}" target="_blank" style="color:var(--admin-primary);text-decoration:none;font-weight:600">
+                <a href="{{ $j->company->url }}" target="_blank" style="color:var(--admin-primary);text-decoration:none;font-weight:600">
                   {{ $j->company->name }}
                 </a>
               @else

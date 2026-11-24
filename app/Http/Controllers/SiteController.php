@@ -164,9 +164,20 @@ class SiteController extends Controller
         ]);
     }
 
-    public function company(Company $company)
+    public function company(Request $request, $role, $category, Company $company)
     {
         abort_unless($company->status === 'approved', 404);
+
+        // اعتبارسنجی ساختار یکپارچه URL: هدایت ریدایرکت 301 در صورت عدم تطابق با نقش یا دسته اصلی
+        $inputRole = urldecode((string) $role);
+        $inputCat = urldecode((string) $category);
+        $canonicalRole = $company->activity_role;
+        $canonicalCat = $company->main_category_slug;
+
+        if ($inputRole !== $canonicalRole || $inputCat !== $canonicalCat) {
+            return redirect()->to($company->url, 301);
+        }
+
         \App\Services\ViewTracker::track($company, 'company', $company->user_id);
         $company->load(['city', 'category', 'province', 'categories' => fn($q) => $q->with('parent')]);
 
@@ -199,6 +210,12 @@ class SiteController extends Controller
         return view('company', compact('company', 'similarCompanies'));
     }
 
+    public function legacyCompany(Company $company)
+    {
+        abort_unless($company->status === 'approved', 404);
+        return redirect()->to($company->url, 301);
+    }
+
     public function subscriptionFee()
     {
         return view('subscription-fee');
@@ -211,7 +228,9 @@ class SiteController extends Controller
 
     public function sitemap()
     {
-        $companies = Company::approved()->select('slug', 'updated_at')->get();
+        $companies = Company::approved()
+            ->with(['category.parent.parent', 'categories.parent.parent'])
+            ->get();
         return response()->view('sitemap', compact('companies'))->header('Content-Type', 'application/xml');
     }
 

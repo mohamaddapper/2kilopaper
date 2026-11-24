@@ -143,7 +143,7 @@
                     <div style="display:inline-flex;gap:6px">
                       <a class="btn ghost small" href="{{ route('companies.edit', $c) }}" style="padding:3px 12px;font-size:12px">ویرایش</a>
                       @if($c->status === 'approved')
-                        <a class="btn ghost small" href="{{ route('company', $c) }}" target="_blank" style="padding:3px 12px;font-size:12px">مشاهده</a>
+                        <a class="btn ghost small" href="{{ $c->url }}" target="_blank" style="padding:3px 12px;font-size:12px">مشاهده</a>
                       @endif
                     </div>
                   </td>
@@ -267,7 +267,7 @@
                   <td style="text-align:left">
                     <a class="btn ghost small" href="{{ route('companies.edit', $c) }}">ویرایش</a>
                     @if($c->status === 'approved')
-                      <a class="btn ghost small" href="{{ route('company', $c) }}" target="_blank">مشاهده</a>
+                      <a class="btn ghost small" href="{{ $c->url }}" target="_blank">مشاهده</a>
                     @endif
                   </td>
                 </tr>
@@ -645,7 +645,7 @@
                       @endif
                     </div>
                     <div style="flex:1;min-width:0">
-                      <a href="{{ route('company', $savedC) }}" target="_blank" style="text-decoration:none;color:var(--text);font-weight:700;font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                      <a href="{{ $savedC->url }}" target="_blank" style="text-decoration:none;color:var(--text);font-weight:700;font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
                         {{ $savedC->name }}
                       </a>
                       <div style="font-size:12px;color:var(--muted);margin-top:2px">
@@ -663,7 +663,7 @@
                 </div>
 
                 <div style="display:flex;gap:8px;align-items:center;padding-top:12px;border-top:1px dashed var(--border)">
-                  <a href="{{ route('company', $savedC) }}" target="_blank" class="btn small" style="flex:1;text-align:center;font-size:12px;padding:6px 10px">
+                  <a href="{{ $savedC->url }}" target="_blank" class="btn small" style="flex:1;text-align:center;font-size:12px;padding:6px 10px">
                     مشاهده صفحه
                   </a>
                   <button type="button" onclick="removeSavedCompany({{ $savedC->id }})" class="btn ghost small" style="font-size:12px;padding:6px 10px;color:#dc2626;border-color:#fca5a5;cursor:pointer" title="حذف از ذخیره‌ها">

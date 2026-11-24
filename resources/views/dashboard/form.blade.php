@@ -186,7 +186,7 @@
       @if(auth()->check() && auth()->user()->isAdmin())
         <a href="{{ route('admin.companies') }}" class="btn ghost small" style="border-color:#0284c7;color:#0284c7;font-weight:700">👑 بازگشت به مدیریت شرکت‌ها</a>
         @if($company->exists)
-          <a href="{{ route('company', $company) }}" target="_blank" class="btn ghost small">مشاهده در سایت ↗</a>
+          <a href="{{ $company->url }}" target="_blank" class="btn ghost small">مشاهده در سایت ↗</a>
         @endif
       @endif
       <a href="{{ route('dashboard') }}" class="btn ghost small">بازگشت به میز کار</a>

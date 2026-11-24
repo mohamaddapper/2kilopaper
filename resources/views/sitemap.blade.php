@@ -13,6 +13,6 @@
 <url><loc>{{ route('pages.about') }}</loc></url>
 <url><loc>{{ route('pages.contact') }}</loc></url>
 @foreach($companies as $c)
-<url><loc>{{ route('company', $c->slug) }}</loc><lastmod>{{ $c->updated_at->toAtomString() }}</lastmod></url>
+<url><loc>{{ $c->url }}</loc><lastmod>{{ $c->updated_at->toAtomString() }}</lastmod></url>
 @endforeach
 </urlset>

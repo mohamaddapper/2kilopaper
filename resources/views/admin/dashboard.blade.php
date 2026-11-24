@@ -137,7 +137,7 @@
                       ✕ رد
                     </button>
                   </form>
-                  <a href="{{ route('company', $c) }}" target="_blank" class="btn-action btn-view">
+                  <a href="{{ $c->url }}" target="_blank" class="btn-action btn-view">
                     مشاهده ↗
                   </a>
                 </div>

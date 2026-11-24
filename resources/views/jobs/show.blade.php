@@ -40,7 +40,7 @@
 
             <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted);flex-wrap:wrap">
               @if($job->company)
-                <a href="{{ route('company', $job->company) }}" style="color:var(--primary);font-weight:700;text-decoration:none">
+                <a href="{{ $job->company->url }}" style="color:var(--primary);font-weight:700;text-decoration:none">
                   🏢 {{ $job->company->name }}
                 </a>
               @endif
@@ -324,7 +324,7 @@
             @endif
           </div>
 
-          <a href="{{ route('company', $job->company) }}" class="btn ghost small" style="width:100%;text-align:center;padding:8px 0;font-size:13px">
+          <a href="{{ $job->company->url }}" class="btn ghost small" style="width:100%;text-align:center;padding:8px 0;font-size:13px">
             مشاهده کامل مشخصات و محصولات کارخانه ←
           </a>
         </div>

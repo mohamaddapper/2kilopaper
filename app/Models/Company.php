@@ -68,6 +68,96 @@ class Company extends Model
         if (!$user) return false;
         return $this->bookmarks()->where('user_id', $user->id)->exists();
     }
+
+    public function getActivityRoleAttribute(): string
+    {
+        // 1. بررسی فیلد activity_types در صورت وجود
+        $actTypes = (array) ($this->activity_types ?? []);
+        foreach ($actTypes as $type) {
+            $typeStr = mb_strtolower(trim($type));
+            if (str_contains($typeStr, 'تولید') || in_array($typeStr, ['manufacturer', 'factory', 'producer'])) {
+                return 'تولیدکننده';
+            }
+            if (str_contains($typeStr, 'وارد') || in_array($typeStr, ['importer'])) {
+                return 'واردکننده';
+            }
+            if (str_contains($typeStr, 'فروش') || str_contains($typeStr, 'تأمین') || in_array($typeStr, ['seller', 'store', 'supplier'])) {
+                return 'فروشنده';
+            }
+            if (str_contains($typeStr, 'چاپ') || in_array($typeStr, ['printer', 'printing'])) {
+                return 'چاپخانه';
+            }
+            if (str_contains($typeStr, 'خدمات') || in_array($typeStr, ['services', 'service'])) {
+                return 'خدمات‌دهنده';
+            }
+        }
+
+        // 2. استخراج از درخت دسته‌بندی اصلی یا دسته‌بندی‌های شرکت
+        $cat = $this->category;
+        if (!$cat && $this->relationLoaded('categories')) {
+            $cat = $this->categories->firstWhere('pivot.is_primary', 1) ?: $this->categories->first();
+        }
+        if (!$cat && $this->category_id) {
+            $cat = Category::find($this->category_id);
+        }
+
+        if ($cat) {
+            $curr = $cat;
+            while ($curr->parent_id) {
+                $curr = $curr->parent ?: Category::find($curr->parent_id);
+                if (!$curr) break;
+            }
+
+            if ($curr) {
+                return match ($curr->slug) {
+                    'factories' => 'تولیدکننده',
+                    'importers' => 'واردکننده',
+                    'stores' => 'فروشنده',
+                    'printing-services' => 'چاپخانه',
+                    'service-providers' => 'خدمات‌دهنده',
+                    default => 'شرکت',
+                };
+            }
+        }
+
+        return 'شرکت';
+    }
+
+    public function getMainCategorySlugAttribute(): string
+    {
+        $cat = $this->category;
+        if (!$cat && $this->relationLoaded('categories')) {
+            $cat = $this->categories->firstWhere('pivot.is_primary', 1) ?: $this->categories->first();
+        }
+        if (!$cat && $this->category_id) {
+            $cat = Category::find($this->category_id);
+        }
+
+        if (!$cat) {
+            return 'عمومی';
+        }
+
+        if (!$cat->parent_id) {
+            return 'صنایع-سلولزی';
+        }
+
+        return slugify($cat->name) ?: 'عمومی';
+    }
+
+    public function routeParams(): array
+    {
+        return [
+            'role' => $this->activity_role,
+            'category' => $this->main_category_slug,
+            'company' => $this->slug,
+        ];
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return route('company', $this->routeParams());
+    }
+
     public function getRouteKeyName() { return 'slug'; }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)

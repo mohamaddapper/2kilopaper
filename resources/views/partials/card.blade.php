@@ -48,7 +48,7 @@
   $viewsCount = $company->views_count ?? 0;
 @endphp
 
-<a href="{{ route('company', $company) }}" class="card company-card @if($tier) tier-card tier-{{ $tier }} @endif" style="color:inherit;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;position:relative;background:#fff;border-radius:14px;padding:0!important;overflow:hidden!important;transition:all 0.25s ease;@if($currentTier) border:{{ $currentTier['border'] }};box-shadow:{{ $currentTier['shadow'] }}; @else border:1px solid #e2e8f0; @endif">
+<a href="{{ $company->url }}" class="card company-card @if($tier) tier-card tier-{{ $tier }} @endif" style="color:inherit;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;position:relative;background:#fff;border-radius:14px;padding:0!important;overflow:hidden!important;transition:all 0.25s ease;@if($currentTier) border:{{ $currentTier['border'] }};box-shadow:{{ $currentTier['shadow'] }}; @else border:1px solid #e2e8f0; @endif">
   
   <!-- بخش بالای کارت: کادر مربعی بزرگ لوگو چسبیده به اطراف -->
   <div style="width:100%;aspect-ratio:1/1;position:relative;background:#ffffff;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0!important;box-sizing:border-box">

@@ -1,7 +1,7 @@
 @extends('layouts.app', [
-  'title' => $company->name . ($company->slogan ? ' - ' . $company->slogan : ' | ' . $company->category->name . ' در ' . $company->city->name),
+  'title' => $company->name . ($company->slogan ? ' - ' . $company->slogan : ' | ' . ($company->category?->name ?? 'صنایع سلولزی') . ' در ' . ($company->city?->name ?? 'ایران')),
   'description' => \Illuminate\Support\Str::limit(strip_tags($company->description), 150),
-  'canonical' => route('company', $company),
+  'canonical' => $company->url,
 ])
 
 @push('head')
@@ -11,11 +11,11 @@
   'name' => $company->name,
   'description' => $company->description,
   'telephone' => $company->phone,
-  'url' => $company->website ?: route('company', $company),
+  'url' => $company->website ?: $company->url,
   'image' => $company->logo ? asset($company->logo) : null,
   'address' => [
     '@type' => 'PostalAddress',
-    'addressLocality' => $company->city->name,
+    'addressLocality' => $company->city?->name ?? 'ایران',
     'streetAddress' => $company->factory_address ?: $company->address,
     'addressCountry' => 'IR',
   ],
@@ -101,6 +101,9 @@
 
       <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت -->
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+        <span class="badge" style="background:#ecfdf5;color:#047857;font-weight:700;border:1px solid #a7f3d0">
+          🏷️ {{ $company->activity_role }}
+        </span>
         @if($company->category)
           <a href="{{ route('directory', ['cat' => $company->category_id]) }}" class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd;text-decoration:none">
             {{ $company->category->name }}
