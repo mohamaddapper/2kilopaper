@@ -208,3 +208,59 @@ footer{background:#fff;border-top:1px solid var(--border);padding:20px 0;text-al
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Dark Mode Theme Variables & Overrides
+   ========================================================================== */
+html.dark {
+  --bg: #0b1120;
+  --card: #111827;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --border: #1e293b;
+  --primary: #38bdf8;
+  --primary-d: #0284c7;
+  color-scheme: dark;
+}
+html.dark body {
+  background: var(--bg);
+  color: var(--text);
+}
+html.dark header.site,
+html.dark .site-footer {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+html.dark .card,
+html.dark .company-card,
+html.dark .company-head,
+html.dark .form-card,
+html.dark .center-box {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9;
+}
+html.dark form input:not([type="checkbox"]):not([type="radio"]),
+html.dark form select,
+html.dark form textarea,
+html.dark .header-search-input {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+html.dark .header-dropdown-menu {
+  background: #111827;
+  border-color: #1e293b;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+html.dark .header-dropdown-menu a:hover,
+html.dark .header-dropdown-menu button:hover {
+  background: #1e293b;
+}
+html.dark .footer-col-title,
+html.dark h1, html.dark h2, html.dark h3, html.dark h4 {
+  color: #f8fafc;
+}
+html.dark .badge {
+  border-color: #334155;
+}
