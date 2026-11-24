@@ -38,11 +38,6 @@
     <div style="flex:1;min-width:200px">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
-        @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()))
-          <a href="{{ route('companies.edit', $company) }}" class="btn small ghost" style="font-size:12px;padding:3px 10px;font-weight:700">
-            ✏️ ویرایش
-          </a>
-        @endif
         @if($company->activeTier() === 'gold')
           <span class="badge gold" style="font-size:13px;padding:3px 12px">★ ویژه طلایی</span>
         @elseif($company->activeTier() === 'silver')
@@ -85,28 +80,29 @@
         @endif
       </div>
     </div>
-
-    <!-- دکمه‌های اقدام سریع -->
-    <div style="display:flex;gap:8px;flex-direction:column;min-width:180px">
-      @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()))
-        <a href="{{ route('companies.edit', $company) }}" class="btn" style="background:#0284c7;text-align:center;font-weight:700;font-size:13.5px">
-          ✏️ ویرایش اطلاعات شرکت
-        </a>
-      @endif
-      @if($company->phone)
-        <a href="tel:{{ $company->phone }}" class="btn" style="text-align:center;font-weight:700">📞 تماس: {{ $company->phone }}</a>
-      @endif
-      @if($company->email)
-        <a href="mailto:{{ $company->email }}" class="btn ghost" style="text-align:center;font-size:13px">✉️ ارسال ایمیل</a>
-      @endif
-      @if($company->catalog)
-        <a href="{{ asset($company->catalog) }}" target="_blank" class="btn ghost" style="text-align:center;font-size:13px">📄 دریافت کاتالوگ (PDF)</a>
-      @endif
-      @if($company->website)
-        <a href="{{ $company->website }}" target="_blank" rel="nofollow noopener" class="btn ghost" style="text-align:center;font-size:13px">🌐 وب‌سایت رسمی</a>
-      @endif
-    </div>
   </div>
+
+  <!-- نوار مدیریت و ویرایش صفحه شرکت (مخصوص مالک شرکت و مدیر ارشد سایت) -->
+  @if(auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()))
+    <div style="display:flex;justify-content:space-between;align-items:center;background:#eff6ff;border:1.5px dashed #0284c7;border-radius:10px;padding:10px 18px;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div style="font-size:13.5px;color:#0369a1;font-weight:700;display:flex;align-items:center;gap:8px">
+        <span>⚙️ پنل مدیریت و ویرایش صفحه شرکت</span>
+        @if(auth()->user()->isAdmin())
+          <span class="badge" style="background:#0284c7;color:#fff;font-size:11px;padding:2px 8px">دسترسی مدیر کل</span>
+        @endif
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        @if(auth()->user()->isAdmin())
+          <a href="{{ route('admin.companies') }}" class="btn ghost small" style="border-color:#0284c7;color:#0284c7;font-weight:700">
+            🏢 لیست همه شرکت‌ها
+          </a>
+        @endif
+        <a href="{{ route('companies.edit', $company) }}" class="btn small" style="background:#0284c7;color:#fff;font-weight:700;padding:6px 18px;font-size:13.5px;display:inline-flex;align-items:center;gap:6px">
+          ✏️ ویرایش اطلاعات این شرکت
+        </a>
+      </div>
+    </div>
+  @endif
 
   <!-- برچسب‌های خدمات و محصولات تخصصی -->
   @if($company->services && count($company->services) > 0)
@@ -304,6 +300,37 @@
 
     <!-- ستون کناری (چپ) -->
     <div>
+      <!-- کارت ارتباط و اقدامات سریع -->
+      @if($company->phone || $company->email || $company->catalog || $company->website)
+        <div class="card" style="margin-bottom:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
+          @if($company->phone)
+            @php
+              $phones = array_filter(array_map('trim', explode(';', $company->phone)));
+            @endphp
+            @foreach($phones as $pNum)
+              <a href="tel:{{ $pNum }}" class="btn" style="text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;font-size:13.5px;background:#0284c7;color:#fff;text-decoration:none">
+                📞 <span>تماس: {{ $pNum }}</span>
+              </a>
+            @endforeach
+          @endif
+          @if($company->email)
+            <a href="mailto:{{ $company->email }}" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
+              ✉️ <span>ارسال ایمیل</span>
+            </a>
+          @endif
+          @if($company->catalog)
+            <a href="{{ asset($company->catalog) }}" target="_blank" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
+              📄 <span>دریافت کاتالوگ (PDF)</span>
+            </a>
+          @endif
+          @if($company->website)
+            <a href="{{ $company->website }}" target="_blank" rel="nofollow noopener" class="btn ghost" style="text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;text-decoration:none">
+              🌐 <span>وب‌سایت رسمی</span>
+            </a>
+          @endif
+        </div>
+      @endif
+
       <!-- افراد کلیدی و مدیران -->
       @if($company->contacts && count(array_filter($company->contacts)) > 0)
         <div class="card" style="margin-bottom:20px">
