@@ -139,9 +139,26 @@
   font-size: 10.5px;
   background: #2563eb;
   color: #fff;
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 10px;
   font-weight: 700;
+}
+.cat-set-primary-btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.cat-set-primary-btn:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
 }
 .cat-tag-remove {
   border: none;
@@ -855,21 +872,32 @@ function renderCategoryTags() {
  if (noAlert) noAlert.style.display = 'none';
  if (clearAllBtn) clearAllBtn.style.display = 'inline-block';
 
- selectedCategories.forEach((cat, index) => {
- const isPrimary = (index === 0);
- const chip = document.createElement('div');
- chip.className = `cat-tag-chip fade-in ${isPrimary ? 'primary-chip' : ''}`;
- chip.id = `cat_chip_${cat.id}`;
- chip.innerHTML = `
- <span>${cat.pillar_icon || ''}</span>
- <span style="color:#64748b;font-size:12px">${cat.pillar_name}:</span>
- <span>${cat.name}</span>
- ${isPrimary ? '<span class="cat-tag-primary-badge">شاخه اول</span>' : ''}
- <input type="hidden" name="category_ids[]" value="${cat.id}">
- <button type="button" class="cat-tag-remove" onclick="removeCategory(${cat.id})" title="حذف این دسته"></button>
- `;
- container.appendChild(chip);
- });
+  selectedCategories.forEach((cat, index) => {
+    const isPrimary = (index === 0);
+    const chip = document.createElement('div');
+    chip.className = `cat-tag-chip fade-in ${isPrimary ? 'primary-chip' : ''}`;
+    chip.id = `cat_chip_${cat.id}`;
+    chip.innerHTML = `
+      <span style="display:inline-flex;align-items:center">${cat.pillar_icon || ''}</span>
+      <span style="color:#64748b;font-size:12px">${cat.pillar_name}:</span>
+      <span>${cat.name}</span>
+      ${isPrimary
+        ? '<span class="cat-tag-primary-badge">شاخه اصلی</span>'
+        : `<button type="button" class="cat-set-primary-btn" onclick="setPrimaryCategory(${cat.id})" title="تنظیم به عنوان شاخه اصلی">انتخاب به عنوان اصلی</button>`}
+      <input type="hidden" name="category_ids[]" value="${cat.id}">
+      <button type="button" class="cat-tag-remove" onclick="removeCategory(${cat.id})" title="حذف این دسته">&times;</button>
+    `;
+    container.appendChild(chip);
+  });
+}
+
+function setPrimaryCategory(catId) {
+  const id = parseInt(catId, 10);
+  const idx = selectedCategories.findIndex(c => c.id === id);
+  if (idx <= 0) return;
+  const [picked] = selectedCategories.splice(idx, 1);
+  selectedCategories.unshift(picked);
+  renderCategoryTags();
 }
 
 function addCategory(catId) {

@@ -369,7 +369,7 @@ class DashboardController extends Controller
                 'slug' => $c->slug,
                 'pillar_id' => $curr->id,
                 'pillar_name' => $curr->name,
-                'pillar_icon' => $curr->icon,
+                'pillar_icon' => emoji_to_svg($curr->icon, 14),
                 'pillar_slug' => $curr->slug,
                 'parent_id' => $c->parent_id,
                 'full_path' => implode(' › ', $path),
