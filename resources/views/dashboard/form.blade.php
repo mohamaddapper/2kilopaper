@@ -204,9 +204,30 @@
     </div>
   @endif
 
+  @php
+    $rawReturn = old('return_to', request('return_to'));
+    $cancelUrl = route('dashboard');
+    $appHost = parse_url(url('/'), PHP_URL_HOST);
+    if (is_string($rawReturn) && $rawReturn !== '') {
+        $retHost = parse_url($rawReturn, PHP_URL_HOST);
+        if (str_starts_with($rawReturn, '/') && !str_starts_with($rawReturn, '//')) {
+            $cancelUrl = $rawReturn;
+        } elseif ($retHost && $appHost && strcasecmp($retHost, $appHost) === 0) {
+            $cancelUrl = $rawReturn;
+        }
+    } elseif (url()->previous() && url()->previous() !== url()->current()) {
+        $prev = url()->previous();
+        $prevHost = parse_url($prev, PHP_URL_HOST);
+        if ($prevHost && $appHost && strcasecmp($prevHost, $appHost) === 0 && !str_contains($prev, '/edit')) {
+            $cancelUrl = $prev;
+        }
+    }
+  @endphp
+
   <form method="post" action="{{ $company->exists ? route('companies.update', $company) : route('companies.store') }}" enctype="multipart/form-data">
     @csrf
     @if($company->exists) @method('PUT') @endif
+    <input type="hidden" name="return_to" value="{{ $cancelUrl }}">
 
     @php
  $f = fn($k) => old($k, $company->$k);
@@ -789,7 +810,7 @@
       <button type="submit" class="btn" style="padding:12px 32px;font-size:16px;font-weight:700">
         {{ $company->exists ? 'ذخیره تغییرات شرکت' : 'ثبت نهایی اطلاعات شرکت' }}
       </button>
-      <a href="{{ route('dashboard') }}" class="btn ghost">انصراف</a>
+      <a href="{{ $cancelUrl }}" class="btn ghost">انصراف</a>
     </div>
   </form>
 </div>

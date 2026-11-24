@@ -151,7 +151,7 @@
             {!! svg_icon('building', 15) !!} لیست همه شرکت‌ها
           </a>
         @endif
-        <a href="{{ route('companies.edit', $company) }}" class="btn small" style="background:#0284c7;color:#fff;font-weight:700;padding:6px 18px;font-size:13.5px;display:inline-flex;align-items:center;gap:6px">
+        <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}" class="btn small" style="background:#0284c7;color:#fff;font-weight:700;padding:6px 18px;font-size:13.5px;display:inline-flex;align-items:center;gap:6px">
           {!! svg_icon('edit', 15) !!} ویرایش اطلاعات این شرکت
         </a>
       </div>
