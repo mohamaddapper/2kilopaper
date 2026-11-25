@@ -580,7 +580,7 @@ class DashboardController extends Controller
             'locations.*.type' => 'required|string|max:50',
             'locations.*.province_id' => 'required|exists:provinces,id',
             'locations.*.city_id' => 'required|exists:cities,id',
-            'locations.*.address' => 'nullable|string|max:1000',
+            'locations.*.address' => 'required|string|max:1000',
             'locations.*.phone' => 'nullable|string|max:190',
             'locations.*.phone2' => 'nullable|string|max:190',
             'locations.*.is_primary' => 'nullable',
@@ -598,7 +598,7 @@ class DashboardController extends Controller
             'video_code' => 'nullable|string|max:500',
             'socials' => 'nullable|array',
             'logo' => 'nullable|image|max:1024',
-            'catalog' => 'nullable|mimes:pdf|max:25600',
+            'catalog' => 'nullable|mimes:pdf|max:5120',
             'gallery' => 'nullable|array|max:5',
             'gallery.*' => 'nullable|image|max:6144',
         ], [
@@ -617,7 +617,7 @@ class DashboardController extends Controller
             'logo.image' => 'فایل لوگو باید تصویر باشد.',
             'logo.max' => 'حجم لوگو نباید بیشتر از ۱ مگابایت باشد.',
             'catalog.mimes' => 'کاتالوگ باید در قالب فایل PDF باشد.',
-            'catalog.max' => 'حجم فایل کاتالوگ حداکثر می‌تواند ۲۵ مگابایت باشد.',
+            'catalog.max' => 'حجم فایل کاتالوگ حداکثر می‌تواند ۵ مگابایت باشد.',
             'gallery.max' => 'حداکثر می‌توانید ۵ تصویر برای گالری انتخاب کنید.',
         ]);
 

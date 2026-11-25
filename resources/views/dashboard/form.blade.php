@@ -378,15 +378,9 @@
         <span class="badge ok">اصلی</span>
       </h3>
       
-      <div class="form-row">
-        <div class="field">
-          <label>نام شرکت یا کسب‌وکار <span style="color:red">*</span></label>
-          <input name="name" value="{{ $f('name') }}" placeholder="مثال: شرکت صنایع کارتن‌سازی حریر پیران" required>
-        </div>
-        <div class="field">
-          <label>شعار یا عنوان کوتاه تبلیغاتی</label>
-          <input name="slogan" value="{{ $f('slogan') }}" placeholder="مثال: تولیدکننده تخصصی ورق و کارتن ۳ و ۵ لایه">
-        </div>
+      <div class="field">
+        <label>نام شرکت یا کسب‌وکار <span style="color:red">*</span></label>
+        <input name="name" value="{{ $f('name') }}" placeholder="مثال: ۲ کیلو کاغذ" required>
       </div>
 
       <div class="form-row" style="margin-top:10px">
@@ -512,8 +506,8 @@
 
             <!-- ردیف آدرس دقیق -->
             <div class="field fade-in" id="loc_addr_wrap_{{ $idx }}" style="display:none;margin-top:6px">
-              <label>آدرس دقیق پستی (اختیاری)</label>
-              <input name="locations[{{ $idx }}][address]" id="loc_addr_{{ $idx }}" value="{{ $loc['address'] ?? '' }}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
+              <label>آدرس دقیق پستی <span style="color:red">*</span></label>
+              <input name="locations[{{ $idx }}][address]" id="loc_addr_{{ $idx }}" value="{{ $loc['address'] ?? '' }}" placeholder="خیابان، کوچه، پلاک" required>
             </div>
 
             <!-- تلفن‌های اختصاصی این مکان (۲ فیلد) -->
@@ -689,7 +683,7 @@
         
         <div class="field" style="margin-bottom:12px">
           <label>نام و نام خانوادگی مالک شرکت / کسب‌وکار</label>
-          <input name="contacts[owner_name]" value="{{ $cVal('contacts', 'owner_name') }}" placeholder="مثال: آقای محمدی">
+          <input name="contacts[owner_name]" value="{{ $cVal('contacts', 'owner_name') }}">
         </div>
 
         <div class="form-row" style="margin-bottom:12px">
@@ -699,7 +693,7 @@
           </div>
           <div class="field" style="margin-bottom:0">
             <label>شماره تماس مستقیم مدیرعامل</label>
-            <input name="contacts[ceo_phone]" value="{{ $cVal('contacts', 'ceo_phone') }}" placeholder="09...">
+            <input name="contacts[ceo_phone]" value="{{ $cVal('contacts', 'ceo_phone') }}" placeholder="09121234567" dir="ltr" style="text-align:right;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
           </div>
         </div>
 
@@ -710,7 +704,7 @@
           </div>
           <div class="field" style="margin-bottom:0">
             <label>شماره تماس مستقیم مدیر فروش</label>
-            <input name="contacts[sales_phone]" value="{{ $cVal('contacts', 'sales_phone') }}" placeholder="09...">
+            <input name="contacts[sales_phone]" value="{{ $cVal('contacts', 'sales_phone') }}" placeholder="09121234567" dir="ltr" style="text-align:right;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
           </div>
         </div>
 
@@ -721,7 +715,7 @@
           </div>
           <div class="field" style="margin-bottom:0">
             <label>شماره تماس مسئول خرید</label>
-            <input name="contacts[purchase_phone]" value="{{ $cVal('contacts', 'purchase_phone') }}" placeholder="09...">
+            <input name="contacts[purchase_phone]" value="{{ $cVal('contacts', 'purchase_phone') }}" placeholder="09121234567" dir="ltr" style="text-align:right;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
           </div>
         </div>
       </div>
@@ -841,7 +835,7 @@
               <div style="margin-bottom:6px"><a href="{{ asset($company->catalog) }}" target="_blank" style="font-weight:700">مشاهده کاتالوگ فعلی</a></div>
             @endif
             <input type="file" name="catalog" accept="application/pdf">
-            <div class="note">فرمت مجاز: PDF (حداکثر ۲۵ مگابایت)</div>
+            <div class="note">فرمت مجاز: PDF (حداکثر ۵ مگابایت · فقط ۱ فایل)</div>
           </div>
         </div>
 
@@ -861,11 +855,11 @@
 
       <div class="form-row">
         <div class="field">
-          <label>آدرس وب‌سایت رسمی</label>
+          <label>آدرس وب سایت</label>
           <input name="website" value="{{ $f('website') }}" placeholder="2kilopaper.ir" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
         </div>
         <div class="field">
-          <label>آدرس ایمیل رسمی شرکت (اختیاری)</label>
+          <label>آدرس ایمیل</label>
           <input type="email" name="email" id="email_input" value="{{ $f('email') }}" placeholder="info@company.ir" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;transition:all 0.2s ease;">
           <div id="email_feedback" style="display:none;font-size:12px;margin-top:5px;font-weight:500;"></div>
         </div>
@@ -1330,8 +1324,8 @@ function addNewLocation() {
  </div>
 
  <div class="field fade-in" id="loc_addr_wrap_${idx}" style="display:none;margin-top:6px">
- <label>آدرس دقیق پستی (اختیاری)</label>
- <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="مثال: شهرک صنعتی، فاز ۲، خیابان تلاش، پلاک ۱۲">
+ <label>آدرس دقیق پستی <span style="color:red">*</span></label>
+ <input name="locations[${idx}][address]" id="loc_addr_${idx}" placeholder="خیابان، کوچه، پلاک" required>
  </div>
 
  <div class="form-row" style="margin-bottom:0;margin-top:10px">
