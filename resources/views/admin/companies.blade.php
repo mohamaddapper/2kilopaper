@@ -84,7 +84,7 @@
                   @endif
                 </div>
                 <div>
-                  <b style="font-size:14px;color:#0f172a">{{ $c->name }}</b>
+                  <a href="{{ $c->url }}" target="_blank" style="font-size:14px;font-weight:700;color:#0f172a;text-decoration:none">{{ $c->name }}</a>
                   @if($c->slogan)
                     <span style="display:block;font-size:11.5px;color:#64748b">{{ $c->slogan }}</span>
                   @endif
@@ -139,39 +139,45 @@
             </td>
 
             <td style="text-align:left">
-              <div style="display:inline-flex;gap:6px;align-items:center">
-                @if($c->status !== 'approved')
-                  <form method="post" action="{{ route('admin.companies.approve', $c) }}" style="margin:0">
-                    @csrf
-                    <button type="submit" class="btn-action btn-approve" title="تأیید و انتشار در سایت">{!! svg_icon('check', 15) !!} تأیید</button>
-                  </form>
-                @endif
-
-                @if($c->status !== 'rejected')
-                  <form method="post" action="{{ route('admin.companies.reject', $c) }}" style="margin:0">
-                    @csrf
-                    <button type="submit" class="btn-action btn-reject" title="رد یا تعلیق">{!! svg_icon('x', 15) !!} رد</button>
-                  </form>
-                @endif
-
-                <!-- دکمه ارتقای پلن -->
-                <button type="button" class="btn-action btn-tier" onclick="openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}')">
-                  {!! svg_icon('star-filled', 15) !!} تغییر اشتراک
+              <div class="gear-dropdown">
+                <button type="button" class="gear-btn" onclick="toggleGearMenu(this, event)" title="عملیات مدیریت">
+                  {!! svg_icon('settings', 16) !!}
                 </button>
+                <div class="gear-dropdown-menu">
+                  @if($c->status !== 'approved')
+                    <form method="post" action="{{ route('admin.companies.approve', $c) }}" style="margin:0">
+                      @csrf
+                      <button type="submit" class="gear-dropdown-item" style="color:#16a34a">
+                        {!! svg_icon('check', 14) !!} تأیید و انتشار
+                      </button>
+                    </form>
+                  @endif
 
-                <a href="{{ $c->url }}" target="_blank" class="btn-action btn-view">
-                  نمایش ↗
-                </a>
+                  @if($c->status !== 'rejected')
+                    <form method="post" action="{{ route('admin.companies.reject', $c) }}" style="margin:0">
+                      @csrf
+                      <button type="submit" class="gear-dropdown-item" style="color:#d97706">
+                        {!! svg_icon('x', 14) !!} رد / تعلیق
+                      </button>
+                    </form>
+                  @endif
 
-                <a href="{{ route('companies.edit', $c) }}" target="_blank" class="btn-action" style="background:#0284c7;color:#fff;font-weight:700" title="ویرایش کامل مشخصات شرکت">
-                  {!! svg_icon('edit', 15) !!} ویرایش
-                </a>
+                  <a href="{{ route('companies.edit', $c) }}" target="_blank" class="gear-dropdown-item">
+                    {!! svg_icon('edit', 14) !!} ویرایش کامل
+                  </a>
 
-                <form method="post" action="{{ route('admin.companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn-action btn-reject" style="background:#fee2e2;color:#991b1b;border-color:#fecaca" title="حذف شرکت">{!! svg_icon('trash', 15) !!}</button>
-                </form>
+                  <button type="button" class="gear-dropdown-item" onclick="closeAllGearMenus(); openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}')">
+                    {!! svg_icon('star-filled', 14) !!} تغییر اشتراک
+                  </button>
+
+                  <form method="post" action="{{ route('admin.companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="gear-dropdown-item danger">
+                      {!! svg_icon('trash', 14) !!} حذف شرکت
+                    </button>
+                  </form>
+                </div>
               </div>
             </td>
           </tr>
@@ -230,7 +236,58 @@
 </div>
 
 @push('scripts')
+<style>
+.gear-dropdown { position: relative; display: inline-block; }
+.gear-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid #cbd5e1; background: #f8fafc; color: #475569;
+  cursor: pointer; transition: all 0.15s ease;
+}
+.gear-btn:hover { border-color: #0284c7; color: #0284c7; background: #eff6ff; }
+.gear-dropdown-menu {
+  display: none; position: fixed; z-index: 9999; min-width: 170px;
+  background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14); padding: 6px; text-align: right;
+}
+.gear-dropdown-menu.open { display: block; }
+.gear-dropdown-item {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px;
+  border: none; background: transparent; color: #334155; font-size: 13px;
+  font-weight: 600; font-family: inherit; text-decoration: none;
+  border-radius: 7px; cursor: pointer; text-align: right; box-sizing: border-box;
+}
+.gear-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
+.gear-dropdown-item.danger { color: #dc2626; }
+.gear-dropdown-item.danger:hover { background: #fef2f2; color: #b91c1c; }
+</style>
 <script>
+function closeAllGearMenus() {
+  document.querySelectorAll('.gear-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+}
+function toggleGearMenu(btn, e) {
+  if (e) e.stopPropagation();
+  const menu = btn.nextElementSibling;
+  const wasOpen = menu.classList.contains('open');
+  closeAllGearMenus();
+  if (!wasOpen) {
+    menu.classList.add('open');
+    const rect = btn.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    let top = rect.bottom + 4;
+    if (top + menuRect.height > window.innerHeight - 10) {
+      top = Math.max(10, rect.top - menuRect.height - 4);
+    }
+    let left = rect.left;
+    if (left + menuRect.width > window.innerWidth - 10) {
+      left = window.innerWidth - menuRect.width - 10;
+    }
+    menu.style.top = top + 'px';
+    menu.style.left = Math.max(10, left) + 'px';
+  }
+}
+document.addEventListener('click', closeAllGearMenus);
+
 function openTierModal(companyId, companyName, currentTier) {
  const modal = document.getElementById('tierModal');
  const title = document.getElementById('modalCompanyName');

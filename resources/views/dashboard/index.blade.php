@@ -44,9 +44,6 @@
         <a href="{{ route('admin.dashboard') }}" class="dashboard-menu-link" style="background:#eff6ff;color:#0369a1;font-weight:700">
           <span>{!! svg_icon('crown', 15) !!} پنل مدیریت کل سایت</span>
         </a>
-        <a href="{{ route('admin.companies') }}" class="dashboard-menu-link" style="background:#f0fdf4;color:#15803d;font-weight:700">
-          <span>{!! svg_icon('building', 15) !!} مدیریت و ویرایش ۹۱۹ شرکت</span>
-        </a>
       @endif
     </nav>
   </aside>
@@ -164,7 +161,11 @@
               @foreach($companies as $c)
                 <tr>
                   <td>
-                    <b style="color:var(--text);font-size:14px">{{ $c->name }}</b>
+                    @if($c->status === 'approved')
+                      <a href="{{ $c->url }}" target="_blank" style="font-weight:700;color:var(--text);font-size:14px;text-decoration:none">{{ $c->name }}</a>
+                    @else
+                      <b style="color:var(--text);font-size:14px">{{ $c->name }}</b>
+                    @endif
                     @if($c->brand_name)
                       <span style="color:var(--muted);font-size:12px;margin-right:4px">({{ $c->brand_name }})</span>
                     @endif
@@ -180,16 +181,22 @@
                     @endif
                   </td>
                   <td style="text-align:left">
-                    <div style="display:inline-flex;gap:6px">
-                      <a class="btn ghost small" href="{{ route('companies.edit', $c) }}" style="padding:3px 12px;font-size:12px">ویرایش</a>
-                      @if($c->status === 'approved')
-                        <a class="btn ghost small" href="{{ $c->url }}" target="_blank" style="padding:3px 12px;font-size:12px">مشاهده</a>
-                      @endif
-                      <form method="POST" action="{{ route('companies.destroy', $c) }}" style="display:inline" onsubmit="return confirm('آیا از حذف شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn ghost small" style="padding:3px 10px;font-size:12px;color:#dc2626;border-color:#fca5a5">حذف</button>
-                      </form>
+                    <div class="gear-dropdown">
+                      <button type="button" class="gear-btn" onclick="toggleGearMenu(this, event)" title="عملیات">
+                        {!! svg_icon('settings', 16) !!}
+                      </button>
+                      <div class="gear-dropdown-menu">
+                        <a class="gear-dropdown-item" href="{{ route('companies.edit', $c) }}">
+                          {!! svg_icon('edit', 14) !!} ویرایش
+                        </a>
+                        <form method="POST" action="{{ route('companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟')">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="gear-dropdown-item danger">
+                            {!! svg_icon('trash', 14) !!} حذف
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -273,9 +280,6 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <h2 style="margin:0;font-size:18px">شرکت‌های من</h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          @if(auth()->user()->isAdmin())
-            <a class="btn" href="{{ route('admin.companies') }}" style="background:#0284c7;font-weight:700">{!! svg_icon('building', 15) !!} مدیریت و ویرایش تمام شرکت‌ها</a>
-          @endif
           <a class="btn" href="{{ route('companies.create') }}">+ ثبت شرکت جدید</a>
         </div>
       </div>
@@ -295,7 +299,11 @@
               @foreach($companies as $c)
                 <tr>
                   <td>
-                    <b>{{ $c->name }}</b>
+                    @if($c->status === 'approved')
+                      <a href="{{ $c->url }}" target="_blank" style="font-weight:700;color:var(--text);text-decoration:none">{{ $c->name }}</a>
+                    @else
+                      <b>{{ $c->name }}</b>
+                    @endif
                     @if($c->brand_name)<span style="color:var(--muted);font-size:12px"> ({{ $c->brand_name }})</span>@endif
                   </td>
                   <td>{{ $c->category->name ?? '—' }}</td>
@@ -310,16 +318,22 @@
                     @endif
                   </td>
                   <td style="text-align:left">
-                    <div style="display:inline-flex;gap:6px">
-                      <a class="btn ghost small" href="{{ route('companies.edit', $c) }}">ویرایش</a>
-                      @if($c->status === 'approved')
-                        <a class="btn ghost small" href="{{ $c->url }}" target="_blank">مشاهده</a>
-                      @endif
-                      <form method="POST" action="{{ route('companies.destroy', $c) }}" style="display:inline" onsubmit="return confirm('آیا از حذف شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn ghost small" style="color:#dc2626;border-color:#fca5a5">حذف</button>
-                      </form>
+                    <div class="gear-dropdown">
+                      <button type="button" class="gear-btn" onclick="toggleGearMenu(this, event)" title="عملیات">
+                        {!! svg_icon('settings', 16) !!}
+                      </button>
+                      <div class="gear-dropdown-menu">
+                        <a class="gear-dropdown-item" href="{{ route('companies.edit', $c) }}">
+                          {!! svg_icon('edit', 14) !!} ویرایش
+                        </a>
+                        <form method="POST" action="{{ route('companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟')">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="gear-dropdown-item danger">
+                            {!! svg_icon('trash', 14) !!} حذف
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -818,6 +832,31 @@ function removeSavedCompany(id) {
  })
  .catch(err => console.error('Error removing bookmark:', err));
 }
+
+function toggleGearMenu(btn, e) {
+  if (e) e.stopPropagation();
+  const menu = btn.nextElementSibling;
+  const wasOpen = menu.classList.contains('open');
+  document.querySelectorAll('.gear-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+  if (!wasOpen) {
+    menu.classList.add('open');
+    const rect = btn.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    let top = rect.bottom + 4;
+    if (top + menuRect.height > window.innerHeight - 10) {
+      top = Math.max(10, rect.top - menuRect.height - 4);
+    }
+    let left = rect.left;
+    if (left + menuRect.width > window.innerWidth - 10) {
+      left = window.innerWidth - menuRect.width - 10;
+    }
+    menu.style.top = top + 'px';
+    menu.style.left = Math.max(10, left) + 'px';
+  }
+}
+document.addEventListener('click', function () {
+  document.querySelectorAll('.gear-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+});
 </script>
 @if($companies->count() > 0 && isset($ownerAnalytics))
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
