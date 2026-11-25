@@ -1141,6 +1141,28 @@
  console.error('Error toggling bookmark:', err);
  });
  }
+
+ document.addEventListener('click', function (e) {
+   const link = e.target.closest('a[href]');
+   if (!link) return;
+   const href = link.getAttribute('href') || '';
+   let channel = null;
+   if (href.startsWith('tel:')) channel = 'phone';
+   else if (href.includes('wa.me')) channel = 'whatsapp';
+   @if($company->website)
+   else if (href === @json($company->website)) channel = 'website';
+   @endif
+   if (!channel) return;
+   fetch('{{ route('track.company.click', $company) }}', {
+     method: 'POST',
+     keepalive: true,
+     headers: {
+       'Content-Type': 'application/json',
+       'X-CSRF-TOKEN': '{{ csrf_token() }}'
+     },
+     body: JSON.stringify({ channel })
+   }).catch(() => {});
+ });
  </script>
 </div>
 @endsection

@@ -84,9 +84,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/applications/{application}/status', [EmployerJobController::class, 'updateApplicationStatus'])->name('employer.applications.status');
 });
 
+Route::post('/track/company-click/{company}', [SiteController::class, 'trackCompanyClick'])->name('track.company.click');
+
 // پنل مدیریت ارشد سیستم
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/analytics', [\App\Http\Controllers\Admin\AdminController::class, 'analytics'])->name('analytics');
     Route::get('/companies', [\App\Http\Controllers\Admin\AdminController::class, 'companies'])->name('companies');
     Route::post('/companies/{company}/approve', [\App\Http\Controllers\Admin\AdminController::class, 'approveCompany'])->name('companies.approve');
     Route::post('/companies/{company}/reject', [\App\Http\Controllers\Admin\AdminController::class, 'rejectCompany'])->name('companies.reject');

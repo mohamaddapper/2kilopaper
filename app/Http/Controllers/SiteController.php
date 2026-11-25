@@ -291,6 +291,7 @@ class SiteController extends Controller
             return redirect()->to($cat->url, 301);
         }
 
+        \App\Services\ViewTracker::trackSubject('category', (int) $cat->id);
         return $this->renderCategoryPage($r, $cat, null);
     }
 
@@ -319,6 +320,8 @@ class SiteController extends Controller
             return redirect()->to($canonicalUrl, 301);
         }
 
+        \App\Services\ViewTracker::trackSubject('category', (int) $cat->id);
+        \App\Services\ViewTracker::trackSubject('province', (int) $prov->id);
         return $this->renderCategoryPage($r, $cat, $prov);
     }
 
@@ -342,6 +345,8 @@ class SiteController extends Controller
         if (urldecode($province) !== slugify($prov->name)) {
             return redirect()->to($prov->url, 301);
         }
+
+        \App\Services\ViewTracker::trackSubject('province', (int) $prov->id);
 
         $q = Company::approved()
             ->where('province_id', $prov->id)
@@ -612,5 +617,13 @@ class SiteController extends Controller
     {
         $txt = "User-agent: *\nDisallow: /dashboard\nDisallow: /login\nSitemap: " . url('/sitemap.xml') . "\n";
         return response($txt)->header('Content-Type', 'text/plain');
+    }
+
+    public function trackCompanyClick(Request $r, Company $company)
+    {
+        $channel = (string) $r->input('channel', '');
+        $recorded = \App\Services\ViewTracker::trackInteraction((int) $company->id, $channel);
+
+        return response()->json(['ok' => true, 'recorded' => $recorded]);
     }
 }

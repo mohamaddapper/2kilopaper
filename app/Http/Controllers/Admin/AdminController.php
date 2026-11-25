@@ -8,8 +8,12 @@ use App\Models\City;
 use App\Models\Company;
 use App\Models\JobApplication;
 use App\Models\JobPosting;
+use App\Models\Province;
 use App\Models\User;
+use App\Services\ViewTracker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
@@ -293,5 +297,221 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.categories')->with('ok', "تنظیمات سئو و محتوای دسته «{$category->name}» با موفقیت ذخیره شد.");
+    }
+
+    public function analytics()
+    {
+        $hasDaily = Schema::hasTable('daily_views');
+        $hasInteractions = Schema::hasTable('company_interactions');
+
+        $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
+        $weekStart = now()->subDays(6)->toDateString();
+        $prevWeekStart = now()->subDays(13)->toDateString();
+        $prevWeekEnd = now()->subDays(7)->toDateString();
+        $monthStart = now()->subDays(29)->toDateString();
+
+        $kpi = [
+            'today_total' => 0,
+            'today_unique' => 0,
+            'yesterday_total' => 0,
+            'yesterday_unique' => 0,
+            'week_total' => 0,
+            'prev_week_total' => 0,
+            'week_growth' => 0,
+            'month_total' => 0,
+            'month_unique' => 0,
+        ];
+
+        $sources = [
+            'google' => 0,
+            'search' => 0,
+            'internal' => 0,
+            'direct' => 0,
+        ];
+
+        $topCompanies = collect();
+        $topCategories = collect();
+        $topProvinces = collect();
+        $topJobs = collect();
+        $leadTotals = ['phone' => 0, 'whatsapp' => 0, 'website' => 0, 'bookmark' => 0];
+
+        if ($hasDaily) {
+            $todayRow = DB::table('daily_views')
+                ->where('subject_type', 'site')->where('subject_id', 0)->where('view_date', $today)->first();
+            $yesterdayRow = DB::table('daily_views')
+                ->where('subject_type', 'site')->where('subject_id', 0)->where('view_date', $yesterday)->first();
+
+            $weekRow = DB::table('daily_views')
+                ->selectRaw('COALESCE(SUM(total_views),0) as total')
+                ->where('subject_type', 'site')->where('subject_id', 0)
+                ->where('view_date', '>=', $weekStart)->first();
+
+            $prevWeekRow = DB::table('daily_views')
+                ->selectRaw('COALESCE(SUM(total_views),0) as total')
+                ->where('subject_type', 'site')->where('subject_id', 0)
+                ->whereBetween('view_date', [$prevWeekStart, $prevWeekEnd])->first();
+
+            $monthRow = DB::table('daily_views')
+                ->selectRaw('COALESCE(SUM(total_views),0) as total, COALESCE(SUM(unique_views),0) as uniq, COALESCE(SUM(source_google),0) as google, COALESCE(SUM(source_search),0) as search, COALESCE(SUM(source_internal),0) as internal, COALESCE(SUM(source_direct),0) as direct')
+                ->where('subject_type', 'site')->where('subject_id', 0)
+                ->where('view_date', '>=', $monthStart)->first();
+
+            $weekTotal = (int) ($weekRow->total ?? 0);
+            $prevWeekTotal = (int) ($prevWeekRow->total ?? 0);
+            $growth = $prevWeekTotal > 0 ? round((($weekTotal - $prevWeekTotal) / $prevWeekTotal) * 100) : ($weekTotal > 0 ? 100 : 0);
+
+            $kpi = [
+                'today_total' => (int) ($todayRow->total_views ?? 0),
+                'today_unique' => (int) ($todayRow->unique_views ?? 0),
+                'yesterday_total' => (int) ($yesterdayRow->total_views ?? 0),
+                'yesterday_unique' => (int) ($yesterdayRow->unique_views ?? 0),
+                'week_total' => $weekTotal,
+                'prev_week_total' => $prevWeekTotal,
+                'week_growth' => $growth,
+                'month_total' => (int) ($monthRow->total ?? 0),
+                'month_unique' => (int) ($monthRow->uniq ?? 0),
+            ];
+
+            $sources = [
+                'google' => (int) ($monthRow->google ?? 0),
+                'search' => (int) ($monthRow->search ?? 0),
+                'internal' => (int) ($monthRow->internal ?? 0),
+                'direct' => (int) ($monthRow->direct ?? 0),
+            ];
+
+            // Top 10 companies in last 30 days
+            $companyViewRows = DB::table('daily_views')
+                ->selectRaw('subject_id, SUM(total_views) as views_30d, SUM(unique_views) as unique_30d')
+                ->where('subject_type', 'company')
+                ->where('view_date', '>=', $monthStart)
+                ->groupBy('subject_id')
+                ->orderByDesc('views_30d')
+                ->limit(10)
+                ->get()
+                ->keyBy('subject_id');
+
+            if ($companyViewRows->isNotEmpty()) {
+                $companiesMap = Company::with('category')->whereIn('id', $companyViewRows->keys())->get()->keyBy('id');
+                $interactionsMap = $hasInteractions
+                    ? DB::table('company_interactions')
+                        ->selectRaw('company_id, SUM(phone_clicks) as phone, SUM(whatsapp_clicks) as whatsapp, SUM(website_clicks) as website')
+                        ->whereIn('company_id', $companyViewRows->keys())
+                        ->where('stat_date', '>=', $monthStart)
+                        ->groupBy('company_id')
+                        ->get()->keyBy('company_id')
+                    : collect();
+
+                foreach ($companyViewRows as $cid => $row) {
+                    if ($c = $companiesMap->get($cid)) {
+                        $c->views_30d = (int) $row->views_30d;
+                        $c->unique_30d = (int) $row->unique_30d;
+                        $ci = $interactionsMap->get($cid);
+                        $c->leads_30d = $ci ? ((int) $ci->phone + (int) $ci->whatsapp + (int) $ci->website) : 0;
+                        $topCompanies->push($c);
+                    }
+                }
+            }
+
+            // Top 5 categories
+            $catViewRows = DB::table('daily_views')
+                ->selectRaw('subject_id, SUM(total_views) as views_30d')
+                ->where('subject_type', 'category')
+                ->where('view_date', '>=', $monthStart)
+                ->groupBy('subject_id')
+                ->orderByDesc('views_30d')
+                ->limit(5)
+                ->get();
+            if ($catViewRows->isNotEmpty()) {
+                $catsMap = Category::whereIn('id', $catViewRows->pluck('subject_id'))->get()->keyBy('id');
+                foreach ($catViewRows as $row) {
+                    if ($cat = $catsMap->get($row->subject_id)) {
+                        $cat->views_30d = (int) $row->views_30d;
+                        $topCategories->push($cat);
+                    }
+                }
+            }
+
+            // Top 5 provinces
+            $provViewRows = DB::table('daily_views')
+                ->selectRaw('subject_id, SUM(total_views) as views_30d')
+                ->where('subject_type', 'province')
+                ->where('view_date', '>=', $monthStart)
+                ->groupBy('subject_id')
+                ->orderByDesc('views_30d')
+                ->limit(5)
+                ->get();
+            if ($provViewRows->isNotEmpty()) {
+                $provsMap = Province::whereIn('id', $provViewRows->pluck('subject_id'))->get()->keyBy('id');
+                foreach ($provViewRows as $row) {
+                    if ($prov = $provsMap->get($row->subject_id)) {
+                        $prov->views_30d = (int) $row->views_30d;
+                        $topProvinces->push($prov);
+                    }
+                }
+            }
+
+            // Top 5 jobs
+            $jobViewRows = DB::table('daily_views')
+                ->selectRaw('subject_id, SUM(total_views) as views_30d')
+                ->where('subject_type', 'job')
+                ->where('view_date', '>=', $monthStart)
+                ->groupBy('subject_id')
+                ->orderByDesc('views_30d')
+                ->limit(5)
+                ->get();
+            if ($jobViewRows->isNotEmpty()) {
+                $jobsMap = JobPosting::with('company')->whereIn('id', $jobViewRows->pluck('subject_id'))->get()->keyBy('id');
+                foreach ($jobViewRows as $row) {
+                    if ($job = $jobsMap->get($row->subject_id)) {
+                        $job->views_30d = (int) $row->views_30d;
+                        $topJobs->push($job);
+                    }
+                }
+            }
+        }
+
+        // Fallback to overall views_count if no 30-day company rows yet
+        if ($topCompanies->isEmpty()) {
+            $topCompanies = Company::approved()->with('category')->orderByDesc('views_count')->limit(10)->get()
+                ->map(function ($c) {
+                    $c->views_30d = (int) ($c->views_count ?? 0);
+                    $c->unique_30d = (int) ($c->views_count ?? 0);
+                    $c->leads_30d = 0;
+                    return $c;
+                });
+        }
+        if ($topJobs->isEmpty()) {
+            $topJobs = JobPosting::with('company')->orderByDesc('views_count')->limit(5)->get()
+                ->map(function ($j) {
+                    $j->views_30d = (int) ($j->views_count ?? 0);
+                    return $j;
+                });
+        }
+
+        if ($hasInteractions) {
+            $leadRow = DB::table('company_interactions')
+                ->selectRaw('COALESCE(SUM(phone_clicks),0) as phone, COALESCE(SUM(whatsapp_clicks),0) as whatsapp, COALESCE(SUM(website_clicks),0) as website, COALESCE(SUM(bookmark_clicks),0) as bookmark')
+                ->where('stat_date', '>=', $monthStart)->first();
+            $leadTotals = [
+                'phone' => (int) ($leadRow->phone ?? 0),
+                'whatsapp' => (int) ($leadRow->whatsapp ?? 0),
+                'website' => (int) ($leadRow->website ?? 0),
+                'bookmark' => (int) ($leadRow->bookmark ?? 0),
+            ];
+        }
+
+        $series = ViewTracker::getDailySeries('site', 0, 30);
+
+        return view('admin.analytics', compact(
+            'kpi',
+            'series',
+            'sources',
+            'topCompanies',
+            'topCategories',
+            'topProvinces',
+            'topJobs',
+            'leadTotals'
+        ));
     }
 }

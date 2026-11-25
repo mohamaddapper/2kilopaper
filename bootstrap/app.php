@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\ConvertPersianDigits::class,
+            \App\Http\Middleware\TrackSiteViews::class,
         ]);
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureAdmin::class,

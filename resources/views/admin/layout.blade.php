@@ -171,6 +171,9 @@
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
           {!! svg_icon('bar-chart', 15) !!} پیشخوان
         </a>
+        <a href="{{ route('admin.analytics') }}" class="{{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
+          {!! svg_icon('eye', 15) !!} آمار و بازدیدها
+        </a>
         <a href="{{ route('admin.companies') }}" class="{{ request()->routeIs('admin.companies') ? 'active' : '' }}">
           {!! svg_icon('building', 15) !!} شرکت‌ها
         </a>

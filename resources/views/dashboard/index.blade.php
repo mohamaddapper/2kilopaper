@@ -104,6 +104,46 @@
         </div>
       </div>
 
+      @if($companies->count() > 0 && isset($ownerAnalytics))
+      <!-- آمار بازدید و تعامل مشتریان -->
+      <div class="dash-table-card" style="padding:18px 20px;margin-bottom:24px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+          <div>
+            <h3 style="margin:0 0 4px;font-size:15.5px;color:var(--text);font-weight:700">{!! svg_icon('bar-chart', 16) !!} آمار بازدید و تعامل مشتریان</h3>
+            <span style="font-size:12.5px;color:var(--muted)">گزارش عملکرد صفحه‌های شرکت شما در ۳۰ روز گذشته</span>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px">
+            <span style="padding:5px 10px;border-radius:8px;background:#eff6ff;color:#0369a1;font-weight:700">امروز: {{ number_format($ownerAnalytics['views_today']) }}</span>
+            <span style="padding:5px 10px;border-radius:8px;background:#f0fdf4;color:#15803d;font-weight:700">۷ روز: {{ number_format($ownerAnalytics['views_7d']) }}</span>
+            <span style="padding:5px 10px;border-radius:8px;background:#fef3c7;color:#92400e;font-weight:700">۳۰ روز: {{ number_format($ownerAnalytics['views_30d']) }}</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px" class="dash-lead-grid">
+          <div style="padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--muted);display:block">کلیک شماره تماس</span>
+            <b style="font-size:18px;color:#0284c7">{{ number_format($ownerAnalytics['phone_clicks']) }}</b>
+          </div>
+          <div style="padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--muted);display:block">کلیک واتساپ</span>
+            <b style="font-size:18px;color:#16a34a">{{ number_format($ownerAnalytics['whatsapp_clicks']) }}</b>
+          </div>
+          <div style="padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--muted);display:block">کلیک وب‌سایت</span>
+            <b style="font-size:18px;color:#6366f1">{{ number_format($ownerAnalytics['website_clicks']) }}</b>
+          </div>
+          <div style="padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--muted);display:block">ذخیره توسط کاربران</span>
+            <b style="font-size:18px;color:#d97706">{{ number_format($ownerAnalytics['bookmark_clicks']) }}</b>
+          </div>
+        </div>
+
+        <div style="position:relative;height:210px">
+          <canvas id="ownerAnalyticsChart"></canvas>
+        </div>
+      </div>
+      @endif
+
       <!-- مدیریت شرکت‌ها (دسترسی سریع و ثبت شرکت جدید) -->
       <div class="dash-table-card">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);background:#fff">
@@ -767,4 +807,57 @@ function removeSavedCompany(id) {
  .catch(err => console.error('Error removing bookmark:', err));
 }
 </script>
+@if($companies->count() > 0 && isset($ownerAnalytics))
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const canvas = document.getElementById('ownerAnalyticsChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  const isDark = document.documentElement.classList.contains('dark');
+  const gridColor = isDark ? 'rgba(148,163,184,0.12)' : 'rgba(15,23,42,0.06)';
+  const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: @json($ownerAnalytics['series']['labels'] ?? []),
+      datasets: [
+        {
+          label: 'بازدید کل',
+          data: @json($ownerAnalytics['series']['total'] ?? []),
+          borderColor: '#0284c7',
+          backgroundColor: 'rgba(2,132,199,0.12)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2.5,
+          pointRadius: 2
+        },
+        {
+          label: 'بازدید یکتا',
+          data: @json($ownerAnalytics['series']['unique'] ?? []),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,0.08)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2,
+          pointRadius: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: tickColor, font: { family: 'Vazirmatn, sans-serif' } } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: tickColor, maxTicksLimit: 10 } },
+        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: tickColor, precision: 0 } }
+      }
+    }
+  });
+});
+</script>
+@endif
 @endsection

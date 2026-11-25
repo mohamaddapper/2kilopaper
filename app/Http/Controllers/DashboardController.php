@@ -42,7 +42,93 @@ class DashboardController extends Controller
             ? $user->savedCompanies()->with(['category', 'city', 'province'])->latest('company_bookmarks.created_at')->get()
             : collect();
 
-        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications', 'savedCompanies'));
+        $companyIds = $companies->pluck('id')->all();
+        $ownerAnalytics = [
+            'views_today' => 0,
+            'views_7d' => 0,
+            'views_30d' => 0,
+            'views_total' => (int) $companies->sum('views_count'),
+            'phone_clicks' => 0,
+            'whatsapp_clicks' => 0,
+            'website_clicks' => 0,
+            'bookmark_clicks' => 0,
+            'series' => ['labels' => [], 'total' => [], 'unique' => []],
+            'per_company' => [],
+        ];
+
+        if (!empty($companyIds)) {
+            $today = now()->toDateString();
+            $weekStart = now()->subDays(6)->toDateString();
+            $monthStart = now()->subDays(29)->toDateString();
+
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasTable('daily_views')) {
+                    $ownerAnalytics['views_today'] = (int) \Illuminate\Support\Facades\DB::table('daily_views')
+                        ->where('subject_type', 'company')
+                        ->whereIn('subject_id', $companyIds)
+                        ->where('view_date', $today)
+                        ->sum('total_views');
+
+                    $ownerAnalytics['views_7d'] = (int) \Illuminate\Support\Facades\DB::table('daily_views')
+                        ->where('subject_type', 'company')
+                        ->whereIn('subject_id', $companyIds)
+                        ->where('view_date', '>=', $weekStart)
+                        ->sum('total_views');
+
+                    $ownerAnalytics['views_30d'] = (int) \Illuminate\Support\Facades\DB::table('daily_views')
+                        ->where('subject_type', 'company')
+                        ->whereIn('subject_id', $companyIds)
+                        ->where('view_date', '>=', $monthStart)
+                        ->sum('total_views');
+
+                    $perCompanyViews = \Illuminate\Support\Facades\DB::table('daily_views')
+                        ->selectRaw('subject_id, SUM(total_views) as views_30d')
+                        ->where('subject_type', 'company')
+                        ->whereIn('subject_id', $companyIds)
+                        ->where('view_date', '>=', $monthStart)
+                        ->groupBy('subject_id')
+                        ->pluck('views_30d', 'subject_id');
+
+                    foreach ($companyIds as $cid) {
+                        $ownerAnalytics['per_company'][$cid] = [
+                            'views_30d' => (int) ($perCompanyViews[$cid] ?? 0),
+                            'leads_30d' => 0,
+                        ];
+                    }
+                }
+
+                if (\Illuminate\Support\Facades\Schema::hasTable('company_interactions')) {
+                    $leadRow = \Illuminate\Support\Facades\DB::table('company_interactions')
+                        ->selectRaw('COALESCE(SUM(phone_clicks),0) as phone, COALESCE(SUM(whatsapp_clicks),0) as whatsapp, COALESCE(SUM(website_clicks),0) as website, COALESCE(SUM(bookmark_clicks),0) as bookmark')
+                        ->whereIn('company_id', $companyIds)
+                        ->where('stat_date', '>=', $monthStart)
+                        ->first();
+
+                    $ownerAnalytics['phone_clicks'] = (int) ($leadRow->phone ?? 0);
+                    $ownerAnalytics['whatsapp_clicks'] = (int) ($leadRow->whatsapp ?? 0);
+                    $ownerAnalytics['website_clicks'] = (int) ($leadRow->website ?? 0);
+                    $ownerAnalytics['bookmark_clicks'] = (int) ($leadRow->bookmark ?? 0);
+
+                    $perCompanyLeads = \Illuminate\Support\Facades\DB::table('company_interactions')
+                        ->selectRaw('company_id, SUM(phone_clicks + whatsapp_clicks + website_clicks) as leads_30d')
+                        ->whereIn('company_id', $companyIds)
+                        ->where('stat_date', '>=', $monthStart)
+                        ->groupBy('company_id')
+                        ->pluck('leads_30d', 'company_id');
+
+                    foreach ($perCompanyLeads as $cid => $lCount) {
+                        if (!isset($ownerAnalytics['per_company'][$cid])) {
+                            $ownerAnalytics['per_company'][$cid] = ['views_30d' => 0, 'leads_30d' => 0];
+                        }
+                        $ownerAnalytics['per_company'][$cid]['leads_30d'] = (int) $lCount;
+                    }
+                }
+
+                $ownerAnalytics['series'] = \App\Services\ViewTracker::getDailySeries('company', $companyIds, 30);
+            } catch (\Throwable $e) {}
+        }
+
+        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications', 'savedCompanies', 'ownerAnalytics'));
     }
 
     public function toggleBookmark(Request $r, Company $company)
@@ -68,6 +154,7 @@ class DashboardController extends Controller
                 'user_id' => $user->id,
                 'company_id' => $company->id,
             ]);
+            \App\Services\ViewTracker::trackInteraction((int) $company->id, 'bookmark');
             $saved = true;
             $message = 'شرکت با موفقیت ذخیره شد.';
         }
