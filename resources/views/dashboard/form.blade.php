@@ -785,9 +785,10 @@
           $certs = array_values(array_unique(array_merge($certs, $certList)));
           @endphp
           @foreach($certs as $cert)
+            @php $isLatinCert = (bool) preg_match('/[A-Za-z0-9]/', $cert); @endphp
             <label class="check-item">
               <input type="checkbox" name="tech_specs[certificates][]" value="{{ $cert }}" @checked($hasCert($cert))>
-              <span>{{ $cert }}</span>
+              <span @if($isLatinCert) dir="ltr" style="font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;direction:ltr;unicode-bidi:isolate" @endif>{{ $cert }}</span>
             </label>
           @endforeach
         </div>
@@ -862,11 +863,11 @@
       <div class="form-row">
         <div class="field">
           <label>آدرس وب‌سایت رسمی</label>
-          <input name="website" value="{{ $f('website') }}" placeholder="مثال: 2kilopaper.ir">
+          <input name="website" value="{{ $f('website') }}" placeholder="2kilopaper.ir" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
         </div>
         <div class="field">
           <label>آدرس ایمیل رسمی شرکت (اختیاری)</label>
-          <input type="email" name="email" id="email_input" value="{{ $f('email') }}" placeholder="مثال: info@company.ir" style="transition:all 0.2s ease;">
+          <input type="email" name="email" id="email_input" value="{{ $f('email') }}" placeholder="info@company.ir" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;transition:all 0.2s ease;">
           <div id="email_feedback" style="display:none;font-size:12px;margin-top:5px;font-weight:500;"></div>
         </div>
       </div>
@@ -874,15 +875,15 @@
       <div class="form-row" style="margin-top:10px">
         <div class="field">
           <label>شماره واتساپ</label>
-          <input name="socials[whatsapp]" value="{{ $sVal('socials', 'whatsapp') }}" placeholder="مثال: 09123456789" dir="ltr" style="text-align:left">
+          <input name="socials[whatsapp]" value="{{ $sVal('socials', 'whatsapp') }}" placeholder="09123456789" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
         </div>
         <div class="field">
           <label>آیدی اینستاگرام</label>
-          <input name="socials[instagram]" value="{{ $sVal('socials', 'instagram') }}" placeholder="مثال: 2kilopaper" dir="ltr" style="text-align:left">
+          <input name="socials[instagram]" value="{{ $sVal('socials', 'instagram') }}" placeholder="2kilopaper" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
         </div>
         <div class="field">
           <label>کانال یا آیدی تلگرام</label>
-          <input name="socials[telegram]" value="{{ $sVal('socials', 'telegram') }}" placeholder="مثال: kilopaper2" dir="ltr" style="text-align:left">
+          <input name="socials[telegram]" value="{{ $sVal('socials', 'telegram') }}" placeholder="2kilopaper" dir="ltr" style="text-align:left;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif">
         </div>
       </div>
     </div>

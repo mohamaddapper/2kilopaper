@@ -768,7 +768,8 @@
                 <span style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px">گواهینامه‌ها:</span>
                 <div style="display:flex;gap:4px;flex-wrap:wrap">
                   @foreach($certItems as $cert)
-                    <span class="badge ok" style="font-size:11px">{{ $cert }}</span>
+                    @php $isLatinCert = (bool) preg_match('/[A-Za-z0-9]/', $cert); @endphp
+                    <span class="badge ok" style="font-size:11px;@if($isLatinCert) font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;direction:ltr;unicode-bidi:isolate; @endif">{{ $cert }}</span>
                   @endforeach
                 </div>
               </div>
