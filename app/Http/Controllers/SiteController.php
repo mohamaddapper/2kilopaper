@@ -94,7 +94,9 @@ class SiteController extends Controller
         } catch (\Throwable $e) {}
 
         $recentJobs = $hasJobsTable ? JobPosting::with(['company', 'city', 'province'])->latest()->take(4)->get() : collect();
-        $recentResumes = $hasJobsTable ? JobApplication::with(['province', 'city'])->latest()->take(4)->get() : collect();
+        $recentResumes = \Illuminate\Support\Facades\Schema::hasTable('resumes')
+            ? \App\Models\Resume::approvedPublic()->with(['province', 'city'])->latest()->take(4)->get()
+            : collect();
 
         // استان‌ها برای فیلتر جستجو در صفحه اول
         $searchProvinces = Province::orderBy('name')->get();

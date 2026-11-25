@@ -432,7 +432,10 @@
         @endif
         @if($u->hasPermission('applications'))
           <a href="{{ route('admin.applications') }}" class="{{ request()->routeIs('admin.applications') ? 'active' : '' }}">
-            <span class="nav-label">{!! svg_icon('users', 16) !!} رزومه‌ها و متقاضیان</span>
+            <span class="nav-label">{!! svg_icon('users', 16) !!} رزومه‌های ارسالی</span>
+          </a>
+          <a href="{{ route('admin.resumes') }}" class="{{ request()->routeIs('admin.resumes*') ? 'active' : '' }}">
+            <span class="nav-label">{!! svg_icon('user', 16) !!} بانک کارجویان</span>
           </a>
         @endif
 

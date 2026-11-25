@@ -42,6 +42,10 @@ class DashboardController extends Controller
             ? $user->savedCompanies()->with(['category', 'city', 'province'])->latest('company_bookmarks.created_at')->get()
             : collect();
 
+        $myResumes = ($user && \Illuminate\Support\Facades\Schema::hasTable('resumes'))
+            ? \App\Models\Resume::where('user_id', $user->id)->with(['province', 'city'])->latest()->get()
+            : collect();
+
         $companyIds = $companies->pluck('id')->all();
         $ownerAnalytics = [
             'views_today' => 0,
@@ -128,7 +132,7 @@ class DashboardController extends Controller
             } catch (\Throwable $e) {}
         }
 
-        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications', 'savedCompanies', 'ownerAnalytics'));
+        return view('dashboard.index', compact('companies', 'jobs', 'totalApplications', 'recentApplications', 'savedCompanies', 'ownerAnalytics', 'myResumes'));
     }
 
     public function toggleBookmark(Request $r, Company $company)

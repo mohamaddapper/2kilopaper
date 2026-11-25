@@ -523,6 +523,78 @@
           </div>
         @endif
       </div>
+
+      <!-- رزومه‌های کارجویی خود کاربر در بانک کارجویان -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:28px 0 14px;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0;font-size:16.5px;color:var(--text)">رزومه‌های کارجویی من (بانک کارجویان)</h3>
+        <a href="{{ route('resumes.create') }}" class="btn small">+ ثبت رزومه جدید</a>
+      </div>
+      <div class="dash-table-card">
+        @if(isset($myResumes) && $myResumes->count() > 0)
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>عنوان شغلی</th>
+                <th>استان / شهر</th>
+                <th style="text-align:center">وضعیت کارجو</th>
+                <th style="text-align:center">وضعیت انتشار</th>
+                <th style="text-align:left">عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($myResumes as $mr)
+                <tr>
+                  <td>
+                    <a href="{{ route('resumes.show', $mr) }}" target="_blank" style="font-weight:700;color:var(--text);text-decoration:none">{{ $mr->job_title }}</a>
+                    <span style="display:block;font-size:11.5px;color:var(--muted)">{{ $mr->experience_years }} سال سابقه · {!! svg_icon('eye', 13) !!} {{ number_format($mr->views_count) }} بازدید</span>
+                  </td>
+                  <td>{{ $mr->province->name ?? '—' }}{{ $mr->city ? ' · ' . $mr->city->name : '' }}</td>
+                  <td style="text-align:center">
+                    <span class="badge {{ $mr->availability === 'available' ? 'ok' : '' }}" style="font-size:11.5px">
+                      {{ $mr->availability === 'available' ? 'آماده به کار' : 'مشغول به کار' }}
+                    </span>
+                  </td>
+                  <td style="text-align:center">
+                    @if($mr->status === 'approved')
+                      <span class="badge ok">منتشرشده</span>
+                    @elseif($mr->status === 'rejected')
+                      <span class="badge bad">ردشده</span>
+                    @else
+                      <span class="badge warn">در انتظار تأیید</span>
+                    @endif
+                  </td>
+                  <td style="text-align:left">
+                    <div class="gear-dropdown">
+                      <button type="button" class="gear-btn" onclick="toggleGearMenu(this, event)" title="عملیات">
+                        {!! svg_icon('settings', 16) !!}
+                      </button>
+                      <div class="gear-dropdown-menu">
+                        <a href="{{ route('resumes.edit', $mr) }}" class="gear-dropdown-item">{!! svg_icon('edit', 14) !!} ویرایش</a>
+                        <form method="POST" action="{{ route('resumes.toggle', $mr) }}" style="margin:0">
+                          @csrf
+                          <button type="submit" class="gear-dropdown-item">
+                            {!! svg_icon('clock', 14) !!} {{ $mr->availability === 'available' ? 'تغییر به مشغول به کار' : 'تغییر به آماده به کار' }}
+                          </button>
+                        </form>
+                        <form method="POST" action="{{ route('resumes.destroy', $mr) }}" style="margin:0" onsubmit="return confirm('آیا از حذف این رزومه اطمینان دارید؟')">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="gear-dropdown-item danger">{!! svg_icon('trash', 14) !!} حذف</button>
+                        </form>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        @else
+          <div style="padding:28px;text-align:center;color:var(--muted)">
+            <p style="margin:0 0 12px;font-size:13.5px">شما هنوز رزومه کارجویی در بانک متخصصین ثبت نکرده‌اید.</p>
+            <a href="{{ route('resumes.create') }}" class="btn ghost small">+ ثبت رایگان رزومه کارجو</a>
+          </div>
+        @endif
+      </div>
     </div>
 
     <!-- تب ۵: گوش‌به‌زنگ -->

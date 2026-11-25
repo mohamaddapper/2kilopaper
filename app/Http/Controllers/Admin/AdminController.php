@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\JobApplication;
 use App\Models\JobPosting;
 use App\Models\Province;
+use App\Models\Resume;
 use App\Models\User;
 use App\Services\ViewTracker;
 use Illuminate\Http\Request;
@@ -389,6 +390,50 @@ class AdminController extends Controller
         $logs = $query->paginate(30)->withQueryString();
 
         return view('admin.logs', compact('logs', 'admins'));
+    }
+
+    public function resumes(Request $request)
+    {
+        $query = Resume::with(['province', 'city', 'user']);
+        if ($q = trim((string) $request->input('q', ''))) {
+            $query->where(function ($w) use ($q) {
+                $w->where('full_name', 'like', "%{$q}%")
+                  ->orWhere('job_title', 'like', "%{$q}%")
+                  ->orWhere('phone', 'like', "%{$q}%");
+            });
+        }
+        if ($status = $request->input('status')) {
+            if ($status !== 'all') {
+                $query->where('status', $status);
+            }
+        }
+        $resumes = $query->latest()->paginate(20)->withQueryString();
+        return view('admin.resumes', compact('resumes'));
+    }
+
+    public function approveResume(Resume $resume)
+    {
+        $resume->status = 'approved';
+        $resume->save();
+        AdminLog::record('resume.approve', "تأیید رزومه «{$resume->job_title}» ({$resume->full_name})", 'resume', $resume->id);
+        return back()->with('ok', "رزومه «{$resume->full_name}» تأیید و منتشر شد.");
+    }
+
+    public function rejectResume(Resume $resume)
+    {
+        $resume->status = 'rejected';
+        $resume->save();
+        AdminLog::record('resume.reject', "رد رزومه «{$resume->job_title}» ({$resume->full_name})", 'resume', $resume->id);
+        return back()->with('ok', "رزومه «{$resume->full_name}» رد شد.");
+    }
+
+    public function destroyResume(Resume $resume)
+    {
+        $name = $resume->full_name;
+        $id = $resume->id;
+        $resume->delete();
+        AdminLog::record('resume.delete', "حذف رزومه «{$name}»", 'resume', $id);
+        return back()->with('ok', "رزومه «{$name}» حذف شد.");
     }
 
     public function categories(Request $request)

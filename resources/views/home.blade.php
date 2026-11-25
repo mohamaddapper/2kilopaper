@@ -472,24 +472,24 @@
           <span style="font-size:20px">{!! svg_icon('user', 15) !!}</span>
           <h3 style="margin:0;font-size:17px;font-weight:800;color:#0f172a">رزومه متخصصین و کارجویان</h3>
         </div>
-        <a href="{{ route('jobs.index') }}" style="font-size:13px;font-weight:700;color:var(--primary)">بانک کارجویان ←</a>
+        <a href="{{ route('resumes.index') }}" style="font-size:13px;font-weight:700;color:var(--primary)">بانک کارجویان ←</a>
       </div>
 
       <div class="jobs-list">
         @forelse($recentResumes as $resume)
-          <div class="job-item-card" style="cursor:default">
+          <a href="{{ route('resumes.show', $resume) }}" class="job-item-card" style="text-decoration:none;color:inherit">
             <div class="job-item-main">
-              <h4 class="job-item-title">{{ $resume->full_name }}</h4>
+              <h4 class="job-item-title">{{ $resume->job_title }}</h4>
               <p class="job-item-company">
-                {{ $resume->education ?? 'متخصص صنعت کارتن و چاپ' }} · {!! svg_icon('map-pin', 15) !!} {{ $resume->province->name ?? 'ایران' }}
+                {{ $resume->full_name }} · {!! svg_icon('map-pin', 15) !!} {{ $resume->province->name ?? 'ایران' }}
               </p>
             </div>
             <div class="job-item-badges">
               <span class="badge" style="background:#ecfdf5;color:#047857;font-size:11px">
-                {{ $resume->experience_years ? $resume->experience_years . ' سال سابقه' : 'آماده به کار' }}
+                {{ $resume->experience_years > 0 ? $resume->experience_years . ' سال سابقه' : 'آماده به کار' }}
               </span>
             </div>
-          </div>
+          </a>
         @empty
           <div class="job-empty-box">
             <p>در حال حاضر رزومه‌ای برای نمایش وجود ندارد.</p>
@@ -498,7 +498,7 @@
       </div>
 
       <div class="jobs-col-footer">
-        <a href="{{ route('jobs.index') }}" class="btn ghost small" style="width:100%;text-align:center">
+        <a href="{{ route('resumes.create') }}" class="btn ghost small" style="width:100%;text-align:center">
           + ثبت رزومه کاری برای شرکت‌ها
         </a>
       </div>

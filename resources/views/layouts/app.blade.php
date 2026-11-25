@@ -57,6 +57,7 @@
         <div class="header-dropdown-menu">
           <a href="{{ route('companies.create') }}">{!! svg_icon('building', 15) !!} ثبت رایگان شرکت / کارخانه</a>
           <a href="{{ route('employer.jobs.create') }}">{!! svg_icon('briefcase', 15) !!} ثبت آگهی استخدام</a>
+          <a href="{{ route('resumes.create') }}">{!! svg_icon('user', 15) !!} ثبت رزومه کارجو</a>
         </div>
       </div>
 
@@ -150,7 +151,9 @@
         </a>
         <div class="header-dropdown-menu">
           <a href="{{ route('jobs.index') }}">{!! svg_icon('briefcase', 15) !!} فرصت‌های شغلی و استخدام</a>
+          <a href="{{ route('resumes.index') }}">{!! svg_icon('users', 15) !!} بانک کارجویان و رزومه‌ها</a>
           <a href="{{ route('employer.jobs.create') }}">{!! svg_icon('plus', 15) !!} ثبت آگهی استخدام</a>
+          <a href="{{ route('resumes.create') }}">{!! svg_icon('user', 15) !!} ثبت رزومه کارجو</a>
         </div>
       </div>
       <span class="header-nav-sep"></span>

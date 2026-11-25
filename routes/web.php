@@ -3,6 +3,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployerJobController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,8 @@ Route::post('/contact-us', [SiteController::class, 'submitContact'])->name('page
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job:slug}', [JobController::class, 'show'])->name('jobs.show');
 Route::post('/jobs/{job:slug}/apply', [JobController::class, 'apply'])->name('jobs.apply');
+Route::get('/resumes', [ResumeController::class, 'index'])->name('resumes.index');
+Route::get('/resumes/{resume}', [ResumeController::class, 'show'])->name('resumes.show');
 
 Route::get('/sitemap.xml', [SiteController::class, 'sitemap']);
 Route::get('/robots.txt', [SiteController::class, 'robots']);
@@ -85,6 +88,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/dashboard/jobs/{job}', [EmployerJobController::class, 'destroy'])->name('employer.jobs.destroy');
     Route::get('/dashboard/jobs/{job}/applications', [EmployerJobController::class, 'applications'])->name('employer.jobs.applications');
     Route::post('/dashboard/applications/{application}/status', [EmployerJobController::class, 'updateApplicationStatus'])->name('employer.applications.status');
+
+    // رزومه کارجو
+    Route::get('/dashboard/resumes/create', [ResumeController::class, 'create'])->name('resumes.create');
+    Route::post('/dashboard/resumes', [ResumeController::class, 'store'])->name('resumes.store');
+    Route::get('/dashboard/resumes/{resume}/edit', [ResumeController::class, 'edit'])->name('resumes.edit');
+    Route::put('/dashboard/resumes/{resume}', [ResumeController::class, 'update'])->name('resumes.update');
+    Route::post('/dashboard/resumes/{resume}/toggle', [ResumeController::class, 'toggleAvailability'])->name('resumes.toggle');
+    Route::delete('/dashboard/resumes/{resume}', [ResumeController::class, 'destroy'])->name('resumes.destroy');
 });
 
 Route::post('/track/company-click/{company}', [SiteController::class, 'trackCompanyClick'])->name('track.company.click');
@@ -112,6 +123,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     });
 
     Route::get('/applications', [\App\Http\Controllers\Admin\AdminController::class, 'applications'])->middleware('admin:applications')->name('applications');
+
+    Route::middleware('admin:applications')->group(function () {
+        Route::get('/resumes', [\App\Http\Controllers\Admin\AdminController::class, 'resumes'])->name('resumes');
+        Route::post('/resumes/{resume}/approve', [\App\Http\Controllers\Admin\AdminController::class, 'approveResume'])->name('resumes.approve');
+        Route::post('/resumes/{resume}/reject', [\App\Http\Controllers\Admin\AdminController::class, 'rejectResume'])->name('resumes.reject');
+        Route::delete('/resumes/{resume}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyResume'])->name('resumes.destroy');
+    });
 
     Route::middleware('admin:users')->group(function () {
         Route::get('/users', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
