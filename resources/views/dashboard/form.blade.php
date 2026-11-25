@@ -537,16 +537,16 @@
         <span class="badge" style="background:#eef3f9;color:var(--primary)">هوشمند و تفکیک‌شده</span>
       </h3>
 
-      <!-- ۱. گروه کارتن‌سازی -->
+      <!-- ۱. گروه ورق و جعبه کارتن -->
       <div id="group_carton" class="dynamic-box">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#1e3a8a">{!! svg_icon('box', 15) !!} خدمات و محصولات جعبه و کارتن‌سازی:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#1e3a8a">{!! svg_icon('box', 15) !!} محصولات و خدمات ورق و جعبه کارتن:</label>
         <div class="check-grid">
           @php
  $cartonItems = [
- 'سینگل فیس', 'ورق ۳ لا', 'ورق ۵ لا', 'ورق ۷ لا',
+ 'ورق ۳ لا', 'ورق ۵ لا', 'ورق ۷ لا',
  'فلوت A', 'فلوت B', 'فلوت C', 'فلوت E', 'فلوت F', 'فلوت T',
  'چاپ ۱ رنگ', 'چاپ ۲ رنگ', 'چاپ ۳ رنگ', 'چاپ ۴ رنگ', 'چاپ ۵ رنگ', 'چاپ ۶ رنگ', 'چاپ ۷ رنگ', 'چاپ ۸ رنگ',
- 'کارتن معمولی', 'کارتن درب دوبل', 'سینی', 'کارتن دایکاتی', 'کارتن تلسکوپی', 'کارتن لمینتی', 'منقسم', 'کارتن پستی'
+ 'کارتن معمولی', 'کارتن درب دوبل', 'سینی', 'کارتن دایکاتی', 'کارتن تلسکوپی', 'کارتن لمینتی', 'منقسم'
  ];
  @endphp
           @foreach($cartonItems as $item)
@@ -558,15 +558,15 @@
         </div>
       </div>
 
-      <!-- ۲. گروه تکنولوژی‌های چاپ -->
+      <!-- ۲. گروه خدمات چاپ -->
       <div id="group_printing" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#7c2d12">{!! svg_icon('printer', 15) !!} سیستم‌ها و تکنولوژی‌های چاپ موجود در مجموعه:</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#7c2d12">{!! svg_icon('printer', 15) !!} خدمات چاپ:</label>
         <div class="check-grid">
           @php
  $printItems = [
- 'آتلیه طراحی و لیتوگرافی', 'فاقد چاپخانه (واسطه)',
- 'چاپ افست ۱ ورقی', 'چاپ افست ۲ ورقی', 'چاپ افست ۲/۵ ورقی', 'چاپ افست ۴/۵ ورقی', 'چاپ افست ۶ ورقی', 'چاپ افست رول (وب)',
- 'چاپ فلکسو', 'چاپ هلیوگراور', 'چاپ دیجیتال ورقی', 'چاپ دیجیتال رول', 'چاپ سیلک اسکرین', 'چاپ رول و لیبل'
+ 'فاقد چاپخانه', 'آتلیه طراحی',
+ 'چاپ افست 1 ورقی', 'چاپ افست 2 ورقی', 'چاپ افست 2/5 ورقی', 'چاپ افست 4/5 ورقی', 'چاپ افست 6 ورقی', 'چاپ افست 9 ورقی',
+ 'چاپ افست 1 رنگ', 'چاپ افست 2 رنگ', 'چاپ افست 4 رنگ', 'چاپ افست 5 رنگ', 'چاپ افست 6 رنگ', 'چاپ افست 7 رنگ', 'چاپ افست 8 رنگ'
  ];
  @endphp
           @foreach($printItems as $item)
@@ -578,16 +578,16 @@
         </div>
       </div>
 
-      <!-- ۳. گروه خدمات پس از چاپ و تکمیلی -->
+      <!-- ۳. گروه خدمات پس از چاپ -->
       <div id="group_post_press" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#0e7490">{!! svg_icon('scissors', 15) !!} خدمات پس از چاپ، پوشش و مونتاژ (Post-Press):</label>
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#0e7490">{!! svg_icon('scissors', 15) !!} خدمات پس از چاپ:</label>
         <div class="check-grid">
           @php
  $postPressItems = [
- 'سلفون‌کشی حرارتی', 'سلفون‌کشی واتربیس', 'یووی موضعی', 'یووی سیلندری', 'ورنی افست',
- 'طلاکوب و نقره‌کوب', 'برجسته‌سازی (امباس)', 'دایکات فکی', 'دایکات اتوماتیک بوبست', 'لترپرس و خط تا',
- 'جعبه‌چسبانی ساده', 'جعبه‌چسبانی لاک‌باتم', 'پنجره‌چسبانی (طلق)', 'لمینت کارتن و مقوا',
- 'صحافی چسب گرم', 'صحافی منگنه لوپ و تخت', 'صحافی فنر دوبل'
+ 'یووی شابلونی 4/5 ورقی', 'یووی 2 ورقی', 'یووی 4/5 ورقی', 'یووی 6 ورقی', 'یووی 9 ورقی',
+ 'دایکات 3 ورقی', 'دایکات 4/5 ورقی', 'دایکات 6 ورقی', 'دایکات 9 ورقی',
+ 'طلاکوب 2 ورقی', 'طلاکوب 3 ورقی', 'طلاکوب 4/5 ورقی',
+ 'لترپرس 2 ورقی', 'تاکنی 2 ورقی'
  ];
  @endphp
           @foreach($postPressItems as $item)
@@ -599,18 +599,18 @@
         </div>
       </div>
 
-      <!-- ۴. گروه محصولات جعبه و بسته‌بندی نهایی -->
-      <div id="group_print_products" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#4338ca">{!! svg_icon('box', 15) !!} محصولات نهایی چاپی و بسته‌بندی مقوایی:</label>
+      <!-- ۴. گروه انواع ماشین‌آلات کارتن‌سازی -->
+      <div id="group_carton_machinery" class="dynamic-box" style="margin-top:16px">
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#065f46">{!! svg_icon('settings', 15) !!} انواع ماشین‌آلات کارتن‌سازی:</label>
         <div class="check-grid">
           @php
- $productItems = [
- 'جعبه مقوایی دارویی و بهداشتی', 'جعبه شیرینی و فست‌فود', 'هاردباکس (جعبه سخت لوکس)',
- 'لیبل و برچسب پشت‌چسب‌دار', 'ساک دستی کاغذی و مقوایی', 'کاتالوگ، بروشور و فولدر',
- 'جعبه و کارتن لمینتی', 'پوستر و بسته‌بندی صادراتی'
+ $cartonMachineItems = [
+ 'دستگاه منگنه کارتن', 'دستگاه چاک زن', 'دستگاه تسمه کش', 'دستگاه چاپ فلکسو',
+ 'دستگاه خط کش برش', 'دستگاه لمینت کارتن', 'دستگاه دایکات روتاری',
+ 'دستگاه دایکات فکی', 'دستگاه دایکات پینگ پنگی', 'دستگاه لب چسب'
  ];
  @endphp
-          @foreach($productItems as $item)
+          @foreach($cartonMachineItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
               <span>{{ $item }}</span>
@@ -619,7 +619,27 @@
         </div>
       </div>
 
-      <!-- ۵. گروه نصب و خدمات فنی ماشین‌آلات -->
+      <!-- ۵. گروه انواع ماشین‌آلات ورق کارتن -->
+      <div id="group_sheet_machinery" class="dynamic-box" style="margin-top:16px">
+        <label style="font-weight:700;display:block;margin-bottom:8px;color:#065f46">{!! svg_icon('settings', 15) !!} انواع ماشین‌آلات ورق کارتن:</label>
+        <div class="check-grid">
+          @php
+ $sheetMachineItems = [
+ 'پری هیتر', 'تری پری هیتر', 'پری کاندیشنر', 'رول گیر کاغذ', 'ترمز سینگل',
+ 'سینگل فیسر', 'دستگاه چسب زن', 'دابل فیسر', 'اسلیتر اسکورر', 'کاتاف الکترونیکی',
+ 'دستگاه کاتاف دوبل', 'دستگاه کاتاف هلیکال', 'دستگاه استاکر', 'استاکر دوبل', 'سیلندر کروگیت'
+ ];
+ @endphp
+          @foreach($sheetMachineItems as $item)
+            <label class="check-item">
+              <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
+              <span>{{ $item }}</span>
+            </label>
+          @endforeach
+        </div>
+      </div>
+
+      <!-- ۶. گروه نصب و خدمات فنی ماشین‌آلات -->
       <div id="group_machine_services" class="dynamic-box" style="margin-top:16px">
         <label style="font-weight:700;display:block;margin-bottom:8px;color:#b45309">{!! svg_icon('wrench', 15) !!} نصب، تعمیرات و خدمات فنی ماشین‌آلات:</label>
         <div class="check-grid">
@@ -631,27 +651,6 @@
  ];
  @endphp
           @foreach($serviceItems as $item)
-            <label class="check-item">
-              <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
-              <span>{{ $item }}</span>
-            </label>
-          @endforeach
-        </div>
-      </div>
-
-      <!-- ۶. گروه ماشین‌آلات و خطوط تولید -->
-      <div id="group_machinery" class="dynamic-box" style="margin-top:16px">
-        <label style="font-weight:700;display:block;margin-bottom:8px;color:#065f46">{!! svg_icon('settings', 15) !!} تجهیزات و ماشین‌آلات ورق‌سازی، کارتن و چاپ:</label>
-        <div class="check-grid">
-          @php
- $machineItems = [
- 'پری هیتر', 'تری پری هیتر', 'پری کاندیشنر', 'رول گیر کاغذ', 'ترمز سینگل',
- 'سینگل فیسر', 'دستگاه چسب زن', 'دابل فیسر', 'اسلیتر اسکورر', 'کاتاف الکترونیکی',
- 'دستگاه کاتاف دوبل', 'دستگاه کاتاف هلیکال', 'دستگاه استاکر', 'استاکر دوبل', 'سیلندر کروگیت',
- 'ماشین چاپ افست', 'ماشین دایکات بوبست', 'دستگاه جعبه چسبان'
- ];
- @endphp
-          @foreach($machineItems as $item)
             <label class="check-item">
               <input type="checkbox" name="services[]" value="{{ $item }}" @checked($hasServ($item))>
               <span>{{ $item }}</span>
@@ -1359,34 +1358,61 @@ function addNewLocation() {
 }
 
 function toggleServices() {
- const activeSlugs = new Set();
+ let isCarton = false;
+ let isPrint = false;
+ let isCartonMachinery = false;
+ let isSheetMachinery = false;
+ let isService = false;
+
  if (Array.isArray(selectedCategories)) {
  selectedCategories.forEach(c => {
- if (c.pillar_slug) activeSlugs.add(c.pillar_slug);
+ const slug = c.slug || '';
+ const pillarSlug = c.pillar_slug || '';
+ const label = ((c.name || '') + ' ' + (c.full_path || '')).replace(/\u200c/g, ' ');
+
+ if (pillarSlug === 'printing-services' || label.includes('چاپخانه')) {
+ isPrint = true;
+ }
+ if (pillarSlug === 'service-providers') {
+ isService = true;
+ }
+ if (
+ ['carton-making-machinery-importers', 'carton-making-machinery-manufacturers', 'carton-making-machinery-sellers'].includes(slug) ||
+ label.includes('ماشین آلات کارتن')
+ ) {
+ isCartonMachinery = true;
+ }
+ if (
+ ['corrugated-board-machinery-importers', 'corrugated-board-machinery-manufacturers', 'corrugated-board-machinery-sellers'].includes(slug) ||
+ label.includes('ماشین آلات ورق')
+ ) {
+ isSheetMachinery = true;
+ }
+ if (
+ ['corrugated-board', 'corrugated-board-stores', 'carton-box', 'carton-box-stores', 'postal-box', 'postal-box-stores'].includes(slug) ||
+ ((label.includes('ورق کارتن') || label.includes('جعبه کارتن')) && !label.includes('ماشین'))
+ ) {
+ isCarton = true;
+ }
  });
  }
-
- const isCarton = activeSlugs.has('factories');
- const isPrint = activeSlugs.has('printing-services');
- const isService = activeSlugs.has('service-providers');
- const isMachinery = activeSlugs.has('stores') || activeSlugs.has('importers') || activeSlugs.has('service-providers');
 
  const sec = document.getElementById('services_section');
  const boxCarton = document.getElementById('group_carton');
  const boxPrint = document.getElementById('group_printing');
  const boxPostPress = document.getElementById('group_post_press');
- const boxPrintProducts = document.getElementById('group_print_products');
- const boxMachine = document.getElementById('group_machinery');
+ const boxCartonMachine = document.getElementById('group_carton_machinery');
+ const boxSheetMachine = document.getElementById('group_sheet_machinery');
  const boxMachineSrv = document.getElementById('group_machine_services');
 
- const hasAny = (isCarton || isPrint || isService || isMachinery);
+ const hasAny = (isCarton || isPrint || isCartonMachinery || isSheetMachinery || isService);
  if (sec) sec.style.display = hasAny ? 'block' : 'none';
  if (boxCarton) boxCarton.style.display = isCarton ? 'block' : 'none';
  if (boxPrint) boxPrint.style.display = isPrint ? 'block' : 'none';
- if (boxPostPress) boxPostPress.style.display = (isPrint || isService) ? 'block' : 'none';
- if (boxPrintProducts) boxPrintProducts.style.display = (isPrint || isCarton) ? 'block' : 'none';
- if (boxMachine) boxMachine.style.display = isMachinery ? 'block' : 'none';
- if (boxMachineSrv) boxMachineSrv.style.display = (isService || isMachinery) ? 'block' : 'none';
+ if (boxPostPress) boxPostPress.style.display = isPrint ? 'block' : 'none';
+ if (boxCartonMachine) boxCartonMachine.style.display = isCartonMachinery ? 'block' : 'none';
+ if (boxSheetMachine) boxSheetMachine.style.display = isSheetMachinery ? 'block' : 'none';
+ if (boxMachineSrv) boxMachineSrv.style.display = isService ? 'block' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
