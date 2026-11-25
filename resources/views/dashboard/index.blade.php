@@ -563,8 +563,8 @@
     <div id="tab-subscription" class="dashboard-tab-content" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
         <div>
-          <h2 style="margin:0 0 4px;font-size:18px">اشتراک و ارتقای خدمات</h2>
-          <p style="margin:0;font-size:13px;color:var(--muted)">مدیریت پلن‌ها، افزایش شانس دیده‌شدن و استفاده از تمام امکانات دایرکتوری</p>
+          <h2 style="margin:0 0 4px;font-size:18px">اشتراک و ویژه کردن شرکت</h2>
+          <p style="margin:0;font-size:13px;color:var(--muted)">مدیریت اشتراک‌های (۳ ماهه، ۶ ماهه، ۱ ساله) و جایگاه ویژه تبلیغاتی (برنزی، نقره‌ای، طلایی)</p>
         </div>
         <div style="display:flex;gap:8px">
           <a href="{{ route('subscription.fee') }}" target="_blank" class="btn ghost small" style="font-size:12px">
@@ -576,58 +576,98 @@
         </div>
       </div>
 
-      <!-- وضعیت اشتراک شرکت‌های کاربر -->
+      <!-- وضعیت اشتراک و ویژه شرکت‌های کاربر -->
       @if($companies->count() > 0)
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
           @foreach($companies as $c)
             <div class="card" style="padding:16px 20px;background:#fff;border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
               <div>
                 <b style="font-size:15px;color:var(--text)">{{ $c->name }}</b>
-                <div style="font-size:12.5px;color:var(--muted);margin-top:4px">
-                  وضعیت فعلی:
-                  @if($c->tier === 'gold')
-                    <span class="badge gold" style="font-size:11px">{!! svg_icon('star-filled', 15) !!} اشتراک طلایی (۱ ساله)</span>
-                  @elseif($c->tier === 'silver')
-                    <span class="badge silver" style="font-size:11px">{!! svg_icon('star-filled', 15) !!} اشتراک نقره‌ای (۶ ماهه)</span>
-                  @elseif($c->tier === 'bronze')
-                    <span class="badge bronze" style="font-size:11px">{!! svg_icon('star-filled', 15) !!} اشتراک برنزی (۳ ماهه)</span>
+                <div style="font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <span>وضعیت ویژه:</span>
+                  @if($c->activeTier() === 'gold')
+                    <span class="badge gold" style="font-size:11px">{!! svg_icon('star-filled', 14) !!} ویژه طلایی</span>
+                  @elseif($c->activeTier() === 'silver')
+                    <span class="badge silver" style="font-size:11px">{!! svg_icon('star-filled', 14) !!} ویژه نقره‌ای</span>
+                  @elseif($c->activeTier() === 'bronze')
+                    <span class="badge bronze" style="font-size:11px">{!! svg_icon('star-filled', 14) !!} ویژه برنزی</span>
                   @else
-                    <span class="badge" style="background:#f1f5f9;color:#64748b;font-size:11px">عادی (رایگان)</span>
+                    <span class="badge" style="background:#f1f5f9;color:#64748b;font-size:11px">عادی (بدون ویژه)</span>
+                  @endif
+                  @if($c->tier_expires_at)
+                    <span style="color:#0284c7">تا {{ $c->tier_expires_at->format('Y/m/d') }}</span>
                   @endif
 
-                  @if($c->tier_expires_at)
-                    · <span style="color:#0284c7">اعتبار تا {{ $c->tier_expires_at->format('Y/m/d') }} ({{ $c->tier_expires_at->diffForHumans() }})</span>
+                  <span style="margin-right:8px">اشتراک:</span>
+                  @if($c->activeSubscription())
+                    <span class="badge ok" style="font-size:11px">{!! svg_icon('check', 14) !!} {{ $c->subscriptionLabel() }}</span>
+                    @if($c->subscription_expires_at)
+                      <span style="color:#16a34a">تا {{ $c->subscription_expires_at->format('Y/m/d') }}</span>
+                    @endif
+                  @else
+                    <span class="badge" style="background:#f1f5f9;color:#64748b;font-size:11px">بدون اشتراک</span>
                   @endif
                 </div>
               </div>
 
               <div>
-                <a href="#plans_grid" class="btn small" style="background:var(--primary);font-size:12px">
-                  {{ $c->tier ? 'تمدید یا تغییر اشتراک' : 'ارتقا به اشتراک ویژه' }}
+                <a href="#upgrade_request_box" onclick="document.getElementById('upgradeCompanySelect').value='{{ $c->id }}'" class="btn small" style="background:var(--primary);font-size:12px">
+                  خرید / تمدید یا ویژه کردن
                 </a>
               </div>
             </div>
           @endforeach
         </div>
+
+        <!-- فرم درخواست سریع خرید / تمدید اشتراک یا ویژه کردن -->
+        <div class="dash-table-card" id="upgrade_request_box" style="padding:18px 20px;margin-bottom:28px">
+          <h3 style="margin:0 0 6px;font-size:15.5px;color:var(--text)">درخواست خرید، تمدید اشتراک یا ویژه کردن شرکت</h3>
+          <p style="margin:0 0 14px;font-size:12.5px;color:var(--muted)">شرکت و پلن مورد نظر خود را انتخاب کنید تا کارشناسان ۲ کیلو کاغذ برای فعال‌سازی با شما تماس بگیرند.</p>
+          <form method="POST" action="{{ route('dashboard.upgrade-request') }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;align-items:end">
+            @csrf
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:5px">انتخاب شرکت</label>
+              <select name="company_id" id="upgradeCompanySelect" required style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border)">
+                @foreach($companies as $c)
+                  <option value="{{ $c->id }}">{{ $c->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:5px">نوع درخواست</label>
+              <select name="request_type" id="upgradeRequestType" onchange="syncUpgradePlanOptions()" required style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border)">
+                <option value="subscription">خرید / تمدید اشتراک (۳ تا ۱۲ ماهه)</option>
+                <option value="featured">ویژه کردن تبلیغاتی (برنزی، نقره‌ای، طلایی)</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:5px">انتخاب پلن</label>
+              <select name="plan" id="upgradePlanSelect" required style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border)">
+                <option value="12m">اشتراک ۱ ساله</option>
+                <option value="6m">اشتراک ۶ ماهه</option>
+                <option value="3m">اشتراک ۳ ماهه</option>
+              </select>
+            </div>
+            <div>
+              <button type="submit" class="btn" style="width:100%;padding:9px 14px">ثبت درخواست فعال‌سازی</button>
+            </div>
+          </form>
+        </div>
       @endif
 
-      <!-- کارت‌های ۳ گانه اشتراک -->
-      <h3 style="margin:0 0 14px;font-size:16px;color:var(--text)" id="plans_grid">پلن‌های اشتراک ۲ کیلو کاغذ</h3>
+      <!-- ۱. کارت‌های اشتراک (۳ ماهه، ۶ ماهه، ۱ ساله) -->
+      <h3 style="margin:0 0 14px;font-size:16px;color:var(--text)" id="plans_grid">۱. پلن‌های اشتراک (امکانات صفحه + رتبه بالاتر)</h3>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:28px">
-        
+
         <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between">
           <div>
             <span style="font-size:12px;color:var(--muted);font-weight:600">دوره کوتاه‌مدت</span>
             <h4 style="margin:4px 0 10px;font-size:16px">اشتراک ۳ ماهه</h4>
-            <div style="font-size:20px;font-weight:800;color:var(--primary);margin-bottom:12px">
-              ۳/۰۰۰/۰۰۰ تومان
-            </div>
             <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
               <li>{!! svg_icon('check', 15) !!} درج تصاویر و گالری محصولات</li>
-              <li>{!! svg_icon('check', 15) !!} درج آگهی استخدام نامحدود</li>
               <li>{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
               <li>{!! svg_icon('check', 15) !!} حذف تبلیغات رقبا از صفحه شما</li>
-              <li>{!! svg_icon('check', 15) !!} جایگاه بالاتر از شرکت‌های عادی</li>
+              <li>{!! svg_icon('check', 15) !!} بالاتر از شرکت‌های بدون اشتراک</li>
             </ul>
           </div>
           <div style="margin-top:16px">
@@ -639,15 +679,11 @@
           <div>
             <span style="font-size:12px;color:var(--muted);font-weight:600">مدت بیشتر با تخفیف</span>
             <h4 style="margin:4px 0 10px;font-size:16px">اشتراک ۶ ماهه</h4>
-            <div style="font-size:20px;font-weight:800;color:var(--primary);margin-bottom:12px">
-              ۴/۰۰۰/۰۰۰ تومان
-            </div>
             <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
-              <li>{!! svg_icon('check', 15) !!} درج تصاویر و گالری محصولات</li>
+              <li>{!! svg_icon('check', 15) !!} تمام امکانات اشتراک ۳ ماهه</li>
               <li>{!! svg_icon('check', 15) !!} درج آگهی استخدام نامحدود</li>
-              <li>{!! svg_icon('check', 15) !!} افزودن کاتالوگ محصولات (PDF)</li>
               <li>{!! svg_icon('check', 15) !!} حذف تبلیغات رقبا از صفحه شما</li>
-              <li>{!! svg_icon('check', 15) !!} جایگاه بالاتر از شرکت‌های عادی</li>
+              <li>{!! svg_icon('check', 15) !!} جایگاه بالاتر از اشتراک ۳ ماهه</li>
             </ul>
           </div>
           <div style="margin-top:16px">
@@ -655,26 +691,39 @@
           </div>
         </div>
 
-        <div class="card" style="padding:20px;background:#fefce8;border-radius:12px;border:2px solid #eab308;display:flex;flex-direction:column;justify-content:space-between">
+        <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1.5px solid #0284c7;display:flex;flex-direction:column;justify-content:space-between">
           <div>
-            <span style="font-size:12px;color:#854d0e;font-weight:700">{!! svg_icon('star-filled', 15) !!} کامل‌ترین و به‌صرفه‌ترین</span>
-            <h4 style="margin:4px 0 10px;font-size:16px;color:#713f12">اشتراک ۱ ساله (طلایی)</h4>
-            <div style="font-size:20px;font-weight:800;color:#854d0e;margin-bottom:12px">
-              ۵/۰۰۰/۰۰۰ تومان
-            </div>
-            <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#713f12">
-              <li>{!! svg_icon('check', 15) !!} تمام امکانات گالری، کاتالوگ و استخدام</li>
-              <li>{!! svg_icon('check', 15) !!} درج ویدیوی معرفی کالا و خدمات</li>
-              <li>{!! svg_icon('check', 15) !!} اطلاع‌رسانی پیامکی اختصاصی به مدیر</li>
+            <span style="font-size:12px;color:#0284c7;font-weight:700">{!! svg_icon('check', 15) !!} به‌صرفه‌ترین اشتراک</span>
+            <h4 style="margin:4px 0 10px;font-size:16px">اشتراک ۱ ساله</h4>
+            <ul style="list-style:none;padding:0;margin:0;font-size:12.5px;line-height:2;color:#334155">
+              <li>{!! svg_icon('check', 15) !!} تمام امکانات گالری، کاتالوگ و ویدیو</li>
               <li>{!! svg_icon('check', 15) !!} حذف کامل تبلیغات رقبا</li>
-              <li>{!! svg_icon('star-filled', 15) !!} بالاترین اولویت در نتایج و نشان طلایی</li>
+              <li>{!! svg_icon('check', 15) !!} بالاترین اولویت بین اشتراک‌ها</li>
+              <li>{!! svg_icon('check', 15) !!} نشان «اشتراک ۱ ساله» در صفحه شرکت</li>
             </ul>
           </div>
           <div style="margin-top:16px">
-            <a href="tel:02128421075" class="btn small" style="width:100%;text-align:center;background:#eab308;color:#000;font-weight:700;box-sizing:border-box">سفارش اشتراک ۱ ساله</a>
+            <a href="tel:02128421075" class="btn small" style="width:100%;text-align:center;box-sizing:border-box">سفارش اشتراک ۱ ساله</a>
           </div>
         </div>
 
+      </div>
+
+      <!-- ۲. کارت‌های ویژه کردن تبلیغاتی (برنزی، نقره‌ای، طلایی) -->
+      <h3 style="margin:0 0 14px;font-size:16px;color:var(--text)">۲. ویژه کردن تبلیغاتی (صدر نتایج جستجو و دسته‌بندی‌ها)</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:28px">
+        <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1.5px solid #d97706">
+          <h4 style="margin:0 0 8px;font-size:16px;color:#b45309">{!! svg_icon('star-filled', 15) !!} ویژه برنزی</h4>
+          <p style="margin:0;font-size:12.5px;color:var(--muted);line-height:1.8">قرارگیری بالاتر از همه اشتراک‌های ۱ ساله، ۶ ماهه، ۳ ماهه و شرکت‌های عادی + نشان برنزی.</p>
+        </div>
+        <div class="card" style="padding:20px;background:#fff;border-radius:12px;border:1.5px solid #94a3b8">
+          <h4 style="margin:0 0 8px;font-size:16px;color:#475569">{!! svg_icon('star-filled', 15) !!} ویژه نقره‌ای</h4>
+          <p style="margin:0;font-size:12.5px;color:var(--muted);line-height:1.8">قرارگیری بالاتر از ویژه برنزی و تمام اشتراک‌ها در جستجو و دسته‌بندی‌ها + نشان نقره‌ای.</p>
+        </div>
+        <div class="card" style="padding:20px;background:#fefce8;border-radius:12px;border:2px solid #eab308">
+          <h4 style="margin:0 0 8px;font-size:16px;color:#713f12">{!! svg_icon('star-filled', 15) !!} ویژه طلایی (رتبه ۱)</h4>
+          <p style="margin:0;font-size:12.5px;color:#854d0e;line-height:1.8">بالاترین جایگاه ممکن در صفحه اصلی، جستجو و تمام دسته‌بندی‌ها + نشان طلایی اختصاصی.</p>
+        </div>
       </div>
 
       <!-- تاریخچه پرداخت -->
@@ -943,4 +992,16 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endif
+<script>
+function syncUpgradePlanOptions() {
+  const typeEl = document.getElementById('upgradeRequestType');
+  const planEl = document.getElementById('upgradePlanSelect');
+  if (!typeEl || !planEl) return;
+  if (typeEl.value === 'featured') {
+    planEl.innerHTML = '<option value="gold">ویژه طلایی (اولویت ۱)</option><option value="silver">ویژه نقره‌ای (اولویت ۲)</option><option value="bronze">ویژه برنزی (اولویت ۳)</option>';
+  } else {
+    planEl.innerHTML = '<option value="12m">اشتراک ۱ ساله</option><option value="6m">اشتراک ۶ ماهه</option><option value="3m">اشتراک ۳ ماهه</option>';
+  }
+}
+</script>
 @endsection

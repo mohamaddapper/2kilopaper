@@ -257,13 +257,28 @@ class DashboardController extends Controller
             }
             if ($r->has('tier')) {
                 $tier = $r->input('tier');
-                if (in_array($tier, ['gold', 'silver', 'bronze'])) {
+                if (in_array($tier, ['gold', 'silver', 'bronze'], true)) {
                     $data['tier'] = $tier;
-                    $months = (int) $r->input('tier_months', 12);
-                    $data['tier_expires_at'] = now()->addMonths(max(1, $months));
+                    $months = min(12, max(1, (int) $r->input('tier_months', 12)));
+                    if ($company->tier !== $tier || !$company->tier_expires_at || $company->tier_expires_at->isPast()) {
+                        $data['tier_expires_at'] = now()->addMonths($months);
+                    }
                 } else {
                     $data['tier'] = null;
                     $data['tier_expires_at'] = null;
+                }
+            }
+            if ($r->has('subscription_plan')) {
+                $subPlan = $r->input('subscription_plan');
+                $planMonths = ['3m' => 3, '6m' => 6, '12m' => 12];
+                if (isset($planMonths[$subPlan])) {
+                    $data['subscription_plan'] = $subPlan;
+                    if ($company->subscription_plan !== $subPlan || !$company->subscription_expires_at || $company->subscription_expires_at->isPast()) {
+                        $data['subscription_expires_at'] = now()->addMonths($planMonths[$subPlan]);
+                    }
+                } else {
+                    $data['subscription_plan'] = null;
+                    $data['subscription_expires_at'] = null;
                 }
             }
             if ($r->filled('user_phone')) {
@@ -625,5 +640,37 @@ class DashboardController extends Controller
         ]);
 
         return back()->with('ok', 'نام شما با موفقیت ذخیره شد.');
+    }
+
+    public function requestUpgrade(Request $r)
+    {
+        $validated = $r->validate([
+            'company_id' => 'required|integer',
+            'request_type' => 'required|in:subscription,featured',
+            'plan' => 'required|string|max:20',
+            'note' => 'nullable|string|max:500',
+        ]);
+
+        $company = $r->user()->companies()->findOrFail((int) $validated['company_id']);
+
+        $labels = [
+            '3m' => 'اشتراک ۳ ماهه',
+            '6m' => 'اشتراک ۶ ماهه',
+            '12m' => 'اشتراک ۱ ساله',
+            'bronze' => 'ویژه برنزی',
+            'silver' => 'ویژه نقره‌ای',
+            'gold' => 'ویژه طلایی',
+        ];
+        $planLabel = $labels[$validated['plan']] ?? $validated['plan'];
+        $typeLabel = $validated['request_type'] === 'featured' ? 'ویژه کردن تبلیغاتی' : 'اشتراک';
+
+        \App\Models\AdminLog::record(
+            'company.upgrade_request',
+            "درخواست {$typeLabel} ({$planLabel}) برای شرکت «{$company->name}»" . (!empty($validated['note']) ? " · توضیح: {$validated['note']}" : ''),
+            'company',
+            $company->id
+        );
+
+        return back()->with('ok', "درخواست «{$planLabel}» برای شرکت «{$company->name}» ثبت شد. همکاران پشتیبانی ۲ کیلو کاغذ (۰۲۱-۲۸۴۲۱۰۷۵) جهت فعال‌سازی با شما تماس می‌گیرند.");
     }
 }

@@ -112,19 +112,26 @@
             </td>
 
             <td>
-              @if($c->tier === 'gold')
-                <span class="badge gold" style="font-size:11.5px">{!! svg_icon('star-filled', 15) !!} ویژه طلایی</span>
-              @elseif($c->tier === 'silver')
-                <span class="badge silver" style="font-size:11.5px">{!! svg_icon('star-filled', 15) !!} ویژه نقره‌ای</span>
-              @elseif($c->tier === 'bronze')
-                <span class="badge bronze" style="font-size:11.5px">{!! svg_icon('star-filled', 15) !!} ویژه برنزی</span>
-              @else
-                <span style="font-size:12px;color:#94a3b8">عادی</span>
+              @if($c->activeTier() === 'gold')
+                <span class="badge gold" style="font-size:11.5px">{!! svg_icon('star-filled', 14) !!} ویژه طلایی</span>
+              @elseif($c->activeTier() === 'silver')
+                <span class="badge silver" style="font-size:11.5px">{!! svg_icon('star-filled', 14) !!} ویژه نقره‌ای</span>
+              @elseif($c->activeTier() === 'bronze')
+                <span class="badge bronze" style="font-size:11.5px">{!! svg_icon('star-filled', 14) !!} ویژه برنزی</span>
               @endif
 
-              @if($c->tier_expires_at)
+              @if($c->activeSubscription())
+                <span class="badge ok" style="font-size:11px;margin-top:2px;display:inline-block">{{ $c->subscriptionLabel() }}</span>
+              @endif
+
+              @if(!$c->activeTier() && !$c->activeSubscription())
+                <span style="font-size:12px;color:#94a3b8">عادی (رایگان)</span>
+              @endif
+
+              @if($c->tier_expires_at || $c->subscription_expires_at)
                 <span style="display:block;font-size:10.5px;color:#64748b;margin-top:2px">
-                  تا {{ $c->tier_expires_at->format('Y/m/d') }}
+                  @if($c->tier_expires_at) ویژه تا {{ $c->tier_expires_at->format('Y/m/d') }} @endif
+                  @if($c->subscription_expires_at) {{ $c->tier_expires_at ? '·' : '' }} اشتراک تا {{ $c->subscription_expires_at->format('Y/m/d') }} @endif
                 </span>
               @endif
             </td>
@@ -176,8 +183,8 @@
                   </button>
 
                   @if(auth()->user()->hasPermission('companies_tier'))
-                    <button type="button" class="gear-dropdown-item" onclick="closeAllGearMenus(); openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}')">
-                      {!! svg_icon('star-filled', 14) !!} تغییر اشتراک
+                    <button type="button" class="gear-dropdown-item" onclick="closeAllGearMenus(); openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}', '{{ $c->subscription_plan }}')">
+                      {!! svg_icon('star-filled', 14) !!} ویژه و اشتراک
                     </button>
                   @endif
 
@@ -211,38 +218,47 @@
 
 </div>
 
-<!-- مودال تغییر سطح اشتراک -->
+<!-- مودال تعیین ویژه و اشتراک شرکت -->
 <div id="tierModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:12px;padding:24px;max-width:420px;width:90%;box-shadow:0 10px 25px rgba(0,0,0,0.2)">
-    <h3 style="margin:0 0 8px;font-size:16px;color:#0f172a" id="modalCompanyName">تعیین سطح اشتراک شرکت</h3>
-    <p style="margin:0 0 16px;font-size:12.5px;color:#64748b">سطح اشتراک و مدت زمان اعتبار را انتخاب کنید:</p>
+  <div style="background:#fff;border-radius:12px;padding:24px;max-width:440px;width:92%;box-shadow:0 10px 25px rgba(0,0,0,0.2)">
+    <h3 style="margin:0 0 8px;font-size:16px;color:#0f172a" id="modalCompanyName">تنظیم ویژه و اشتراک شرکت</h3>
+    <p style="margin:0 0 16px;font-size:12.5px;color:#64748b">وضعیت ویژه تبلیغاتی و پلن اشتراک شرکت را انتخاب کنید (حداکثر مدت ۱ سال):</p>
 
     <form id="tierForm" method="post" action="">
       @csrf
       <div style="margin-bottom:12px">
-        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">سطح اشتراک:</label>
-        <select name="tier" id="selectTier" style="width:100%;border:1px solid #cbd5e1">
-          <option value="">عادی (رایگان)</option>
-          <option value="gold"> اشتراک طلایی (بالاترین اولویت)</option>
-          <option value="silver"> اشتراک نقره‌ای</option>
-          <option value="bronze"> اشتراک برنزی</option>
+        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">وضعیت ویژه تبلیغاتی:</label>
+        <select name="tier" id="selectTier" style="width:100%;border:1px solid #cbd5e1;padding:8px;border-radius:8px">
+          <option value="">بدون ویژه (عادی)</option>
+          <option value="gold">ویژه طلایی (اولویت ۱)</option>
+          <option value="silver">ویژه نقره‌ای (اولویت ۲)</option>
+          <option value="bronze">ویژه برنزی (اولویت ۳)</option>
         </select>
       </div>
 
-      <div style="margin-bottom:18px">
-        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">مدت زمان اعتبار:</label>
-        <select name="months" style="width:100%;border:1px solid #cbd5e1">
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">مدت اعتبار ویژه:</label>
+        <select name="months" style="width:100%;border:1px solid #cbd5e1;padding:8px;border-radius:8px">
           <option value="1">۱ ماهه</option>
           <option value="3">۳ ماهه</option>
           <option value="6">۶ ماهه</option>
-          <option value="12" selected>۱۲ ماهه (۱ سال)</option>
-          <option value="24">۲۴ ماهه (۲ سال)</option>
+          <option value="12" selected>۱ ساله (۱۲ ماهه)</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:18px;padding-top:10px;border-top:1px solid #e2e8f0">
+        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">پلن اشتراک شرکت:</label>
+        <select name="subscription_plan" id="selectSubscriptionPlan" style="width:100%;border:1px solid #cbd5e1;padding:8px;border-radius:8px">
+          <option value="">بدون اشتراک</option>
+          <option value="12m">اشتراک ۱ ساله (اولویت ۴)</option>
+          <option value="6m">اشتراک ۶ ماهه (اولویت ۵)</option>
+          <option value="3m">اشتراک ۳ ماهه (اولویت ۶)</option>
         </select>
       </div>
 
       <div style="display:flex;justify-content:flex-end;gap:8px">
         <button type="button" class="btn ghost small" onclick="closeTierModal()">انصراف</button>
-        <button type="submit" class="btn small" style="background:#f59e0b;color:#000;font-weight:700">ذخیره سطح اشتراک</button>
+        <button type="submit" class="btn small" style="background:#f59e0b;color:#000;font-weight:700">ذخیره تنظیمات</button>
       </div>
     </form>
   </div>
@@ -250,14 +266,19 @@
 
 @push('scripts')
 <script>
-function openTierModal(companyId, companyName, currentTier) {
+function openTierModal(companyId, companyName, currentTier, currentSub) {
  const modal = document.getElementById('tierModal');
  const title = document.getElementById('modalCompanyName');
  const form = document.getElementById('tierForm');
  const select = document.getElementById('selectTier');
+ const subSelect = document.getElementById('selectSubscriptionPlan');
 
- title.textContent = 'تعیین سطح اشتراک: ' + companyName;
+ title.textContent = 'تنظیم ویژه و اشتراک: ' + companyName;
  form.action = '{{ url("/admin/companies") }}/' + companyId + '/tier';
+ select.value = currentTier || '';
+ if (subSelect) subSelect.value = currentSub || '';
+ modal.style.display = 'flex';
+}
  select.value = currentTier || '';
  
  modal.style.display = 'flex';

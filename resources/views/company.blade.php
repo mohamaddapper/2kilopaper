@@ -30,7 +30,7 @@
  @endphp
 
   <!-- بنرهای تبلیغاتی بالای صفحه (تنها برای شرکت‌های عادی / بدون اشتراک فعال نمایش داده می‌شود) -->
-  @if(!$company->activeTier())
+  @if(!$company->hasActiveBenefits())
     <div class="company-ad-banners" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:14px;margin-bottom:20px">
       <!-- بنر راست: ارتقای صفحه و حذف تبلیغات -->
       <a href="{{ route('subscription.fee') }}" class="ad-banner-box" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);border:1.5px dashed #f59e0b;border-radius:12px;text-decoration:none;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.03)">
@@ -76,11 +76,14 @@
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
         @if($company->activeTier() === 'gold')
-          <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} طلایی</span>
+          <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} ویژه طلایی</span>
         @elseif($company->activeTier() === 'silver')
-          <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} نقره‌ای</span>
+          <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} ویژه نقره‌ای</span>
         @elseif($company->activeTier() === 'bronze')
-          <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} برنزی</span>
+          <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} ویژه برنزی</span>
+        @endif
+        @if($company->activeSubscription())
+          <span class="badge ok" style="font-size:12.5px;padding:3px 11px">{!! svg_icon('check', 14) !!} {{ $company->subscriptionLabel() }}</span>
         @endif
       </div>
 

@@ -322,12 +322,22 @@
           </div>
 
           <div>
-            <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">سطح اشتراک ویژه (Tier)</label>
+            <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">وضعیت ویژه تبلیغاتی</label>
             <select name="tier" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit">
-              <option value="" @selected(!old('tier', $company->tier))>پلن عادی (رایگان)</option>
-              <option value="gold" @selected(old('tier', $company->tier) === 'gold')> اشتراک ویژه طلایی</option>
-              <option value="silver" @selected(old('tier', $company->tier) === 'silver')> اشتراک ویژه نقره‌ای</option>
-              <option value="bronze" @selected(old('tier', $company->tier) === 'bronze')> اشتراک ویژه برنزی</option>
+              <option value="" @selected(!old('tier', $company->tier))>بدون ویژه (عادی)</option>
+              <option value="gold" @selected(old('tier', $company->tier) === 'gold')>ویژه طلایی (اولویت ۱)</option>
+              <option value="silver" @selected(old('tier', $company->tier) === 'silver')>ویژه نقره‌ای (اولویت ۲)</option>
+              <option value="bronze" @selected(old('tier', $company->tier) === 'bronze')>ویژه برنزی (اولویت ۳)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-weight:700;font-size:13px;display:block;margin-bottom:6px;color:#0f172a">پلن اشتراک شرکت</label>
+            <select name="subscription_plan" style="width:100%;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit">
+              <option value="" @selected(!old('subscription_plan', $company->subscription_plan))>بدون اشتراک</option>
+              <option value="12m" @selected(old('subscription_plan', $company->subscription_plan) === '12m')>اشتراک ۱ ساله (اولویت ۴)</option>
+              <option value="6m" @selected(old('subscription_plan', $company->subscription_plan) === '6m')>اشتراک ۶ ماهه (اولویت ۵)</option>
+              <option value="3m" @selected(old('subscription_plan', $company->subscription_plan) === '3m')>اشتراک ۳ ماهه (اولویت ۶)</option>
             </select>
           </div>
 

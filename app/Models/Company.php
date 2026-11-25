@@ -18,6 +18,9 @@ class Company extends Model
         'admin_note',
         'views_count',
         'tier',
+        'tier_expires_at',
+        'subscription_plan',
+        'subscription_expires_at',
         'slogan',
         'description',
         'phone',
@@ -46,6 +49,7 @@ class Company extends Model
 
     protected $casts = [
         'tier_expires_at' => 'datetime',
+        'subscription_expires_at' => 'datetime',
         'phones' => 'array',
         'contacts' => 'array',
         'tech_specs' => 'array',
@@ -293,15 +297,30 @@ class Company extends Model
 
     public function scopeApproved(Builder $q) { return $q->where('status', 'approved'); }
 
-    /** ویژه‌ها (با اشتراک فعال) اول، سپس جدیدترها */
-public function scopeRanked(Builder $q)
-{
-    return $q->orderByRaw(
-        "CASE WHEN tier IS NOT NULL AND (tier_expires_at IS NULL OR tier_expires_at > ?)
-         THEN CASE tier WHEN 'gold' THEN 0 WHEN 'silver' THEN 1 ELSE 2 END ELSE 3 END",
-        [now()->format('Y-m-d H:i:s')]
-    )->orderByDesc('id');
-}
+    /**
+     * اولویت نمایش:
+     * ۱. ویژه طلایی  ۲. ویژه نقره‌ای  ۳. ویژه برنزی
+     * ۴. اشتراک ۱ ساله  ۵. اشتراک ۶ ماهه  ۶. اشتراک ۳ ماهه
+     * ۷. بقیه شرکت‌ها به صورت تصادفی
+     */
+    public function scopeRanked(Builder $q)
+    {
+        $now = now()->format('Y-m-d H:i:s');
+        $randFn = $q->getConnection()->getDriverName() === 'sqlite' ? 'RANDOM()' : 'RAND()';
+
+        return $q->orderByRaw(
+            "CASE
+                WHEN tier = 'gold' AND (tier_expires_at IS NULL OR tier_expires_at > ?) THEN 0
+                WHEN tier = 'silver' AND (tier_expires_at IS NULL OR tier_expires_at > ?) THEN 1
+                WHEN tier = 'bronze' AND (tier_expires_at IS NULL OR tier_expires_at > ?) THEN 2
+                WHEN subscription_plan = '12m' AND (subscription_expires_at IS NULL OR subscription_expires_at > ?) THEN 3
+                WHEN subscription_plan = '6m' AND (subscription_expires_at IS NULL OR subscription_expires_at > ?) THEN 4
+                WHEN subscription_plan = '3m' AND (subscription_expires_at IS NULL OR subscription_expires_at > ?) THEN 5
+                ELSE 6
+            END",
+            [$now, $now, $now, $now, $now, $now]
+        )->orderByRaw($randFn);
+    }
 
     public static function locationTypes(): array
     {
@@ -325,6 +344,28 @@ public function scopeRanked(Builder $q)
     {
         if (!$this->tier) return null;
         return (!$this->tier_expires_at || $this->tier_expires_at->isFuture()) ? $this->tier : null;
+    }
+
+    public function activeSubscription(): ?string
+    {
+        if (!$this->subscription_plan) return null;
+        return (!$this->subscription_expires_at || $this->subscription_expires_at->isFuture()) ? $this->subscription_plan : null;
+    }
+
+    public function subscriptionLabel(?string $plan = null): string
+    {
+        $p = $plan ?? $this->activeSubscription();
+        return match ($p) {
+            '12m' => 'اشتراک ۱ ساله',
+            '6m' => 'اشتراک ۶ ماهه',
+            '3m' => 'اشتراک ۳ ماهه',
+            default => 'بدون اشتراک',
+        };
+    }
+
+    public function hasActiveBenefits(): bool
+    {
+        return (bool) ($this->activeTier() || $this->activeSubscription());
     }
 
     public static function makeSlug(string $name): string

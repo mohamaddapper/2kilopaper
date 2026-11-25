@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile');
+    Route::post('/dashboard/upgrade-request', [DashboardController::class, 'requestUpgrade'])->name('dashboard.upgrade-request');
     Route::get('/dashboard/companies/create', [DashboardController::class, 'create'])->name('companies.create');
     Route::post('/dashboard/companies', [DashboardController::class, 'store'])->name('companies.store');
     Route::post('/companies/{company}/bookmark', [DashboardController::class, 'toggleBookmark'])->name('companies.bookmark');

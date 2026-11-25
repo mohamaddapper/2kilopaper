@@ -125,23 +125,36 @@ class AdminController extends Controller
     public function updateTier(Request $request, Company $company)
     {
         $tier = $request->input('tier');
-        $months = (int) $request->input('months', 12);
+        $months = min(12, max(1, (int) $request->input('months', 12)));
 
-        if (in_array($tier, ['gold', 'silver', 'bronze'])) {
+        if (in_array($tier, ['gold', 'silver', 'bronze'], true)) {
             $company->tier = $tier;
-            $company->tier_expires_at = now()->addMonths(max(1, $months));
+            $company->tier_expires_at = now()->addMonths($months);
         } else {
             $company->tier = null;
             $company->tier_expires_at = null;
         }
 
+        if ($request->has('subscription_plan')) {
+            $subPlan = $request->input('subscription_plan');
+            $planMonths = ['3m' => 3, '6m' => 6, '12m' => 12];
+            if (isset($planMonths[$subPlan])) {
+                $company->subscription_plan = $subPlan;
+                $company->subscription_expires_at = now()->addMonths($planMonths[$subPlan]);
+            } else {
+                $company->subscription_plan = null;
+                $company->subscription_expires_at = null;
+            }
+        }
+
         $company->save();
 
-        $tierNames = ['gold' => 'طلایی', 'silver' => 'نقره‌ای', 'bronze' => 'برنزی'];
-        $tierText = $tier ? $tierNames[$tier] . " ({$months} ماهه)" : 'عادی';
+        $tierNames = ['gold' => 'ویژه طلایی', 'silver' => 'ویژه نقره‌ای', 'bronze' => 'ویژه برنزی'];
+        $tierText = $tier && isset($tierNames[$tier]) ? $tierNames[$tier] . " ({$months} ماهه)" : 'بدون ویژه';
+        $subText = $company->subscriptionLabel();
 
-        AdminLog::record('company.tier', "تغییر اشتراک شرکت «{$company->name}» به {$tierText}", 'company', $company->id);
-        return back()->with('ok', "سطح اشتراک شرکت «{$company->name}» به {$tierText} تغییر یافت.");
+        AdminLog::record('company.tier', "تغییر وضعیت ویژه/اشتراک «{$company->name}»: {$tierText} · {$subText}", 'company', $company->id);
+        return back()->with('ok', "وضعیت شرکت «{$company->name}» به‌روزرسانی شد ({$tierText} · {$subText}).");
     }
 
     public function destroyCompany(Company $company)
