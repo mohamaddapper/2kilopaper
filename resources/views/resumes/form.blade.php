@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => $resume->exists ? 'ویرایش رزومه کارجو' : 'ثبت رزومه کارجو در بانک متخصصین'])
 
 @section('content')
-<div class="container" style="max-width:860px;margin:28px auto 56px">
+<div class="page-wrapper" style="margin:28px 0 56px">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <div>
       <h1 style="margin:0 0 6px;font-size:22px;color:var(--text)">

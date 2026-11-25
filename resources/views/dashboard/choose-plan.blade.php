@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'انتخاب پلن ثبت شرکت'])
 
 @section('content')
-<div class="container" style="max-width:1100px;margin:28px auto 56px">
+<div class="page-wrapper" style="margin:28px 0 56px">
   <div style="text-align:center;margin-bottom:28px">
     <span class="badge ok" style="font-size:12px;padding:4px 12px;margin-bottom:10px;display:inline-block">مرحله ۱ از ۲ · انتخاب نوع ثبت شرکت</span>
     <h1 style="margin:0 0 8px;font-size:24px;color:var(--text)">ثبت شرکت و کارخانه در ۲ کیلو کاغذ</h1>

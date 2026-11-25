@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => $resume->job_title . ' - ' . $resume->full_name])
 
 @section('content')
-<div class="container" style="max-width:920px;margin:28px auto 56px">
+<div class="page-wrapper" style="margin:28px 0 56px">
   <div style="margin-bottom:14px">
     <a href="{{ route('resumes.index') }}" style="font-size:13px;color:var(--primary);text-decoration:none;font-weight:700">→ بازگشت به بانک کارجویان</a>
   </div>

@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'بانک کارجویان و رزومه‌های صنعت کاغذ و کارتن'])
 
 @section('content')
-<div class="container" style="margin:24px auto 52px">
+<div class="page-wrapper" style="margin:24px 0 52px">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px">
     <div>
       <h1 style="margin:0 0 6px;font-size:23px;color:var(--text)">{!! svg_icon('users', 20) !!} بانک کارجویان و متخصصین صنعت</h1>

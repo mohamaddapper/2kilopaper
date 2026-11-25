@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'عدم دسترسی'])
 
 @section('content')
-<div class="container" style="max-width:560px;margin:60px auto;text-align:center">
+<div class="page-wrapper" style="max-width:560px;margin:60px auto;text-align:center">
   <div class="card" style="padding:36px 28px">
     <div style="font-size:48px;font-weight:900;color:#dc2626;margin-bottom:8px">403</div>
     <h1 style="margin:0 0 10px;font-size:20px;color:var(--text)">دسترسی به این بخش مجاز نیست</h1>
