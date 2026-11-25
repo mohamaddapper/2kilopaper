@@ -64,15 +64,23 @@ class OtpService
             return false;
         }
         try {
-            $res = Http::asForm()->timeout(10)->post('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
-                'username' => $c['username'],
-                'password' => $c['password'],
-                'text' => $code,
-                'to' => $phone,
-                'bodyId' => $c['otp_body_id'],
-            ]);
+            $res = Http::asForm()
+                ->connectTimeout(10)
+                ->timeout(20)
+                ->withOptions([
+                    'curl' => [
+                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                    ],
+                ])
+                ->post('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
+                    'username' => $c['username'],
+                    'password' => $c['password'],
+                    'text' => $code,
+                    'to' => $phone,
+                    'bodyId' => $c['otp_body_id'],
+                ]);
             $ok = $res->successful() && ((int) $res->json('RetStatus') === 1);
-            if (!$ok) Log::warning('Melipayamak failed', ['body' => $res->body()]);
+            if (!$ok) Log::warning('Melipayamak failed', ['status' => $res->status(), 'body' => $res->body()]);
             return $ok;
         } catch (\Throwable $e) {
             Log::error('Melipayamak error: ' . $e->getMessage());
