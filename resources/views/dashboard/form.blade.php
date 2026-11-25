@@ -316,7 +316,7 @@
       </div>
     @elseif($isLockedFree)
       <div class="notice warn" style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <span>در حالت <strong>ثبت رایگان</strong> بخش ۷ (گالری ۵ عکس محصولات، کاتالوگ PDF و ویدیوی معرفی) قفل است. سایر بخش‌ها از جمله وب‌سایت و شبکه‌های اجتماعی رایگان هستند.</span>
+        <span>در حالت <strong>ثبت رایگان</strong> بخش ۷ (کاتالوگ PDF، گالری تصاویر و ویدیوی معرفی) قفل است. برای فعال‌سازی می‌توانید اشتراک تهیه کنید.</span>
         <a href="{{ $company->exists ? route('dashboard') : route('companies.create') }}" class="btn small" style="background:#d97706;color:#fff;font-size:12px">مشاهده و انتخاب اشتراک</a>
       </div>
     @endif
@@ -390,12 +390,12 @@
       </div>
 
       <div class="field" style="margin-top:10px">
-        <label>لوگوی شرکت (تصویر باکیفیت · رایگان)</label>
+        <label>لوگوی شرکت (تصویر باکیفیت)</label>
         @if($company->logo)
           <div style="margin-bottom:6px"><img src="{{ asset($company->logo) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
         @endif
         <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
-        <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۴ مگابایت)</div>
+        <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۱ مگابایت)</div>
       </div>
 
       <!-- سامانه یکپارچه انتخاب دسته‌بندی و زمینه فعالیت با جستجو و برچسب (حداکثر ۱۰ مورد) -->
@@ -454,7 +454,7 @@
     <!-- بخش ۲: موقعیت‌های مکانی و آدرس‌ها (سیستم چندگانه پویا: کارخانه، دفتر، فروشگاه، انبار) -->
     <div class="form-card">
       <h3>
-        <span>۲. موقعیت‌های مکانی و آدرس‌ها</span>
+        <span>۲. موقعیت‌های مکانی</span>
         <span class="badge ok">امکان ثبت چندگانه</span>
       </h3>
       <p style="margin:0 0 14px;color:var(--muted);font-size:13.5px">
@@ -883,10 +883,6 @@
         <div class="field">
           <label>کانال یا آیدی تلگرام</label>
           <input name="socials[telegram]" value="{{ $sVal('socials', 'telegram') }}" placeholder="مثال: kilopaper2" dir="ltr" style="text-align:left">
-        </div>
-        <div class="field">
-          <label>شناسه پیام‌رسان بله یا ایتا</label>
-          <input name="socials[bale]" value="{{ $sVal('socials', 'bale') }}" placeholder="مثال: ble.ir/2kilopaper" dir="ltr" style="text-align:left">
         </div>
       </div>
     </div>
