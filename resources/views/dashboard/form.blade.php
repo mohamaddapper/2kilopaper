@@ -389,13 +389,19 @@
         </div>
       </div>
 
-      <div class="field" style="margin-top:10px">
-        <label>لوگوی شرکت (تصویر باکیفیت)</label>
-        @if($company->logo)
-          <div style="margin-bottom:6px"><img src="{{ asset($company->logo) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
-        @endif
-        <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
-        <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۱ مگابایت)</div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field">
+          <label>لوگوی شرکت (تصویر باکیفیت)</label>
+          @if($company->logo)
+            <div style="margin-bottom:6px"><img src="{{ asset($company->logo) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
+          @endif
+          <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+          <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۱ مگابایت)</div>
+        </div>
+        <div class="field">
+          <label>سال تأسیس</label>
+          <input name="tech_specs[established_year]" value="{{ $tVal('tech_specs', 'established_year') }}" placeholder="مثال: 1392">
+        </div>
       </div>
 
       <!-- سامانه یکپارچه انتخاب دسته‌بندی و زمینه فعالیت با جستجو و برچسب (حداکثر ۱۰ مورد) -->
@@ -722,46 +728,40 @@
     </div>
 
     <!-- بخش ۵: مشخصات فنی و توان تولید -->
-    <div class="form-card">
+    <div class="form-card" id="tech_specs_section" style="display:none">
       <h3>
-        <span>۵. مشخصات فنی و توانمندی‌های کارخانه</span>
-        <span class="badge" style="background:#f4f6f9">صنعتی</span>
+        <span id="tech_specs_title">۵. توانمندی‌های فنی و تولیدی</span>
+        <span id="tech_specs_badge" class="badge" style="background:#f4f6f9">صنعتی</span>
       </h3>
 
-      <div class="form-row-3">
-        <div class="field">
-          <label>سال تأسیس</label>
-          <input name="tech_specs[established_year]" value="{{ $tVal('tech_specs', 'established_year') }}" placeholder="مثال: 1392">
-        </div>
-        <div class="field">
+      <div id="tech_specs_fields_grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+        <div class="field" id="field_moq">
           <label>حداقل تیراژ سفارش (MOQ)</label>
           <input name="tech_specs[moq]" value="{{ $tVal('tech_specs', 'moq') }}" placeholder="مثال: ۵۰۰۰ عدد یا ۱۰ تن">
         </div>
-        <div class="field">
-          <label>ظرفیت تولید ماهانه</label>
+        <div class="field" id="field_capacity">
+          <label id="label_capacity">ظرفیت تولید ماهانه</label>
           <input name="tech_specs[capacity]" value="{{ $tVal('tech_specs', 'capacity') }}" placeholder="مثال: ۵۰۰ تن در ماه">
         </div>
-      </div>
-
-      <div class="form-row-3">
-        <div class="field">
+        <div class="field" id="field_production_width">
           <label>عرض تولید دستگاه‌ها</label>
           <input name="tech_specs[production_width]" value="{{ $tVal('tech_specs', 'production_width') }}" placeholder="مثال: ۲۲۰ سانتی‌متر">
         </div>
-        <div class="field">
-          <label>محدوده گراماژ تولید</label>
+        <div class="field" id="field_gsm_range">
+          <label id="label_gsm_range">محدوده گراماژ تولید</label>
           <input name="tech_specs[gsm_range]" value="{{ $tVal('tech_specs', 'gsm_range') }}" placeholder="مثال: ۱۱۰ تا ۴۰۰ گرم">
         </div>
-        <div class="field">
-          <label>امکان تولید اختصاصی / سفارشی</label>
+        <div class="field" id="field_custom_order">
+          <label id="label_custom_order">امکان تولید اختصاصی / سفارشی</label>
           <select name="tech_specs[custom_order]">
+            <option value="" @selected($tVal('tech_specs', 'custom_order') === '')>انتخاب کنید...</option>
             <option value="بله" @selected($tVal('tech_specs', 'custom_order') == 'بله')>بله، پذیرفته می‌شود</option>
             <option value="خیر" @selected($tVal('tech_specs', 'custom_order') == 'خیر')>خیر</option>
           </select>
         </div>
       </div>
 
-      <div class="field" style="margin-top:10px;margin-bottom:0">
+      <div class="field" id="field_certificates" style="margin-top:10px;margin-bottom:0">
         <label>گواهینامه‌های کیفی و استانداردها:</label>
         <div class="check-grid">
           @php
@@ -1413,6 +1413,107 @@ function toggleServices() {
  if (boxCartonMachine) boxCartonMachine.style.display = isCartonMachinery ? 'block' : 'none';
  if (boxSheetMachine) boxSheetMachine.style.display = isSheetMachinery ? 'block' : 'none';
  if (boxMachineSrv) boxMachineSrv.style.display = isService ? 'block' : 'none';
+
+ toggleTechSpecs();
+}
+
+function toggleTechSpecs() {
+ let hasFactory = false;
+ let isSheetPaperFactory = false;
+ let hasPrint = false;
+ let hasTrade = false;
+ let isSheetPaperTrade = false;
+ let isCustomService = false;
+ let isTechnicalService = false;
+
+ const sheetPaperKeywords = ['کاغذ', 'مقوا', 'ورق کارتن', 'جعبه کارتن', 'تیشو', 'سینگل فیس', 'فویل و فیلم', 'بوبین مقوایی', 'نبشی مقوایی', 'قوطی مقوایی', 'پاکت بسته بندی', 'جعبه مقوایی'];
+ const nonSheetKeywords = ['ماشین', 'مواد شیمیایی', 'شیرآلات', 'تجهیزات', 'قطعات', 'چسب', 'رنگ', 'مواد مصرفی', 'پوشک', 'نوار بهداشتی', 'ظروف یکبارمصرف', 'آخال', 'لیوان'];
+
+ if (Array.isArray(selectedCategories)) {
+ selectedCategories.forEach(c => {
+ const slug = c.slug || '';
+ const pillarSlug = c.pillar_slug || '';
+ const label = ((c.name || '') + ' ' + (c.full_path || '')).replace(/\u200c/g, ' ');
+ const isSheetPaper = sheetPaperKeywords.some(k => label.includes(k)) && !nonSheetKeywords.some(k => label.includes(k));
+
+ if (pillarSlug === 'factories') {
+ hasFactory = true;
+ if (isSheetPaper) isSheetPaperFactory = true;
+ }
+ if (pillarSlug === 'printing-services' || label.includes('چاپخانه')) {
+ hasPrint = true;
+ }
+ if (pillarSlug === 'stores' || pillarSlug === 'importers') {
+ hasTrade = true;
+ if (isSheetPaper) isSheetPaperTrade = true;
+ }
+ if (pillarSlug === 'service-providers') {
+ if (slug === 'die-making' || slug === 'post-press-services' || label.includes('قالب سازی') || label.includes('خدمات پس از چاپ')) {
+ isCustomService = true;
+ }
+ if (['installation-of-machines', 'water-treatment', 'grinding'].includes(slug) || label.includes('نصب') || label.includes('تصفیه') || label.includes('سنگ زنی')) {
+ isTechnicalService = true;
+ }
+ }
+ });
+ }
+
+ const showCapacity = hasFactory || hasPrint;
+ const showWidth = isSheetPaperFactory;
+ const showGsm = isSheetPaperFactory || isSheetPaperTrade;
+ const showMoq = hasFactory || hasPrint || hasTrade;
+ const showCustomOrder = hasFactory || hasPrint || isCustomService;
+ const showCerts = hasFactory || hasPrint || hasTrade || isCustomService || isTechnicalService;
+ const showAnyField = showCapacity || showWidth || showGsm || showMoq || showCustomOrder;
+ const showSection = showAnyField || showCerts;
+
+ const sec = document.getElementById('tech_specs_section');
+ const grid = document.getElementById('tech_specs_fields_grid');
+ const titleEl = document.getElementById('tech_specs_title');
+ const badgeEl = document.getElementById('tech_specs_badge');
+ const labelCapacity = document.getElementById('label_capacity');
+ const labelGsm = document.getElementById('label_gsm_range');
+ const labelCustom = document.getElementById('label_custom_order');
+
+ if (sec) sec.style.display = showSection ? 'block' : 'none';
+ if (grid) grid.style.display = showAnyField ? 'grid' : 'none';
+
+ if (titleEl && badgeEl) {
+ if (hasFactory || hasPrint) {
+ titleEl.textContent = '۵. توانمندی‌های فنی و تولیدی';
+ badgeEl.textContent = 'صنعتی';
+ } else if (hasTrade) {
+ titleEl.textContent = '۵. مشخصات بازرگانی و تأمین';
+ badgeEl.textContent = 'بازرگانی';
+ } else {
+ titleEl.textContent = '۵. استانداردها و توانمندی‌های فنی';
+ badgeEl.textContent = 'فنی';
+ }
+ }
+
+ if (labelCapacity) {
+ labelCapacity.textContent = (hasPrint && !hasFactory) ? 'ظرفیت چاپ / تولید ماهانه' : 'ظرفیت تولید ماهانه';
+ }
+ if (labelGsm) {
+ labelGsm.textContent = (!isSheetPaperFactory && isSheetPaperTrade) ? 'محدوده گراماژ قابل تأمین' : 'محدوده گراماژ تولید';
+ }
+ if (labelCustom) {
+ labelCustom.textContent = (isCustomService && !hasFactory && !hasPrint) ? 'امکان انجام سفارش اختصاصی' : 'امکان تولید اختصاصی / سفارشی';
+ }
+
+ const setFieldVisible = (id, visible) => {
+ const el = document.getElementById(id);
+ if (!el) return;
+ el.style.display = visible ? '' : 'none';
+ el.querySelectorAll('input, select').forEach(inp => { inp.disabled = !visible; });
+ };
+
+ setFieldVisible('field_moq', showMoq);
+ setFieldVisible('field_capacity', showCapacity);
+ setFieldVisible('field_production_width', showWidth);
+ setFieldVisible('field_gsm_range', showGsm);
+ setFieldVisible('field_custom_order', showCustomOrder);
+ setFieldVisible('field_certificates', showCerts);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
