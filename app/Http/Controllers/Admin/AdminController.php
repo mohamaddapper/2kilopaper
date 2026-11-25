@@ -342,6 +342,13 @@ class AdminController extends Controller
 
     public function logs(Request $request)
     {
+        $admins = User::where('is_admin', true)->orWhere('id', 1)->orderBy('name')->get();
+
+        if (!Schema::hasTable('admin_logs')) {
+            $logs = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 30);
+            return view('admin.logs', compact('logs', 'admins'));
+        }
+
         $query = AdminLog::with('user')->latest('created_at');
 
         if ($uid = $request->input('user_id')) {
@@ -352,7 +359,6 @@ class AdminController extends Controller
         }
 
         $logs = $query->paginate(30)->withQueryString();
-        $admins = User::where('is_admin', true)->orWhere('id', 1)->orderBy('name')->get();
 
         return view('admin.logs', compact('logs', 'admins'));
     }

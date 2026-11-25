@@ -101,7 +101,7 @@ try {
     echo '<pre>' . htmlspecialchars($kernel->output()) . '</pre>';
 
     // 3. Migrations & Schema Adjustments
-    if (in_array($action, ['all', 'migrate', 'import_companies'])) {
+    if (in_array($action, ['all', 'clear', 'migrate', 'import_companies'])) {
         echo '<p><b>۳. بررسی و اجرای مایگریشن‌های جدید دیتابیس:</b></p>';
         try {
             \Illuminate\Support\Facades\DB::statement("ALTER TABLE companies MODIFY phone VARCHAR(255) NULL");
