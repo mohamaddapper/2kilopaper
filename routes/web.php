@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/companies/{company}/bookmark', [DashboardController::class, 'toggleBookmark'])->name('companies.bookmark');
     Route::get('/dashboard/companies/{company}/edit', [DashboardController::class, 'edit'])->name('companies.edit');
     Route::put('/dashboard/companies/{company}', [DashboardController::class, 'update'])->name('companies.update');
+    Route::delete('/dashboard/companies/{company}', [DashboardController::class, 'destroy'])->name('companies.destroy');
 
     // مدیریت آگهی‌های استخدام و رزومه‌ها در پنل کارفرما
     Route::get('/dashboard/jobs/create', [EmployerJobController::class, 'create'])->name('employer.jobs.create');

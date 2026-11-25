@@ -185,6 +185,11 @@
                       @if($c->status === 'approved')
                         <a class="btn ghost small" href="{{ $c->url }}" target="_blank" style="padding:3px 12px;font-size:12px">مشاهده</a>
                       @endif
+                      <form method="POST" action="{{ route('companies.destroy', $c) }}" style="display:inline" onsubmit="return confirm('آیا از حذف شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn ghost small" style="padding:3px 10px;font-size:12px;color:#dc2626;border-color:#fca5a5">حذف</button>
+                      </form>
                     </div>
                   </td>
                 </tr>
@@ -305,10 +310,17 @@
                     @endif
                   </td>
                   <td style="text-align:left">
-                    <a class="btn ghost small" href="{{ route('companies.edit', $c) }}">ویرایش</a>
-                    @if($c->status === 'approved')
-                      <a class="btn ghost small" href="{{ $c->url }}" target="_blank">مشاهده</a>
-                    @endif
+                    <div style="display:inline-flex;gap:6px">
+                      <a class="btn ghost small" href="{{ route('companies.edit', $c) }}">ویرایش</a>
+                      @if($c->status === 'approved')
+                        <a class="btn ghost small" href="{{ $c->url }}" target="_blank">مشاهده</a>
+                      @endif
+                      <form method="POST" action="{{ route('companies.destroy', $c) }}" style="display:inline" onsubmit="return confirm('آیا از حذف شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn ghost small" style="color:#dc2626;border-color:#fca5a5">حذف</button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               @endforeach

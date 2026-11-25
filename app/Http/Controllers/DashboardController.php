@@ -585,4 +585,20 @@ class DashboardController extends Controller
 
         return $validated;
     }
+
+    public function destroy(Request $r, Company $company)
+    {
+        $user = $r->user();
+        abort_unless($user && ($user->isAdmin() || (int) $company->user_id === (int) $user->id), 403);
+
+        $name = $company->name;
+        $company->categories()->detach();
+        $company->delete();
+
+        if ($r->input('redirect_to') === 'directory') {
+            return redirect()->route('directory')->with('ok', "شرکت «{$name}» با موفقیت حذف شد.");
+        }
+
+        return redirect()->route('dashboard')->with('ok', "شرکت «{$name}» با موفقیت حذف شد.");
+    }
 }

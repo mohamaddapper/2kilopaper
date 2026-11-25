@@ -154,6 +154,14 @@
         <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}" class="btn small" style="background:#0284c7;color:#fff;font-weight:700;padding:6px 18px;font-size:13.5px;display:inline-flex;align-items:center;gap:6px">
           {!! svg_icon('edit', 15) !!} ویرایش اطلاعات این شرکت
         </a>
+        <form method="POST" action="{{ route('companies.destroy', $company) }}" style="display:inline" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($company->name) }}» اطمینان دارید؟ این عملیات قابل بازگشت نیست.')">
+          @csrf
+          @method('DELETE')
+          <input type="hidden" name="redirect_to" value="directory">
+          <button type="submit" class="btn small" style="background:#dc2626;color:#fff;font-weight:700;padding:6px 14px;font-size:13.5px;display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer">
+            {!! svg_icon('trash', 15) !!} حذف شرکت
+          </button>
+        </form>
       </div>
     </div>
   @endif
