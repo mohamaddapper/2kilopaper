@@ -254,7 +254,7 @@
     }
     .admin-filter-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr auto;
       gap: 10px;
       align-items: center;
     }

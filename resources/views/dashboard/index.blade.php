@@ -87,7 +87,7 @@
       
       <!-- بنرهای اعلان و هشدار -->
       <div class="dash-alert dash-alert-warn" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <span>اشتراک نقره‌ای شما ۶ روز دیگر منقضی می‌شود.</span>
+        <span>اشتراک ۶ ماهه شما ۶ روز دیگر منقضی می‌شود.</span>
         <a href="javascript:void(0)" onclick="switchTab('subscription')" style="color:#2563eb;font-weight:600;text-decoration:none">تمدید</a>
       </div>
 
@@ -295,7 +295,7 @@
           <tbody>
             <tr>
               <td style="color:#475569">۱۴۰۵/۰۸/۰۱</td>
-              <td style="font-weight:600">اشتراک نقره‌ای</td>
+              <td style="font-weight:600">اشتراک ۶ ماهه</td>
               <td style="font-weight:700">۵,۰۰۰,۰۰۰ تومان</td>
               <td style="text-align:center">
                 <span class="badge ok" style="padding:4px 12px;font-size:12px">موفق</span>

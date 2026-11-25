@@ -82,6 +82,17 @@ class AdminController extends Controller
             }
         }
 
+        if ($sub = $request->input('subscription')) {
+            if ($sub === 'none') {
+                $query->whereNull('subscription_plan');
+            } elseif ($sub === 'any') {
+                $query->whereNotNull('subscription_plan')
+                      ->where(fn($w) => $w->whereNull('subscription_expires_at')->orWhere('subscription_expires_at', '>', now()));
+            } elseif (in_array($sub, ['12m', '6m', '3m'], true)) {
+                $query->where('subscription_plan', $sub);
+            }
+        }
+
         if ($catId = $request->input('cat')) {
             $query->where('category_id', $catId);
         }

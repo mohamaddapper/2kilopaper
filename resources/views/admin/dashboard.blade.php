@@ -41,7 +41,7 @@
     <div class="stat-card" style="border-right:4px solid #eab308">
       <div class="stat-icon" style="background:#fef9c3;color:#854d0e">{!! svg_icon('star-filled', 15) !!}</div>
       <div>
-        <span style="font-size:12px;color:#64748b;display:block">اشتراک‌های ویژه</span>
+        <span style="font-size:12px;color:#64748b;display:block">شرکت‌های ویژه</span>
         <b style="font-size:22px;color:#854d0e">{{ number_format($stats['companies_gold'] + $stats['companies_silver'] + $stats['companies_bronze']) }}</b>
         <span style="font-size:11px;color:#64748b;display:block">{{ $stats['companies_gold'] }} طلایی · {{ $stats['companies_silver'] }} نقره‌ای</span>
       </div>

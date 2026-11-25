@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <!-- اسلاید ۲: ارتقای اشتراک طلایی و فروش ویژه -->
+      <!-- اسلاید ۲: ارتقای ویژه طلایی و فروش بیشتر -->
       <div class="home-slider-item" data-index="1">
         <div class="home-banner-card" style="background:linear-gradient(135deg, #b45309 0%, #d97706 45%, #f59e0b 100%)">
           <div class="banner-decor decor-1"></div>
@@ -77,7 +77,7 @@
                 <span>{!! svg_icon('star-filled', 15) !!}</span>
                 <span>دیده‌شدن حداکثری و افزایش فروش</span>
               </div>
-              <h2 class="home-banner-title">با اشتراک طلایی، در رتبه اول نتایج و دید خریداران باشید</h2>
+              <h2 class="home-banner-title">با ویژه طلایی، در رتبه اول نتایج و دید خریداران باشید</h2>
               <p class="home-banner-desc">نمایش نشان ویژه، اولویت در نتایج جستجو، حذف تبلیغات رقبا و دسترسی مستقیم به خریداران عمده کاغذ و مقوا</p>
               <div class="home-banner-action">
                 <a href="{{ route('subscription.fee') }}" class="btn home-banner-btn" style="color:#b45309!important">
@@ -409,10 +409,10 @@
   <div class="vip-cta-bar">
     <div class="vip-cta-text">
       <strong>شما هم مدیر یا تولیدکننده در این صنعت هستید؟</strong>
-      <span>با دریافت اشتراک طلایی، در رتبه اول نتایج جستجو و دید هزاران خریدار روزانه قرار بگیرید.</span>
+      <span>با ویژه کردن طلایی، در رتبه اول نتایج جستجو و دید هزاران خریدار روزانه قرار بگیرید.</span>
     </div>
     <a href="{{ route('subscription.fee') }}" class="btn vip-cta-btn">
-      <span>تعرفه‌های اشتراک طلایی</span>
+      <span>تعرفه‌های ویژه و اشتراک</span>
       <span>←</span>
     </a>
   </div>

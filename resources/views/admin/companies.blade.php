@@ -29,11 +29,20 @@
       </select>
 
       <select name="tier" style="border:1px solid #cbd5e1">
-        <option value="all">همه پلن‌ها</option>
-        <option value="gold" @selected(request('tier') === 'gold')> اشتراک طلایی</option>
-        <option value="silver" @selected(request('tier') === 'silver')> اشتراک نقره‌ای</option>
-        <option value="bronze" @selected(request('tier') === 'bronze')> اشتراک برنزی</option>
-        <option value="normal" @selected(request('tier') === 'normal')>پلن عادی (رایگان)</option>
+        <option value="all">همه وضعیت‌های ویژه</option>
+        <option value="gold" @selected(request('tier') === 'gold')>ویژه طلایی</option>
+        <option value="silver" @selected(request('tier') === 'silver')>ویژه نقره‌ای</option>
+        <option value="bronze" @selected(request('tier') === 'bronze')>ویژه برنزی</option>
+        <option value="normal" @selected(request('tier') === 'normal')>بدون ویژه (عادی)</option>
+      </select>
+
+      <select name="subscription" style="border:1px solid #cbd5e1">
+        <option value="all">همه اشتراک‌ها</option>
+        <option value="any" @selected(request('subscription') === 'any')>دارای اشتراک فعال</option>
+        <option value="12m" @selected(request('subscription') === '12m')>اشتراک ۱ ساله</option>
+        <option value="6m" @selected(request('subscription') === '6m')>اشتراک ۶ ماهه</option>
+        <option value="3m" @selected(request('subscription') === '3m')>اشتراک ۳ ماهه</option>
+        <option value="none" @selected(request('subscription') === 'none')>بدون اشتراک</option>
       </select>
 
       <select name="cat" style="border:1px solid #cbd5e1">

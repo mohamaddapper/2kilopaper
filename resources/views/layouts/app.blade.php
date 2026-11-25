@@ -162,7 +162,7 @@
           {!! svg_icon('chevron-down', 13) !!}
         </a>
         <div class="header-dropdown-menu">
-          <a href="{{ route('subscription.fee') }}">{!! svg_icon('star-filled', 15) !!} تعرفه اشتراک ویژه</a>
+          <a href="{{ route('subscription.fee') }}">{!! svg_icon('star-filled', 15) !!} تعرفه اشتراک‌ها</a>
           <a href="{{ route('advertising') }}">{!! svg_icon('megaphone', 15) !!} تعرفه تبلیغات و بنرها</a>
         </div>
       </div>
@@ -222,7 +222,7 @@
           <li><a href="{{ route('categories.index') }}">دسته‌بندی بر اساس زمینه فعالیت</a></li>
           <li><a href="{{ route('locations.index') }}">دسته‌بندی بر اساس استان</a></li>
           <li><a href="{{ route('jobs.index') }}">فرصت‌های شغلی و کاریابی</a></li>
-          <li><a href="{{ route('subscription.fee') }}">تعرفه‌های اشتراک طلایی</a></li>
+          <li><a href="{{ route('subscription.fee') }}">تعرفه‌های اشتراک و ویژه</a></li>
           <li><a href="{{ route('advertising') }}">تعرفه و جایگاه‌های تبلیغات</a></li>
           <li><a href="{{ route('companies.create') }}">ثبت رایگان شرکت و کارگاه</a></li>
         </ul>

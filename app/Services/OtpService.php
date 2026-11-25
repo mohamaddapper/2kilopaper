@@ -33,7 +33,13 @@ class OtpService
             'expires_at' => now()->addSeconds(self::TTL),
         ]);
 
-        return $this->deliver($phone, $code) ? null : 'ارسال پیامک ناموفق بود. دوباره تلاش کنید.';
+        $delivered = $this->deliver($phone, $code);
+        if (!$delivered) {
+            RateLimiter::clear("otp-phone-min:$phone");
+            return 'ارسال پیامک ناموفق بود. دوباره تلاش کنید.';
+        }
+
+        return null;
     }
 
     public function verify(string $phone, string $code): bool
@@ -52,6 +58,10 @@ class OtpService
         if ($c['driver'] === 'log') {
             Log::info("OTP for $phone: $code");
             return true;
+        }
+        if (empty($c['username']) || empty($c['password']) || empty($c['otp_body_id'])) {
+            Log::warning('Melipayamak credentials or otp_body_id missing in .env');
+            return false;
         }
         try {
             $res = Http::asForm()->timeout(10)->post('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
