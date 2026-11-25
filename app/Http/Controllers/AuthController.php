@@ -38,6 +38,9 @@ class AuthController extends Controller
             return back()->withErrors(['code' => 'کد نادرست یا منقضی شده است.']);
         }
         $user = User::firstOrCreate(['phone' => $phone]);
+        try {
+            $user->forceFill(['last_login_at' => now()])->saveQuietly();
+        } catch (\Throwable $e) {}
         $r->session()->forget('otp_phone');
         $r->session()->regenerate();
         Auth::login($user, true);

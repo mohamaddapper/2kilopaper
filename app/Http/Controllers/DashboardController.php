@@ -223,13 +223,13 @@ class DashboardController extends Controller
 
     public function edit(Request $r, Company $company)
     {
-        abort_unless($company->user_id === $r->user()->id || $r->user()->isAdmin(), 403);
+        abort_unless($company->user_id === $r->user()->id || $r->user()->hasPermission('companies'), 403);
         return view('dashboard.form', $this->formData($company));
     }
 
     public function update(Request $r, Company $company)
     {
-        abort_unless($company->user_id === $r->user()->id || $r->user()->isAdmin(), 403);
+        abort_unless($company->user_id === $r->user()->id || $r->user()->hasPermission('companies'), 403);
         $data = $this->validated($r);
         $this->processLocations($r, $data);
 
@@ -307,6 +307,10 @@ class DashboardController extends Controller
                 }
                 return redirect($returnTo)->with('ok', "اطلاعات شرکت «{$company->name}» با موفقیت ویرایش و ذخیره شد.");
             }
+        }
+
+        if ((int) $company->user_id !== (int) $r->user()->id && $r->user()->isAdmin()) {
+            \App\Models\AdminLog::record('company.update', "ویرایش اطلاعات شرکت «{$company->name}»", 'company', $company->id);
         }
 
         if ($r->user()->isAdmin()) {
@@ -589,11 +593,17 @@ class DashboardController extends Controller
     public function destroy(Request $r, Company $company)
     {
         $user = $r->user();
-        abort_unless($user && ($user->isAdmin() || (int) $company->user_id === (int) $user->id), 403);
+        abort_unless($user && ((int) $company->user_id === (int) $user->id || $user->hasPermission('companies_delete')), 403);
 
         $name = $company->name;
+        $cid = $company->id;
+        $isTeamAction = (int) $company->user_id !== (int) $user->id;
         $company->categories()->detach();
         $company->delete();
+
+        if ($isTeamAction) {
+            \App\Models\AdminLog::record('company.delete', "حذف شرکت «{$name}»", 'company', $cid);
+        }
 
         if ($r->input('redirect_to') === 'directory') {
             return redirect()->route('directory')->with('ok', "شرکت «{$name}» با موفقیت حذف شد.");

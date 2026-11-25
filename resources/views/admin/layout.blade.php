@@ -399,36 +399,56 @@
         } catch (\Throwable $e) {}
       @endphp
 
+      @php $u = auth()->user(); @endphp
       <nav class="admin-nav">
         <div class="admin-nav-section">گزارش و تحلیل</div>
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
           <span class="nav-label">{!! svg_icon('bar-chart', 16) !!} پیشخوان</span>
         </a>
-        <a href="{{ route('admin.analytics') }}" class="{{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
-          <span class="nav-label">{!! svg_icon('eye', 16) !!} آمار و بازدیدها</span>
-        </a>
+        @if($u->hasPermission('analytics'))
+          <a href="{{ route('admin.analytics') }}" class="{{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
+            <span class="nav-label">{!! svg_icon('eye', 16) !!} آمار و بازدیدها</span>
+          </a>
+        @endif
 
         <div class="admin-nav-section">مدیریت محتوا</div>
-        <a href="{{ route('admin.companies') }}" class="{{ request()->routeIs('admin.companies') ? 'active' : '' }}">
-          <span class="nav-label">{!! svg_icon('building', 16) !!} شرکت‌ها</span>
-          @if($pendingCompaniesCount > 0)
-            <span class="admin-nav-badge">{{ $pendingCompaniesCount }}</span>
-          @endif
-        </a>
-        <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-          <span class="nav-label">{!! svg_icon('tag', 16) !!} دسته‌بندی و سئو</span>
-        </a>
-        <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs') ? 'active' : '' }}">
-          <span class="nav-label">{!! svg_icon('briefcase', 16) !!} آگهی‌های شغلی</span>
-        </a>
-        <a href="{{ route('admin.applications') }}" class="{{ request()->routeIs('admin.applications') ? 'active' : '' }}">
-          <span class="nav-label">{!! svg_icon('users', 16) !!} رزومه‌ها و متقاضیان</span>
-        </a>
+        @if($u->hasPermission('companies'))
+          <a href="{{ route('admin.companies') }}" class="{{ request()->routeIs('admin.companies') ? 'active' : '' }}">
+            <span class="nav-label">{!! svg_icon('building', 16) !!} شرکت‌ها</span>
+            @if($pendingCompaniesCount > 0)
+              <span class="admin-nav-badge">{{ $pendingCompaniesCount }}</span>
+            @endif
+          </a>
+        @endif
+        @if($u->hasPermission('categories'))
+          <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+            <span class="nav-label">{!! svg_icon('tag', 16) !!} دسته‌بندی و سئو</span>
+          </a>
+        @endif
+        @if($u->hasPermission('jobs'))
+          <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs') ? 'active' : '' }}">
+            <span class="nav-label">{!! svg_icon('briefcase', 16) !!} آگهی‌های شغلی</span>
+          </a>
+        @endif
+        @if($u->hasPermission('applications'))
+          <a href="{{ route('admin.applications') }}" class="{{ request()->routeIs('admin.applications') ? 'active' : '' }}">
+            <span class="nav-label">{!! svg_icon('users', 16) !!} رزومه‌ها و متقاضیان</span>
+          </a>
+        @endif
 
-        <div class="admin-nav-section">سیستم</div>
-        <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
-          <span class="nav-label">{!! svg_icon('user', 16) !!} کاربران</span>
-        </a>
+        @if($u->hasPermission('users') || $u->hasPermission('logs'))
+          <div class="admin-nav-section">سیستم و همکاران</div>
+          @if($u->hasPermission('users'))
+            <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
+              <span class="nav-label">{!! svg_icon('user', 16) !!} کاربران و همکاران</span>
+            </a>
+          @endif
+          @if($u->hasPermission('logs'))
+            <a href="{{ route('admin.logs') }}" class="{{ request()->routeIs('admin.logs') ? 'active' : '' }}">
+              <span class="nav-label">{!! svg_icon('clock', 16) !!} گزارش فعالیت همکاران</span>
+            </a>
+          @endif
+        @endif
       </nav>
 
       <div class="admin-sidebar-footer">

@@ -15,6 +15,7 @@ class Company extends Model
         'name',
         'slug',
         'status',
+        'admin_note',
         'views_count',
         'tier',
         'slogan',

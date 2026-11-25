@@ -88,6 +88,11 @@
                   @if($c->slogan)
                     <span style="display:block;font-size:11.5px;color:#64748b">{{ $c->slogan }}</span>
                   @endif
+                  @if($c->admin_note)
+                    <span style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:6px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:11px">
+                      یادداشت: {{ \Illuminate\Support\Str::limit($c->admin_note, 60) }}
+                    </span>
+                  @endif
                 </div>
               </div>
             </td>
@@ -166,17 +171,25 @@
                     {!! svg_icon('edit', 14) !!} ویرایش کامل
                   </a>
 
-                  <button type="button" class="gear-dropdown-item" onclick="closeAllGearMenus(); openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}')">
-                    {!! svg_icon('star-filled', 14) !!} تغییر اشتراک
+                  <button type="button" class="gear-dropdown-item" onclick='closeAllGearMenus(); openNoteModal({{ $c->id }}, @json($c->name), @json($c->admin_note ?? ""))'>
+                    {!! svg_icon('message', 14) !!} یادداشت داخلی
                   </button>
 
-                  <form method="post" action="{{ route('admin.companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="gear-dropdown-item danger">
-                      {!! svg_icon('trash', 14) !!} حذف شرکت
+                  @if(auth()->user()->hasPermission('companies_tier'))
+                    <button type="button" class="gear-dropdown-item" onclick="closeAllGearMenus(); openTierModal({{ $c->id }}, '{{ addslashes($c->name) }}', '{{ $c->tier }}')">
+                      {!! svg_icon('star-filled', 14) !!} تغییر اشتراک
                     </button>
-                  </form>
+                  @endif
+
+                  @if(auth()->user()->hasPermission('companies_delete'))
+                    <form method="post" action="{{ route('admin.companies.destroy', $c) }}" style="margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($c->name) }}» اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="gear-dropdown-item danger">
+                        {!! svg_icon('trash', 14) !!} حذف شرکت
+                      </button>
+                    </form>
+                  @endif
                 </div>
               </div>
             </td>
@@ -253,6 +266,32 @@ function openTierModal(companyId, companyName, currentTier) {
 function closeTierModal() {
  document.getElementById('tierModal').style.display = 'none';
 }
+
+function openNoteModal(companyId, companyName, currentNote) {
+  document.getElementById('noteModalTitle').textContent = 'یادداشت داخلی: ' + companyName;
+  document.getElementById('noteForm').action = '{{ url("/admin/companies") }}/' + companyId + '/note';
+  document.getElementById('noteTextarea').value = currentNote || '';
+  document.getElementById('noteModal').style.display = 'flex';
+}
+function closeNoteModal() {
+  document.getElementById('noteModal').style.display = 'none';
+}
 </script>
+
+<!-- مودال یادداشت داخلی همکاران -->
+<div id="noteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;padding:24px;max-width:460px;width:92%;box-shadow:0 10px 25px rgba(0,0,0,0.2)">
+    <h3 style="margin:0 0 8px;font-size:16px;color:#0f172a" id="noteModalTitle">یادداشت داخلی شرکت</h3>
+    <p style="margin:0 0 12px;font-size:12.5px;color:#64748b">این یادداشت فقط برای تیم مدیریت قابل مشاهده است و در سایت نمایش داده نمی‌شود.</p>
+    <form id="noteForm" method="post" action="">
+      @csrf
+      <textarea name="admin_note" id="noteTextarea" rows="4" placeholder="مثلاً: با مدیرعامل تماس گرفته شد، منتظر ارسال لوگو..." style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;margin-bottom:14px"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button type="button" class="btn ghost small" onclick="closeNoteModal()">انصراف</button>
+        <button type="submit" class="btn small" style="background:#0284c7;color:#fff;font-weight:700">ذخیره یادداشت</button>
+      </div>
+    </form>
+  </div>
+</div>
 @endpush
 @endsection

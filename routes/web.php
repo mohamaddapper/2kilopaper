@@ -90,25 +90,37 @@ Route::post('/track/company-click/{company}', [SiteController::class, 'trackComp
 // پنل مدیریت ارشد سیستم
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/analytics', [\App\Http\Controllers\Admin\AdminController::class, 'analytics'])->name('analytics');
-    Route::get('/companies', [\App\Http\Controllers\Admin\AdminController::class, 'companies'])->name('companies');
-    Route::post('/companies/{company}/approve', [\App\Http\Controllers\Admin\AdminController::class, 'approveCompany'])->name('companies.approve');
-    Route::post('/companies/{company}/reject', [\App\Http\Controllers\Admin\AdminController::class, 'rejectCompany'])->name('companies.reject');
-    Route::post('/companies/{company}/tier', [\App\Http\Controllers\Admin\AdminController::class, 'updateTier'])->name('companies.tier');
-    Route::delete('/companies/{company}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyCompany'])->name('companies.destroy');
+    Route::get('/analytics', [\App\Http\Controllers\Admin\AdminController::class, 'analytics'])->middleware('admin:analytics')->name('analytics');
+    Route::get('/logs', [\App\Http\Controllers\Admin\AdminController::class, 'logs'])->middleware('admin:logs')->name('logs');
 
-    Route::get('/jobs', [\App\Http\Controllers\Admin\AdminController::class, 'jobs'])->name('jobs');
-    Route::post('/jobs/{job}/toggle', [\App\Http\Controllers\Admin\AdminController::class, 'toggleJob'])->name('jobs.toggle');
-    Route::post('/jobs/{job}/immediate', [\App\Http\Controllers\Admin\AdminController::class, 'toggleImmediate'])->name('jobs.immediate');
-    Route::delete('/jobs/{job}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyJob'])->name('jobs.destroy');
+    Route::middleware('admin:companies')->group(function () {
+        Route::get('/companies', [\App\Http\Controllers\Admin\AdminController::class, 'companies'])->name('companies');
+        Route::post('/companies/{company}/approve', [\App\Http\Controllers\Admin\AdminController::class, 'approveCompany'])->name('companies.approve');
+        Route::post('/companies/{company}/reject', [\App\Http\Controllers\Admin\AdminController::class, 'rejectCompany'])->name('companies.reject');
+        Route::post('/companies/{company}/note', [\App\Http\Controllers\Admin\AdminController::class, 'updateCompanyNote'])->name('companies.note');
+    });
+    Route::post('/companies/{company}/tier', [\App\Http\Controllers\Admin\AdminController::class, 'updateTier'])->middleware('admin:companies_tier')->name('companies.tier');
+    Route::delete('/companies/{company}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyCompany'])->middleware('admin:companies_delete')->name('companies.destroy');
 
-    Route::get('/applications', [\App\Http\Controllers\Admin\AdminController::class, 'applications'])->name('applications');
-    Route::get('/users', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
-    Route::put('/users/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'updateUser'])->name('users.update');
-    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
-    Route::post('/users/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminController::class, 'toggleUserAdmin'])->name('users.toggle-admin');
+    Route::middleware('admin:jobs')->group(function () {
+        Route::get('/jobs', [\App\Http\Controllers\Admin\AdminController::class, 'jobs'])->name('jobs');
+        Route::post('/jobs/{job}/toggle', [\App\Http\Controllers\Admin\AdminController::class, 'toggleJob'])->name('jobs.toggle');
+        Route::post('/jobs/{job}/immediate', [\App\Http\Controllers\Admin\AdminController::class, 'toggleImmediate'])->name('jobs.immediate');
+        Route::delete('/jobs/{job}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyJob'])->name('jobs.destroy');
+    });
 
-    Route::get('/categories', [\App\Http\Controllers\Admin\AdminController::class, 'categories'])->name('categories');
-    Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\AdminController::class, 'editCategory'])->name('categories.edit');
-    Route::put('/categories/{category}', [\App\Http\Controllers\Admin\AdminController::class, 'updateCategory'])->name('categories.update');
+    Route::get('/applications', [\App\Http\Controllers\Admin\AdminController::class, 'applications'])->middleware('admin:applications')->name('applications');
+
+    Route::middleware('admin:users')->group(function () {
+        Route::get('/users', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
+        Route::put('/users/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'updateUser'])->name('users.update');
+        Route::delete('/users/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
+        Route::post('/users/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminController::class, 'toggleUserAdmin'])->name('users.toggle-admin');
+    });
+
+    Route::middleware('admin:categories')->group(function () {
+        Route::get('/categories', [\App\Http\Controllers\Admin\AdminController::class, 'categories'])->name('categories');
+        Route::get('/categories/{category}/edit', [\App\Http\Controllers\Admin\AdminController::class, 'editCategory'])->name('categories.edit');
+        Route::put('/categories/{category}', [\App\Http\Controllers\Admin\AdminController::class, 'updateCategory'])->name('categories.update');
+    });
 });

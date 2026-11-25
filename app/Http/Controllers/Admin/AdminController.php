@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminLog;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Company;
@@ -96,6 +97,7 @@ class AdminController extends Controller
         $company->status = 'approved';
         $company->save();
 
+        AdminLog::record('company.approve', "تأیید و انتشار شرکت «{$company->name}»", 'company', $company->id);
         return back()->with('ok', "شرکت «{$company->name}» با موفقیت تأیید و در دایرکتوری منتشر شد.");
     }
 
@@ -104,7 +106,20 @@ class AdminController extends Controller
         $company->status = 'rejected';
         $company->save();
 
+        AdminLog::record('company.reject', "رد / تعلیق شرکت «{$company->name}»", 'company', $company->id);
         return back()->with('ok', "شرکت «{$company->name}» معلق/رد گردید.");
+    }
+
+    public function updateCompanyNote(Request $request, Company $company)
+    {
+        $validated = $request->validate([
+            'admin_note' => 'nullable|string|max:2000',
+        ]);
+        $company->admin_note = trim((string) ($validated['admin_note'] ?? '')) ?: null;
+        $company->save();
+
+        AdminLog::record('company.note', "به‌روزرسانی یادداشت داخلی شرکت «{$company->name}»", 'company', $company->id);
+        return back()->with('ok', "یادداشت داخلی برای «{$company->name}» ذخیره شد.");
     }
 
     public function updateTier(Request $request, Company $company)
@@ -125,15 +140,18 @@ class AdminController extends Controller
         $tierNames = ['gold' => 'طلایی', 'silver' => 'نقره‌ای', 'bronze' => 'برنزی'];
         $tierText = $tier ? $tierNames[$tier] . " ({$months} ماهه)" : 'عادی';
 
+        AdminLog::record('company.tier', "تغییر اشتراک شرکت «{$company->name}» به {$tierText}", 'company', $company->id);
         return back()->with('ok', "سطح اشتراک شرکت «{$company->name}» به {$tierText} تغییر یافت.");
     }
 
     public function destroyCompany(Company $company)
     {
         $name = $company->name;
+        $id = $company->id;
         $company->categories()->detach();
         $company->delete();
 
+        AdminLog::record('company.delete', "حذف دائمی شرکت «{$name}»", 'company', $id);
         return back()->with('ok', "شرکت «{$name}» با موفقیت حذف گردید.");
     }
 
@@ -170,6 +188,7 @@ class AdminController extends Controller
         $job->save();
 
         $statusText = ($job->status === 'active') ? 'فعال شد' : 'متوقف گردید';
+        AdminLog::record('job.toggle', "تغییر وضعیت آگهی «{$job->title}» به {$statusText}", 'job', $job->id);
         return back()->with('ok', "وضعیت آگهی «{$job->title}» به {$statusText}.");
     }
 
@@ -179,12 +198,16 @@ class AdminController extends Controller
         $job->save();
 
         $badgeText = $job->is_immediate ? 'اعطا شد' : 'حذف شد';
+        AdminLog::record('job.immediate', "نشان فوری آگهی «{$job->title}» {$badgeText}", 'job', $job->id);
         return back()->with('ok', "نشان فوری آگهی «{$job->title}» {$badgeText}.");
     }
 
     public function destroyJob(JobPosting $job)
     {
+        $title = $job->title;
+        $id = $job->id;
         $job->delete();
+        AdminLog::record('job.delete', "حذف آگهی استخدام «{$title}»", 'job', $id);
         return back()->with('ok', "آگهی استخدام با موفقیت حذف گردید.");
     }
 
@@ -230,44 +253,73 @@ class AdminController extends Controller
         if ($user->id === auth()->id() && $user->is_admin) {
             return back()->with('error', 'نمی‌توانید سطح دسترسی ادمین خودتان را لغو کنید!');
         }
+        if ($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()) {
+            return back()->with('error', 'فقط مدیر ارشد می‌تواند سطح دسترسی مدیر ارشد دیگری را تغییر دهد.');
+        }
 
         $user->is_admin = !$user->is_admin;
+        if ($user->is_admin && empty($user->admin_role)) {
+            $user->admin_role = 'moderator';
+            $user->admin_permissions = User::ROLE_PRESETS['moderator']['permissions'];
+        }
+        if (!$user->is_admin) {
+            $user->admin_role = null;
+            $user->admin_permissions = null;
+        }
         $user->save();
 
-        $txt = $user->is_admin ? 'ادمین سیستم گردید' : 'از سطح ادمین خارج شد';
+        $txt = $user->is_admin ? 'به تیم مدیریت اضافه شد' : 'از سطح مدیریت خارج شد';
+        AdminLog::record('user.toggle_admin', "کاربر {$user->phone} {$txt}", 'user', $user->id);
         return back()->with('ok', "کاربر {$user->phone} {$txt}.");
     }
 
     public function updateUser(Request $request, User $user)
     {
+        if ($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()) {
+            return back()->with('error', 'فقط مدیر ارشد می‌تواند اطلاعات مدیر ارشد دیگری را ویرایش کند.');
+        }
+
         $validated = $request->validate([
             'name' => 'nullable|string|max:190',
             'phone' => 'required|string|max:30|unique:users,phone,' . $user->id,
-            'email' => 'nullable|email|max:190|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:6|max:100',
             'is_admin' => 'nullable|boolean',
+            'admin_role' => 'nullable|string|in:super_admin,moderator,seo,sales,custom',
+            'admin_permissions' => 'nullable|array',
+            'admin_permissions.*' => 'string',
         ], [
             'phone.required' => 'شماره تماس الزامی است.',
             'phone.unique' => 'این شماره تماس قبلاً ثبت شده است.',
-            'email.email' => 'فرمت ایمیل معتبر نیست.',
-            'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
-            'password.min' => 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد.',
         ]);
 
         $user->name = $validated['name'] ?: null;
         $user->phone = $validated['phone'];
-        $user->email = $validated['email'] ?: null;
-
-        if (!empty($validated['password'])) {
-            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
-        }
 
         if ($user->id !== auth()->id()) {
-            $user->is_admin = $request->boolean('is_admin');
+            $isAdmin = $request->boolean('is_admin');
+            $user->is_admin = $isAdmin;
+
+            if ($isAdmin) {
+                $role = $validated['admin_role'] ?? 'custom';
+                if ($role === 'super_admin' && !auth()->user()->isSuperAdmin()) {
+                    $role = 'moderator';
+                }
+                $user->admin_role = $role;
+
+                $allowedKeys = array_keys(User::ALL_PERMISSIONS);
+                $selectedPerms = array_values(array_intersect((array) ($validated['admin_permissions'] ?? []), $allowedKeys));
+                if ($role !== 'custom' && empty($selectedPerms) && isset(User::ROLE_PRESETS[$role])) {
+                    $selectedPerms = User::ROLE_PRESETS[$role]['permissions'];
+                }
+                $user->admin_permissions = $selectedPerms;
+            } else {
+                $user->admin_role = null;
+                $user->admin_permissions = null;
+            }
         }
 
         $user->save();
 
+        AdminLog::record('user.update', "ویرایش اطلاعات و دسترسی کاربر {$user->phone}", 'user', $user->id);
         return back()->with('ok', "اطلاعات کاربر {$user->phone} با موفقیت ویرایش شد.");
     }
 
@@ -276,11 +328,33 @@ class AdminController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'نمی‌توانید حساب کاربری خودتان را حذف کنید!');
         }
+        if ($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()) {
+            return back()->with('error', 'امکان حذف مدیر ارشد وجود ندارد.');
+        }
 
         $phone = $user->phone;
+        $id = $user->id;
         $user->delete();
 
+        AdminLog::record('user.delete', "حذف کاربر {$phone}", 'user', $id);
         return back()->with('ok', "کاربر {$phone} با موفقیت حذف شد.");
+    }
+
+    public function logs(Request $request)
+    {
+        $query = AdminLog::with('user')->latest('created_at');
+
+        if ($uid = $request->input('user_id')) {
+            $query->where('user_id', (int) $uid);
+        }
+        if ($act = trim((string) $request->input('action', ''))) {
+            $query->where('action', 'like', $act . '%');
+        }
+
+        $logs = $query->paginate(30)->withQueryString();
+        $admins = User::where('is_admin', true)->orWhere('id', 1)->orderBy('name')->get();
+
+        return view('admin.logs', compact('logs', 'admins'));
     }
 
     public function categories(Request $request)
@@ -341,6 +415,7 @@ class AdminController extends Controller
             'faqs' => !empty($faqs) ? $faqs : null,
         ]);
 
+        AdminLog::record('category.update', "ویرایش سئو و محتوای دسته «{$category->name}»", 'category', $category->id);
         return redirect()->route('admin.categories')->with('ok', "تنظیمات سئو و محتوای دسته «{$category->name}» با موفقیت ذخیره شد.");
     }
 
