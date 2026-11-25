@@ -258,13 +258,15 @@ class AdminController extends Controller
         }
 
         $user->is_admin = !$user->is_admin;
-        if ($user->is_admin && empty($user->admin_role)) {
-            $user->admin_role = 'moderator';
-            $user->admin_permissions = User::ROLE_PRESETS['moderator']['permissions'];
-        }
-        if (!$user->is_admin) {
-            $user->admin_role = null;
-            $user->admin_permissions = null;
+        if (Schema::hasColumn('users', 'admin_role')) {
+            if ($user->is_admin && empty($user->admin_role)) {
+                $user->admin_role = 'moderator';
+                $user->admin_permissions = User::ROLE_PRESETS['moderator']['permissions'];
+            }
+            if (!$user->is_admin) {
+                $user->admin_role = null;
+                $user->admin_permissions = null;
+            }
         }
         $user->save();
 
@@ -298,22 +300,24 @@ class AdminController extends Controller
             $isAdmin = $request->boolean('is_admin');
             $user->is_admin = $isAdmin;
 
-            if ($isAdmin) {
-                $role = $validated['admin_role'] ?? 'custom';
-                if ($role === 'super_admin' && !auth()->user()->isSuperAdmin()) {
-                    $role = 'moderator';
-                }
-                $user->admin_role = $role;
+            if (Schema::hasColumn('users', 'admin_role')) {
+                if ($isAdmin) {
+                    $role = $validated['admin_role'] ?? 'custom';
+                    if ($role === 'super_admin' && !auth()->user()->isSuperAdmin()) {
+                        $role = 'moderator';
+                    }
+                    $user->admin_role = $role;
 
-                $allowedKeys = array_keys(User::ALL_PERMISSIONS);
-                $selectedPerms = array_values(array_intersect((array) ($validated['admin_permissions'] ?? []), $allowedKeys));
-                if ($role !== 'custom' && empty($selectedPerms) && isset(User::ROLE_PRESETS[$role])) {
-                    $selectedPerms = User::ROLE_PRESETS[$role]['permissions'];
+                    $allowedKeys = array_keys(User::ALL_PERMISSIONS);
+                    $selectedPerms = array_values(array_intersect((array) ($validated['admin_permissions'] ?? []), $allowedKeys));
+                    if ($role !== 'custom' && empty($selectedPerms) && isset(User::ROLE_PRESETS[$role])) {
+                        $selectedPerms = User::ROLE_PRESETS[$role]['permissions'];
+                    }
+                    $user->admin_permissions = $selectedPerms;
+                } else {
+                    $user->admin_role = null;
+                    $user->admin_permissions = null;
                 }
-                $user->admin_permissions = $selectedPerms;
-            } else {
-                $user->admin_role = null;
-                $user->admin_permissions = null;
             }
         }
 
