@@ -105,18 +105,22 @@
             </td>
 
             <td style="text-align:left">
-              <div style="display:inline-flex;gap:6px;align-items:center">
-                <a href="{{ route('jobs.show', $j) }}" target="_blank" class="btn-action btn-view">
-                  نمایش ↗
-                </a>
-                <a href="{{ route('employer.jobs.edit', $j) }}" target="_blank" class="btn-action" style="background:#f1f5f9;color:#334155">
-                  {!! svg_icon('edit', 15) !!} ویرایش
-                </a>
-                <form method="post" action="{{ route('admin.jobs.destroy', $j) }}" style="margin:0" onsubmit="return confirm('آیا از حذف این آگهی اطمینان دارید؟')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn-action btn-reject">حذف</button>
-                </form>
+              <div class="gear-dropdown">
+                <button type="button" class="gear-btn" onclick="toggleGearMenu(this, event)" title="عملیات آگهی">
+                  {!! svg_icon('settings', 16) !!}
+                </button>
+                <div class="gear-dropdown-menu">
+                  <a href="{{ route('employer.jobs.edit', $j) }}" target="_blank" class="gear-dropdown-item">
+                    {!! svg_icon('edit', 14) !!} ویرایش
+                  </a>
+                  <form method="post" action="{{ route('admin.jobs.destroy', $j) }}" style="margin:0" onsubmit="return confirm('آیا از حذف این آگهی اطمینان دارید؟')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="gear-dropdown-item danger">
+                      {!! svg_icon('trash', 14) !!} حذف
+                    </button>
+                  </form>
+                </div>
               </div>
             </td>
           </tr>

@@ -104,7 +104,7 @@
           @foreach($pendingCompanies as $c)
             <tr>
               <td>
-                <b>{{ $c->name }}</b>
+                <a href="{{ $c->url }}" target="_blank" style="font-weight:700;color:#0f172a;text-decoration:none">{{ $c->name }}</a>
                 @if($c->phone)
                   <span style="display:block;font-size:11.5px;color:#64748b;direction:ltr;text-align:right">{{ $c->phone }}</span>
                 @endif
@@ -124,22 +124,27 @@
                 {{ $c->created_at->diffForHumans() }}
               </td>
               <td style="text-align:left">
-                <div style="display:inline-flex;gap:6px">
-                  <form method="post" action="{{ route('admin.companies.approve', $c) }}" style="margin:0">
-                    @csrf
-                    <button type="submit" class="btn-action btn-approve" onclick="return confirm('آیا از تأیید و انتشار این شرکت اطمینان دارید؟')">
-                      {!! svg_icon('check', 15) !!} تأیید و انتشار
-                    </button>
-                  </form>
-                  <form method="post" action="{{ route('admin.companies.reject', $c) }}" style="margin:0">
-                    @csrf
-                    <button type="submit" class="btn-action btn-reject" onclick="return confirm('شرکت رد/معلق شود؟')">
-                      {!! svg_icon('x', 15) !!} رد
-                    </button>
-                  </form>
-                  <a href="{{ $c->url }}" target="_blank" class="btn-action btn-view">
-                    مشاهده ↗
-                  </a>
+                <div class="gear-dropdown">
+                  <button type="button" class="gear-btn" onclick="toggleGearMenu(this, event)" title="عملیات ادمین">
+                    {!! svg_icon('settings', 16) !!}
+                  </button>
+                  <div class="gear-dropdown-menu">
+                    <form method="post" action="{{ route('admin.companies.approve', $c) }}" style="margin:0" onsubmit="return confirm('آیا از تأیید و انتشار این شرکت اطمینان دارید؟')">
+                      @csrf
+                      <button type="submit" class="gear-dropdown-item" style="color:#16a34a">
+                        {!! svg_icon('check', 14) !!} تأیید و انتشار
+                      </button>
+                    </form>
+                    <form method="post" action="{{ route('admin.companies.reject', $c) }}" style="margin:0" onsubmit="return confirm('شرکت رد/معلق شود؟')">
+                      @csrf
+                      <button type="submit" class="gear-dropdown-item" style="color:#d97706">
+                        {!! svg_icon('x', 14) !!} رد / تعلیق
+                      </button>
+                    </form>
+                    <a href="{{ route('companies.edit', $c) }}" target="_blank" class="gear-dropdown-item">
+                      {!! svg_icon('edit', 14) !!} ویرایش کامل
+                    </a>
+                  </div>
                 </div>
               </td>
             </tr>

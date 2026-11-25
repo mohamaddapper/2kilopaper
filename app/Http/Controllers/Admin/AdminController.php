@@ -238,6 +238,51 @@ class AdminController extends Controller
         return back()->with('ok', "کاربر {$user->phone} {$txt}.");
     }
 
+    public function updateUser(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:190',
+            'phone' => 'required|string|max:30|unique:users,phone,' . $user->id,
+            'email' => 'nullable|email|max:190|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6|max:100',
+            'is_admin' => 'nullable|boolean',
+        ], [
+            'phone.required' => 'شماره تماس الزامی است.',
+            'phone.unique' => 'این شماره تماس قبلاً ثبت شده است.',
+            'email.email' => 'فرمت ایمیل معتبر نیست.',
+            'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
+            'password.min' => 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد.',
+        ]);
+
+        $user->name = $validated['name'] ?: null;
+        $user->phone = $validated['phone'];
+        $user->email = $validated['email'] ?: null;
+
+        if (!empty($validated['password'])) {
+            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
+        }
+
+        if ($user->id !== auth()->id()) {
+            $user->is_admin = $request->boolean('is_admin');
+        }
+
+        $user->save();
+
+        return back()->with('ok', "اطلاعات کاربر {$user->phone} با موفقیت ویرایش شد.");
+    }
+
+    public function destroyUser(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'نمی‌توانید حساب کاربری خودتان را حذف کنید!');
+        }
+
+        $phone = $user->phone;
+        $user->delete();
+
+        return back()->with('ok', "کاربر {$phone} با موفقیت حذف شد.");
+    }
+
     public function categories(Request $request)
     {
         $query = Category::with('parent.parent.parent')->withCount('companies');

@@ -104,6 +104,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::get('/applications', [\App\Http\Controllers\Admin\AdminController::class, 'applications'])->name('applications');
     Route::get('/users', [\App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
+    Route::put('/users/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
     Route::post('/users/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminController::class, 'toggleUserAdmin'])->name('users.toggle-admin');
 
     Route::get('/categories', [\App\Http\Controllers\Admin\AdminController::class, 'categories'])->name('categories');

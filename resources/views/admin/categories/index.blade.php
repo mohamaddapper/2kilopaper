@@ -37,7 +37,7 @@
         @foreach($categories as $cat)
           <tr style="border-bottom:1px solid #f1f5f9">
             <td style="padding:12px 14px;font-weight:700;color:#0f172a">
-              {{ $cat->name }}
+              <a href="{{ $cat->url }}" target="_blank" style="color:#0f172a;text-decoration:none">{{ $cat->name }}</a>
               <div style="font-size:11.5px;color:#64748b;font-weight:400;margin-top:2px;direction:ltr;text-align:right">
                 {{ urldecode(parse_url($cat->url, PHP_URL_PATH)) }}
               </div>
@@ -66,10 +66,9 @@
               </div>
             </td>
             <td style="padding:12px 14px;text-align:left">
-              <div style="display:inline-flex;gap:6px">
-                <a href="{{ $cat->url }}" target="_blank" class="btn-action btn-view">مشاهده ↗</a>
-                <a href="{{ route('admin.categories.edit', $cat) }}" class="btn-action" style="background:#0284c7;color:#fff;font-weight:700">{!! svg_icon('edit', 15) !!} ویرایش سئو</a>
-              </div>
+              <a href="{{ route('admin.categories.edit', $cat) }}" class="btn-action" style="background:#0284c7;color:#fff;padding:7px 9px" title="ویرایش سئو">
+                {!! svg_icon('edit', 15) !!}
+              </a>
             </td>
           </tr>
         @endforeach

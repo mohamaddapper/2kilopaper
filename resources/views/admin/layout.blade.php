@@ -342,6 +342,38 @@
     .btn-tier:hover { background: #fde68a; }
     .btn-view { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
     .btn-view:hover { background: #bae6fd; }
+
+    /* Shared Gear Action Dropdown Menu */
+    .gear-dropdown { position: relative; display: inline-block; }
+    .gear-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid #cbd5e1; background: #f8fafc; color: #475569;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .gear-btn:hover { border-color: #0284c7; color: #0284c7; background: #eff6ff; }
+    .gear-dropdown-menu {
+      display: none; position: fixed; z-index: 9999; min-width: 170px;
+      background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14); padding: 6px; text-align: right;
+    }
+    .gear-dropdown-menu.open { display: block; }
+    .gear-dropdown-item {
+      display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px;
+      border: none; background: transparent; color: #334155; font-size: 13px;
+      font-weight: 600; font-family: inherit; text-decoration: none;
+      border-radius: 7px; cursor: pointer; text-align: right; box-sizing: border-box;
+    }
+    .gear-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
+    .gear-dropdown-item.danger { color: #dc2626; }
+    .gear-dropdown-item.danger:hover { background: #fef2f2; color: #b91c1c; }
+    html.dark .gear-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+    html.dark .gear-btn:hover { border-color: #38bdf8; color: #38bdf8; background: #0c233a; }
+    html.dark .gear-dropdown-menu { background: #111827; border-color: #334155; box-shadow: 0 12px 30px rgba(0,0,0,0.55); }
+    html.dark .gear-dropdown-item { color: #e2e8f0; }
+    html.dark .gear-dropdown-item:hover { background: #1e293b; color: #f8fafc; }
+    html.dark .gear-dropdown-item.danger { color: #f87171; }
+    html.dark .gear-dropdown-item.danger:hover { background: #2b1418; color: #fca5a5; }
   </style>
   @stack('head')
 </head>
@@ -460,6 +492,31 @@
       sb.classList.toggle('open', !!open);
       bd.classList.toggle('open', !!open);
     }
+    function closeAllGearMenus() {
+      document.querySelectorAll('.gear-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+    }
+    function toggleGearMenu(btn, e) {
+      if (e) e.stopPropagation();
+      const menu = btn.nextElementSibling;
+      const wasOpen = menu.classList.contains('open');
+      closeAllGearMenus();
+      if (!wasOpen) {
+        menu.classList.add('open');
+        const rect = btn.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+        let top = rect.bottom + 4;
+        if (top + menuRect.height > window.innerHeight - 10) {
+          top = Math.max(10, rect.top - menuRect.height - 4);
+        }
+        let left = rect.left;
+        if (left + menuRect.width > window.innerWidth - 10) {
+          left = window.innerWidth - menuRect.width - 10;
+        }
+        menu.style.top = top + 'px';
+        menu.style.left = Math.max(10, left) + 'px';
+      }
+    }
+    document.addEventListener('click', closeAllGearMenus);
   </script>
   @stack('scripts')
 </body>
