@@ -190,7 +190,8 @@
 </header>
 @yield('hero')
 <main class="container">
-  @if(session('ok'))<div class="card" style="border-color:#2e9b5b;margin-bottom:16px">{{ session('ok') }}</div>@endif
+  @if(session('ok'))<div class="notice ok" style="margin-bottom:16px">{{ session('ok') }}</div>@endif
+  @if(session('error'))<div class="notice bad" style="margin-bottom:16px">{{ session('error') }}</div>@endif
   @yield('content')
 </main>
 <footer class="site-footer">

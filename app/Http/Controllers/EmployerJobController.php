@@ -12,8 +12,25 @@ use Illuminate\Http\Request;
 
 class EmployerJobController extends Controller
 {
+    private function userCanPostJobs(): bool
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+        if ($user->isAdmin()) {
+            return true;
+        }
+        return $user->companies()->get()->contains(fn (Company $c) => $c->hasActiveBenefits());
+    }
+
     public function create()
     {
+        if (!$this->userCanPostJobs()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'درج آگهی استخدام مخصوص شرکت‌های دارای اشتراک فعال است. ابتدا اشتراک تهیه کنید.');
+        }
+
         $companies = auth()->user()->companies()->get();
         $categories = Category::whereNull('parent_id')->with('children')->get();
         $provinces = Province::with('cities')->orderBy('name')->get();
@@ -32,6 +49,11 @@ class EmployerJobController extends Controller
 
     public function store(Request $request)
     {
+        if (!$this->userCanPostJobs()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'درج آگهی استخدام مخصوص شرکت‌های دارای اشتراک فعال است.');
+        }
+
         $validated = $this->validateJob($request);
         $validated['user_id'] = auth()->id();
         $validated['slug'] = JobPosting::makeSlug($validated['title']);

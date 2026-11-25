@@ -316,7 +316,7 @@
       </div>
     @elseif($isLockedFree)
       <div class="notice warn" style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <span>در حالت <strong>ثبت رایگان</strong> بخش‌های کاتالوگ PDF، گالری تصاویر، ویدیو و شبکه‌های اجتماعی قفل هستند. برای فعال‌سازی می‌توانید اشتراک تهیه کنید.</span>
+        <span>در حالت <strong>ثبت رایگان</strong> بخش ۷ (گالری ۵ عکس محصولات، کاتالوگ PDF و ویدیوی معرفی) قفل است. سایر بخش‌ها از جمله وب‌سایت و شبکه‌های اجتماعی رایگان هستند.</span>
         <a href="{{ $company->exists ? route('dashboard') : route('companies.create') }}" class="btn small" style="background:#d97706;color:#fff;font-size:12px">مشاهده و انتخاب اشتراک</a>
       </div>
     @endif
@@ -387,6 +387,15 @@
           <label>شعار یا عنوان کوتاه تبلیغاتی</label>
           <input name="slogan" value="{{ $f('slogan') }}" placeholder="مثال: تولیدکننده تخصصی ورق و کارتن ۳ و ۵ لایه">
         </div>
+      </div>
+
+      <div class="field" style="margin-top:10px">
+        <label>لوگوی شرکت (تصویر باکیفیت · رایگان)</label>
+        @if($company->logo)
+          <div style="margin-bottom:6px"><img src="{{ asset($company->logo) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
+        @endif
+        <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+        <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۴ مگابایت)</div>
       </div>
 
       <!-- سامانه یکپارچه انتخاب دسته‌بندی و زمینه فعالیت با جستجو و برچسب (حداکثر ۱۰ مورد) -->
@@ -797,54 +806,43 @@
       </div>
     </div>
 
-    <!-- بخش ۷: رسانه‌ها، فایل‌ها و کاتالوگ -->
+    <!-- بخش ۷: امکانات اختصاصی اشتراک -->
     <div class="form-card">
       <h3>
-        <span>۷. رسانه‌ها، تصاویر و کاتالوگ</span>
-        <span class="premium-tag">امکانات ویژه</span>
+        <span>۷. امکانات اختصاصی اشتراک (گالری تصاویر، کاتالوگ PDF و ویدیو)</span>
+        <span class="premium-tag">مخصوص اشتراک</span>
       </h3>
 
-      <div class="form-row">
-        <div class="field">
-          <label>لوگوی شرکت (تصویر باکیفیت)</label>
-          @if($company->logo)
-            <div style="margin-bottom:6px"><img src="{{ asset($company->logo) }}" height="50" style="border-radius:6px;border:1px solid var(--border)"></div>
-          @endif
-          <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
-          <div class="note">فرمت‌های مجاز: PNG, JPG, WEBP (حداکثر ۴ مگابایت)</div>
-        </div>
-
-        <div class="field">
-          <label>{!! svg_icon('file-text', 15) !!} کاتالوگ محصولات و خدمات (فایل PDF)</label>
-          @if($company->catalog)
-            <div style="margin-bottom:6px"><a href="{{ asset($company->catalog) }}" target="_blank" style="font-weight:700">مشاهده کاتالوگ فعلی</a></div>
-          @endif
-          <fieldset @disabled($isLockedFree) style="border:0;margin:0;padding:0;min-width:0;{{ $isLockedFree ? 'opacity:0.55;pointer-events:none;' : '' }}">
-            <input type="file" name="catalog" accept="application/pdf">
-          </fieldset>
-          <div class="note">فرمت مجاز: PDF (حداکثر ۲۵ مگابایت){{ $isLockedFree ? ' · مخصوص اشتراک' : '' }}</div>
-        </div>
-      </div>
-
       @if($isLockedFree)
-        <div style="margin:12px 0;padding:10px 14px;border-radius:8px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-          <span>بخش‌های کاتالوگ PDF، گالری تصاویر و ویدیوی معرفی مخصوص شرکت‌های دارای اشتراک است.</span>
-          <a href="{{ $company->exists ? route('dashboard') : route('companies.create') }}" style="font-weight:700;color:#b45309">فعال‌سازی اشتراک ←</a>
+        <div style="margin-bottom:14px;padding:10px 14px;border-radius:8px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <span>تمامی فیلدهای این بخش (۵ عکس محصولات، کاتالوگ PDF و ویدیوی معرفی) با تهیه اشتراک ۳ ماهه، ۶ ماهه یا ۱ ساله فعال می‌شوند.</span>
+          <a href="{{ $company->exists ? route('dashboard') : route('companies.create') }}" style="font-weight:700;color:#b45309">تهیه اشتراک و فعال‌سازی ←</a>
         </div>
       @endif
 
       <fieldset @disabled($isLockedFree) style="border:0;margin:0;padding:0;min-width:0;{{ $isLockedFree ? 'opacity:0.55;pointer-events:none;' : '' }}">
-        <div class="field" style="margin-top:10px">
-          <label>{!! svg_icon('camera', 15) !!} گالری تصاویر محصولات یا کارخانه (حداکثر ۵ تصویر)</label>
-          @if($company->gallery)
-            <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
-              @foreach((array)$company->gallery as $img)
-                <img src="{{ asset($img) }}" height="40" style="border-radius:4px;border:1px solid var(--border)">
-              @endforeach
-            </div>
-          @endif
-          <input type="file" name="gallery[]" id="gallery_input" multiple accept="image/png,image/jpeg,image/webp">
-          <div class="note">می‌توانید هم‌زمان حداکثر ۵ عکس با فرمت‌های PNG, JPG, WEBP انتخاب کنید.</div>
+        <div class="form-row">
+          <div class="field">
+            <label>{!! svg_icon('camera', 15) !!} گالری تصاویر محصولات یا کارخانه (حداکثر ۵ تصویر)</label>
+            @if($company->gallery)
+              <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+                @foreach((array)$company->gallery as $img)
+                  <img src="{{ asset($img) }}" height="40" style="border-radius:4px;border:1px solid var(--border)">
+                @endforeach
+              </div>
+            @endif
+            <input type="file" name="gallery[]" id="gallery_input" multiple accept="image/png,image/jpeg,image/webp">
+            <div class="note">می‌توانید هم‌زمان حداکثر ۵ عکس با فرمت‌های PNG, JPG, WEBP انتخاب کنید.</div>
+          </div>
+
+          <div class="field">
+            <label>{!! svg_icon('file-text', 15) !!} کاتالوگ محصولات و خدمات (فایل PDF)</label>
+            @if($company->catalog)
+              <div style="margin-bottom:6px"><a href="{{ asset($company->catalog) }}" target="_blank" style="font-weight:700">مشاهده کاتالوگ فعلی</a></div>
+            @endif
+            <input type="file" name="catalog" accept="application/pdf">
+            <div class="note">فرمت مجاز: PDF (حداکثر ۲۵ مگابایت)</div>
+          </div>
         </div>
 
         <div class="field" style="margin-top:10px;margin-bottom:0">
@@ -855,23 +853,12 @@
       </fieldset>
     </div>
 
-    <!-- بخش ۸: وب‌سایت، ایمیل و شبکه‌های اجتماعی -->
+    <!-- بخش ۸: وب‌سایت، ایمیل و شبکه‌های اجتماعی (آزاد و رایگان) -->
     <div class="form-card">
       <h3>
         <span>۸. وب‌سایت، ایمیل و شبکه‌های اجتماعی</span>
-        @if($isLockedFree)
-          <span class="premium-tag">مخصوص اشتراک</span>
-        @endif
       </h3>
 
-      @if($isLockedFree)
-        <div style="margin-bottom:12px;padding:10px 14px;border-radius:8px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-          <span>نمایش لینک وب‌سایت، ایمیل و شبکه‌های اجتماعی (واتساپ، اینستاگرام، تلگرام، بله) مخصوص شرکت‌های دارای اشتراک است.</span>
-          <a href="{{ $company->exists ? route('dashboard') : route('companies.create') }}" style="font-weight:700;color:#b45309">فعال‌سازی اشتراک ←</a>
-        </div>
-      @endif
-
-      <fieldset @disabled($isLockedFree) style="border:0;margin:0;padding:0;min-width:0;{{ $isLockedFree ? 'opacity:0.55;pointer-events:none;' : '' }}">
       <div class="form-row">
         <div class="field">
           <label>آدرس وب‌سایت رسمی</label>
@@ -902,7 +889,6 @@
           <input name="socials[bale]" value="{{ $sVal('socials', 'bale') }}" placeholder="مثال: ble.ir/2kilopaper" dir="ltr" style="text-align:left">
         </div>
       </div>
-      </fieldset>
     </div>
 
     <div style="display:flex;gap:12px;align-items:center;margin-top:20px">
