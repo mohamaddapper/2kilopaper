@@ -170,8 +170,11 @@ class DashboardController extends Controller
         return back()->with('success', $message);
     }
 
-    public function create()
+    public function create(Request $r)
     {
+        if (!$r->user()->isAdmin() && !$r->filled('plan')) {
+            return view('dashboard.choose-plan');
+        }
         return view('dashboard.form', $this->formData(new Company));
     }
 
@@ -217,6 +220,18 @@ class DashboardController extends Controller
             $syncData[$data['category_id']] = ['is_primary' => true];
         }
         $c->categories()->sync($syncData);
+
+        $selectedPlan = $r->input('selected_plan');
+        if (in_array($selectedPlan, ['3m', '6m', '12m'], true)) {
+            $planLabels = ['3m' => 'اشتراک ۳ ماهه', '6m' => 'اشتراک ۶ ماهه', '12m' => 'اشتراک ۱ ساله'];
+            \App\Models\AdminLog::record(
+                'company.upgrade_request',
+                "درخواست {$planLabels[$selectedPlan]} هنگام ثبت شرکت «{$c->name}»",
+                'company',
+                $c->id
+            );
+            return redirect()->route('dashboard')->with('ok', "شرکت «{$c->name}» ثبت شد و درخواست {$planLabels[$selectedPlan]} برای پشتیبانی ارسال گردید.");
+        }
 
         return redirect()->route('dashboard')->with('ok', 'شرکت با موفقیت ثبت شد.');
     }

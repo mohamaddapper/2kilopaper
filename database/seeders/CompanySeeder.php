@@ -139,11 +139,10 @@ class CompanySeeder extends Seeder
                     }
                 }
 
-                // Tier & Featured
+                // Tier (ویژه تبلیغاتی) & Subscription (اشتراک)
                 $tier = null;
                 $tierExpiresAt = null;
                 $featVal = trim($row['entity_featured__value'] ?? '');
-                $planId = trim($row['payment_plan__plan_id'] ?? '');
 
                 if ($featVal === '9') {
                     $tier = 'gold';
@@ -151,20 +150,32 @@ class CompanySeeder extends Seeder
                     $tier = 'silver';
                 } elseif ($featVal === '1') {
                     $tier = 'bronze';
-                } elseif (in_array($planId, ['8697', '8692'])) {
-                    $tier = 'silver';
                 }
 
                 $featExp = (int)($row['entity_featured__expires_at'] ?? 0);
-                $planExp = (int)($row['payment_plan__expires_at'] ?? 0);
-                $expTimestamp = max($featExp, $planExp);
-
                 if ($tier) {
-                    if ($expTimestamp > 1000000000) {
-                        $tierExpiresAt = Carbon::createFromTimestamp($expTimestamp);
-                    } else {
-                        $tierExpiresAt = now()->addMonths(6);
-                    }
+                    $tierExpiresAt = ($featExp > 1000000000)
+                        ? Carbon::createFromTimestamp($featExp)
+                        : now()->addMonths(6);
+                }
+
+                $subscriptionPlan = null;
+                $subscriptionExpiresAt = null;
+                $planId = trim($row['payment_plan__plan_id'] ?? '');
+                if ($planId === '8697') {
+                    $subscriptionPlan = '12m';
+                } elseif ($planId === '8692') {
+                    $subscriptionPlan = '6m';
+                } elseif ($planId !== '') {
+                    $subscriptionPlan = '3m';
+                }
+
+                $planExp = (int)($row['payment_plan__expires_at'] ?? 0);
+                if ($subscriptionPlan) {
+                    $monthsMap = ['12m' => 12, '6m' => 6, '3m' => 3];
+                    $subscriptionExpiresAt = ($planExp > 1000000000)
+                        ? Carbon::createFromTimestamp($planExp)
+                        : now()->addMonths($monthsMap[$subscriptionPlan]);
                 }
 
                 // Video
@@ -331,6 +342,8 @@ class CompanySeeder extends Seeder
                         'gallery' => !empty($gallery) ? $gallery : null,
                         'tier' => $tier,
                         'tier_expires_at' => $tierExpiresAt,
+                        'subscription_plan' => $subscriptionPlan,
+                        'subscription_expires_at' => $subscriptionExpiresAt,
                         'video_code' => $videoCode ?: null,
                         'contacts' => !empty($contacts) ? $contacts : null,
                         'tech_specs' => !empty($techSpecs) ? $techSpecs : null,

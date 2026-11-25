@@ -264,6 +264,22 @@
   </div>
 </div>
 
+<!-- مودال یادداشت داخلی همکاران -->
+<div id="noteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;padding:24px;max-width:460px;width:92%;box-shadow:0 10px 25px rgba(0,0,0,0.2)">
+    <h3 style="margin:0 0 8px;font-size:16px;color:#0f172a" id="noteModalTitle">یادداشت داخلی شرکت</h3>
+    <p style="margin:0 0 12px;font-size:12.5px;color:#64748b">این یادداشت فقط برای تیم مدیریت قابل مشاهده است و در سایت نمایش داده نمی‌شود.</p>
+    <form id="noteForm" method="post" action="">
+      @csrf
+      <textarea name="admin_note" id="noteTextarea" rows="4" placeholder="مثلاً: با مدیرعامل تماس گرفته شد، منتظر ارسال لوگو..." style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;margin-bottom:14px"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button type="button" class="btn ghost small" onclick="closeNoteModal()">انصراف</button>
+        <button type="submit" class="btn small" style="background:#0284c7;color:#fff;font-weight:700">ذخیره یادداشت</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 @push('scripts')
 <script>
 function openTierModal(companyId, companyName, currentTier, currentSub) {
@@ -277,10 +293,6 @@ function openTierModal(companyId, companyName, currentTier, currentSub) {
  form.action = '{{ url("/admin/companies") }}/' + companyId + '/tier';
  select.value = currentTier || '';
  if (subSelect) subSelect.value = currentSub || '';
- modal.style.display = 'flex';
-}
- select.value = currentTier || '';
- 
  modal.style.display = 'flex';
 }
 
@@ -298,21 +310,5 @@ function closeNoteModal() {
   document.getElementById('noteModal').style.display = 'none';
 }
 </script>
-
-<!-- مودال یادداشت داخلی همکاران -->
-<div id="noteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:12px;padding:24px;max-width:460px;width:92%;box-shadow:0 10px 25px rgba(0,0,0,0.2)">
-    <h3 style="margin:0 0 8px;font-size:16px;color:#0f172a" id="noteModalTitle">یادداشت داخلی شرکت</h3>
-    <p style="margin:0 0 12px;font-size:12.5px;color:#64748b">این یادداشت فقط برای تیم مدیریت قابل مشاهده است و در سایت نمایش داده نمی‌شود.</p>
-    <form id="noteForm" method="post" action="">
-      @csrf
-      <textarea name="admin_note" id="noteTextarea" rows="4" placeholder="مثلاً: با مدیرعامل تماس گرفته شد، منتظر ارسال لوگو..." style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;margin-bottom:14px"></textarea>
-      <div style="display:flex;justify-content:flex-end;gap:8px">
-        <button type="button" class="btn ghost small" onclick="closeNoteModal()">انصراف</button>
-        <button type="submit" class="btn small" style="background:#0284c7;color:#fff;font-weight:700">ذخیره یادداشت</button>
-      </div>
-    </form>
-  </div>
-</div>
 @endpush
 @endsection
