@@ -68,12 +68,13 @@
         </p>
 
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">
-          <li style="color:#16a34a">{!! svg_icon('check', 15) !!} ثبت اطلاعات پایه، لوگو، وب‌سایت و شبکه‌های اجتماعی</li>
-          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} درج ۵ تصویر از محصولات</li>
-          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} درج آگهی استخدام و مشاهده شماره کارجویان</li>
-          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} افزودن کاتالوگ محصولات (PDF) و ویدیو</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} درج تصویر و گالری محصولات</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} انتشار آگهی استخدام</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} افزودن کاتالوگ محصولات</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} ویدیوی معرفی خدمات و کالا</li>
+          <li style="color:#94a3b8">{!! svg_icon('x', 15) !!} اطلاع‌رسانی پیامکی</li>
           <li style="color:#ef4444">{!! svg_icon('alert', 15) !!} نمایش تبلیغ سایرین در صفحه شما</li>
-          <li style="color:#64748b">نمایش پایین‌تر از شرکت‌های اشتراکی</li>
+          <li style="color:#64748b">نمایش پایین‌تر از شرکت‌های دارای اشتراک</li>
         </ul>
       </div>
 
