@@ -4,11 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{{ $title ?? 'مدیریت ارشد پلتفرم' }} | ۲ کیلو کاغذ</title>
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="{{ asset('assets/style.css') }}?v={{ file_exists(public_path('assets/style.css')) ? filemtime(public_path('assets/style.css')) : '2.0' }}">
   <style>
     :root {
       --admin-bg: #0f172a;
+      --admin-sidebar: #0b1120;
       --admin-primary: #0284c7;
       --admin-accent: #f59e0b;
     }
@@ -18,52 +28,194 @@
       margin: 0;
       font-family: Vazirmatn, system-ui, sans-serif;
     }
-    .admin-header {
+    html.dark body {
+      background: #0b1120;
+      color: #f1f5f9;
+    }
+    .admin-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+    .admin-sidebar {
+      width: 256px;
+      flex-shrink: 0;
       background: var(--admin-bg);
-      color: #fff;
-      padding: 10px 20px;
-      min-height: 64px;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-left: 1px solid #1e293b;
+      z-index: 200;
+      transition: transform 0.22s ease;
+    }
+    .admin-sidebar-brand {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid #1e293b;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
+    }
+    .admin-sidebar-brand a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-sidebar-close {
+      display: none;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
     }
     .admin-nav {
       display: flex;
-      gap: 8px;
-      align-items: center;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      max-width: 100%;
-      padding-bottom: 2px;
+      flex-direction: column;
+      gap: 4px;
+      padding: 14px 12px;
+      flex: 1;
+    }
+    .admin-nav-section {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      padding: 8px 10px 4px;
     }
     .admin-nav a {
       color: #94a3b8;
       text-decoration: none;
       font-size: 13.5px;
       font-weight: 600;
-      padding: 8px 14px;
-      border-radius: 8px;
+      padding: 10px 12px;
+      border-radius: 9px;
       transition: all .15s;
-      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
-    .admin-nav a:hover, .admin-nav a.active {
-      color: #fff;
-      background: rgba(255,255,255,0.08);
+    .admin-nav a .nav-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .admin-nav a:hover {
+      color: #f8fafc;
+      background: rgba(255,255,255,0.07);
     }
     .admin-nav a.active {
       background: var(--admin-primary);
-      color: #fff;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    .admin-nav-badge {
+      background: #f59e0b;
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 99px;
+    }
+    .admin-sidebar-footer {
+      padding: 12px;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .admin-sidebar-footer a,
+    .admin-sidebar-footer button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: right;
+      box-sizing: border-box;
+    }
+    .admin-sidebar-footer a:hover,
+    .admin-sidebar-footer button:hover {
+      background: rgba(255,255,255,0.07);
+    }
+    .admin-main-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-topbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 22px;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    html.dark .admin-topbar {
+      background: #111827;
+      border-bottom-color: #1e293b;
+    }
+    .admin-mobile-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    html.dark .admin-mobile-toggle {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+    .admin-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 190;
+    }
+    .admin-backdrop.open {
+      display: block;
     }
     .admin-container {
+      width: 100%;
       max-width: 1280px;
       margin: 24px auto 48px;
-      padding: 0 16px;
+      padding: 0 22px;
+      box-sizing: border-box;
+      flex: 1;
     }
     .stat-card {
       background: #fff;
@@ -74,6 +226,12 @@
       align-items: center;
       gap: 14px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    html.dark .stat-card,
+    html.dark .admin-table-card {
+      background: #111827;
+      border-color: #1e293b;
+      color: #f1f5f9;
     }
     .stat-icon {
       width: 48px;
@@ -100,6 +258,25 @@
       gap: 10px;
       align-items: center;
     }
+    @media (max-width: 991px) {
+      .admin-sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(100%);
+      }
+      .admin-sidebar.open {
+        transform: translateX(0);
+      }
+      .admin-sidebar-close,
+      .admin-mobile-toggle {
+        display: inline-flex;
+      }
+      .admin-container {
+        padding: 0 14px;
+      }
+    }
     @media (max-width: 860px) {
       .admin-filter-grid {
         grid-template-columns: 1fr 1fr;
@@ -124,13 +301,24 @@
       border-bottom: 1px solid #e2e8f0;
       white-space: nowrap;
     }
+    html.dark .admin-table th {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-bottom-color: #334155;
+    }
     .admin-table td {
       padding: 12px 16px;
       border-bottom: 1px solid #f1f5f9;
       vertical-align: middle;
     }
+    html.dark .admin-table td {
+      border-bottom-color: #1e293b;
+    }
     .admin-table tr:hover {
       background: #fbfcfe;
+    }
+    html.dark .admin-table tr:hover {
+      background: #1e293b;
     }
     .btn-action {
       display: inline-flex;
@@ -159,72 +347,120 @@
 </head>
 <body>
 
-  <!-- هدر پنل ادمین -->
-  <header class="admin-header">
-    <div style="display:flex;align-items:center;gap:18px">
-      <a href="{{ route('admin.dashboard') }}" style="color:#fff;text-decoration:none;font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px">
-        <span style="background:var(--admin-accent);color:#000;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:800">مدیریت</span>
-        <span>۲ کیلو کاغذ</span>
-      </a>
+  <div class="admin-backdrop" id="adminBackdrop" onclick="toggleAdminSidebar(false)"></div>
+
+  <div class="admin-shell">
+    <!-- منوی عمودی سمت راست پنل مدیریت -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-sidebar-brand">
+        <a href="{{ route('admin.dashboard') }}">
+          <span style="background:var(--admin-accent);color:#000;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:800">مدیریت</span>
+          <span>۲ کیلو کاغذ</span>
+        </a>
+        <button type="button" class="admin-sidebar-close" onclick="toggleAdminSidebar(false)" aria-label="بستن منو">×</button>
+      </div>
+
+      @php
+        $pendingCompaniesCount = 0;
+        try {
+          $pendingCompaniesCount = \App\Models\Company::where('status', 'pending')->count();
+        } catch (\Throwable $e) {}
+      @endphp
 
       <nav class="admin-nav">
+        <div class="admin-nav-section">گزارش و تحلیل</div>
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-          {!! svg_icon('bar-chart', 15) !!} پیشخوان
+          <span class="nav-label">{!! svg_icon('bar-chart', 16) !!} پیشخوان</span>
         </a>
         <a href="{{ route('admin.analytics') }}" class="{{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
-          {!! svg_icon('eye', 15) !!} آمار و بازدیدها
+          <span class="nav-label">{!! svg_icon('eye', 16) !!} آمار و بازدیدها</span>
         </a>
+
+        <div class="admin-nav-section">مدیریت محتوا</div>
         <a href="{{ route('admin.companies') }}" class="{{ request()->routeIs('admin.companies') ? 'active' : '' }}">
-          {!! svg_icon('building', 15) !!} شرکت‌ها
+          <span class="nav-label">{!! svg_icon('building', 16) !!} شرکت‌ها</span>
+          @if($pendingCompaniesCount > 0)
+            <span class="admin-nav-badge">{{ $pendingCompaniesCount }}</span>
+          @endif
         </a>
         <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-          {!! svg_icon('tag', 15) !!} دسته‌بندی و سئو
+          <span class="nav-label">{!! svg_icon('tag', 16) !!} دسته‌بندی و سئو</span>
         </a>
         <a href="{{ route('admin.jobs') }}" class="{{ request()->routeIs('admin.jobs') ? 'active' : '' }}">
-          {!! svg_icon('briefcase', 15) !!} آگهی‌های شغلی
+          <span class="nav-label">{!! svg_icon('briefcase', 16) !!} آگهی‌های شغلی</span>
         </a>
         <a href="{{ route('admin.applications') }}" class="{{ request()->routeIs('admin.applications') ? 'active' : '' }}">
-          {!! svg_icon('users', 15) !!} رزومه‌ها و متقاضیان
+          <span class="nav-label">{!! svg_icon('users', 16) !!} رزومه‌ها و متقاضیان</span>
         </a>
+
+        <div class="admin-nav-section">سیستم</div>
         <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
-          {!! svg_icon('user', 15) !!} کاربران
+          <span class="nav-label">{!! svg_icon('user', 16) !!} کاربران</span>
         </a>
       </nav>
-    </div>
 
-    <div style="display:flex;align-items:center;gap:14px">
-      <a href="{{ route('home') }}" target="_blank" style="color:#94a3b8;font-size:13px;text-decoration:none">
-        مشاهده سایت ↗
-      </a>
-      <a href="{{ route('dashboard') }}" style="color:#38bdf8;font-size:13px;text-decoration:none">
-        میز کار من
-      </a>
-      <form method="post" action="{{ route('logout') }}" style="margin:0">
-        @csrf
-        <button type="submit" style="background:none;border:none;color:#ef4444;font-size:13px;cursor:pointer;font-family:inherit;padding:0">خروج</button>
-      </form>
-    </div>
-  </header>
-
-  <main class="admin-container">
-    @if(session('ok'))
-      <div style="background:#dcfce7;border:1px solid #86efac;color:#166534;padding:12px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;font-weight:600">
-        {!! svg_icon('check', 15) !!} {{ session('ok') }}
+      <div class="admin-sidebar-footer">
+        <a href="{{ route('home') }}" target="_blank" style="color:#94a3b8">
+          {!! svg_icon('globe', 15) !!} مشاهده سایت ↗
+        </a>
+        <a href="{{ route('dashboard') }}" style="color:#38bdf8">
+          {!! svg_icon('layout', 15) !!} میز کار من
+        </a>
+        <form method="post" action="{{ route('logout') }}" style="margin:0">
+          @csrf
+          <button type="submit" style="color:#f87171">
+            {!! svg_icon('log-out', 15) !!} خروج از حساب
+          </button>
+        </form>
       </div>
-    @endif
-    @if(session('error'))
-      <div style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;font-weight:600">
-        {!! svg_icon('x', 15) !!} {{ session('error') }}
-      </div>
-    @endif
+    </aside>
 
-    @yield('content')
-  </main>
+    <!-- بخش اصلی صفحه -->
+    <div class="admin-main-wrap">
+      <header class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button type="button" class="admin-mobile-toggle" onclick="toggleAdminSidebar(true)" aria-label="باز کردن منو">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <span style="font-weight:800;font-size:15px">{{ $title ?? 'پیشخوان مدیریت' }}</span>
+        </div>
 
-  <footer style="text-align:center;padding:24px 0;color:#94a3b8;font-size:12.5px">
-    پنل مدیریت سیستم ۲ کیلو کاغذ · طراحی شده برای مدیریت B2B صنایع کاغذ، کارتن و چاپ
-  </footer>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13px">
+          <a href="{{ route('home') }}" target="_blank" style="color:#64748b;text-decoration:none;font-weight:600">مشاهده سایت ↗</a>
+          <a href="{{ route('dashboard') }}" class="btn ghost small" style="padding:4px 12px;font-size:12.5px">میز کار من</a>
+        </div>
+      </header>
 
+      <main class="admin-container">
+        @if(session('ok'))
+          <div style="background:#dcfce7;border:1px solid #86efac;color:#166534;padding:12px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;font-weight:600">
+            {!! svg_icon('check', 15) !!} {{ session('ok') }}
+          </div>
+        @endif
+        @if(session('error'))
+          <div style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;font-weight:600">
+            {!! svg_icon('x', 15) !!} {{ session('error') }}
+          </div>
+        @endif
+
+        @yield('content')
+      </main>
+
+      <footer style="text-align:center;padding:20px 0;color:#94a3b8;font-size:12.5px">
+        پنل مدیریت سیستم ۲ کیلو کاغذ · طراحی شده برای مدیریت B2B صنایع کاغذ، کارتن و چاپ
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    function toggleAdminSidebar(open) {
+      const sb = document.getElementById('adminSidebar');
+      const bd = document.getElementById('adminBackdrop');
+      if (!sb || !bd) return;
+      sb.classList.toggle('open', !!open);
+      bd.classList.toggle('open', !!open);
+    }
+  </script>
   @stack('scripts')
 </body>
 </html>
