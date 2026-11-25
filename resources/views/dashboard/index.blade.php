@@ -4,6 +4,38 @@
 <div class="dashboard-layout">
   <!-- سایدبار منو (ستون راست در RTL) -->
   <aside class="dashboard-sidebar-card">
+    @php $dashUser = auth()->user(); @endphp
+    <div style="padding:12px 12px 14px;border-bottom:1px solid var(--border);margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0">
+          {{ mb_substr($dashUser->name ?: $dashUser->phone, 0, 1) }}
+        </div>
+        <div style="min-width:0;flex:1">
+          <div style="font-size:13.5px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            {{ $dashUser->name ?: 'کاربر گرامی' }}
+          </div>
+          <div style="font-size:11.5px;color:var(--muted);direction:ltr;text-align:right">{{ $dashUser->phone }}</div>
+        </div>
+      </div>
+      @if($dashUser->isAdmin())
+        <div style="margin-top:8px">
+          <span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fef3c7;color:#92400e">{{ $dashUser->roleLabel() }}</span>
+        </div>
+      @endif
+      <div style="margin-top:8px">
+        <button type="button" onclick="const f=document.getElementById('dashProfileForm');f.style.display=f.style.display==='none'?'block':'none';" style="background:none;border:none;padding:0;font-size:11.5px;color:var(--primary);cursor:pointer;font-family:inherit;font-weight:600">
+          {!! svg_icon('edit', 12) !!} {{ $dashUser->name ? 'ویرایش نام' : 'ثبت نام و نام خانوادگی' }}
+        </button>
+        <form id="dashProfileForm" method="POST" action="{{ route('dashboard.profile') }}" style="display:none;margin-top:8px">
+          @csrf
+          <div style="display:flex;gap:6px">
+            <input type="text" name="name" value="{{ $dashUser->name }}" placeholder="نام و نام خانوادگی" required style="flex:1;min-width:0;padding:5px 8px;font-size:12px;border-radius:7px">
+            <button type="submit" class="btn small" style="padding:5px 10px;font-size:11.5px">ثبت</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <nav class="dashboard-menu">
       <a href="javascript:void(0)" onclick="switchTab('dashboard')" id="nav-dashboard" class="dashboard-menu-link active">
         <span>داشبورد</span>

@@ -611,4 +611,19 @@ class DashboardController extends Controller
 
         return redirect()->route('dashboard')->with('ok', "شرکت «{$name}» با موفقیت حذف شد.");
     }
+
+    public function updateProfile(Request $r)
+    {
+        $validated = $r->validate([
+            'name' => 'required|string|max:190',
+        ], [
+            'name.required' => 'لطفاً نام و نام خانوادگی خود را وارد کنید.',
+        ]);
+
+        $r->user()->update([
+            'name' => trim($validated['name']),
+        ]);
+
+        return back()->with('ok', 'نام شما با موفقیت ذخیره شد.');
+    }
 }

@@ -62,15 +62,23 @@
 
       <!-- دکمه حساب من / میز کار / ورود -->
       @auth
+        @php $authUser = auth()->user(); @endphp
         <div class="header-dropdown">
           <button type="button" class="header-account-btn" onclick="toggleHeaderDropdown(this)">
             {!! svg_icon('user', 15) !!}
-            <span>میز کار</span>
+            <span>{{ \Illuminate\Support\Str::limit($authUser->name ?: $authUser->phone, 18) }}</span>
             {!! svg_icon('chevron-down', 13) !!}
           </button>
           <div class="header-dropdown-menu">
+            <div style="padding:8px 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
+              <div style="font-size:13px;font-weight:700;color:var(--text)">{{ $authUser->name ?: 'کاربر گرامی' }}</div>
+              <div style="font-size:11.5px;color:var(--muted);direction:ltr;text-align:right">{{ $authUser->phone }}</div>
+              @if($authUser->isAdmin())
+                <span style="display:inline-block;margin-top:4px;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:#fef3c7;color:#92400e">{{ $authUser->roleLabel() }}</span>
+              @endif
+            </div>
             <a href="{{ route('dashboard') }}">{!! svg_icon('user', 15) !!} میز کار من</a>
-            @if(auth()->user()->isAdmin())
+            @if($authUser->isAdmin())
               <a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-weight:700">{!! svg_icon('star-filled', 15) !!} پنل مدیریت</a>
             @endif
             <form method="post" action="{{ route('logout') }}" style="margin:0">

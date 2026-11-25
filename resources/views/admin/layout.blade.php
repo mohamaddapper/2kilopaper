@@ -478,6 +478,10 @@
         </div>
 
         <div style="display:flex;align-items:center;gap:12px;font-size:13px">
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:99px;background:rgba(2,132,199,0.08);border:1px solid rgba(2,132,199,0.2)">
+            <span style="font-weight:700;font-size:12.5px">{{ $u->name ?: $u->phone }}</span>
+            <span style="font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;background:#fef3c7;color:#92400e">{{ $u->roleLabel() }}</span>
+          </div>
           <a href="{{ route('home') }}" target="_blank" style="color:#64748b;text-decoration:none;font-weight:600">مشاهده سایت ↗</a>
           <a href="{{ route('dashboard') }}" class="btn ghost small" style="padding:4px 12px;font-size:12.5px">میز کار من</a>
         </div>
