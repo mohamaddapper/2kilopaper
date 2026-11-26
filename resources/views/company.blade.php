@@ -894,7 +894,7 @@
 
   <!-- بخش شرکت‌های مشابه (اسلایدر ۶ تایی با چرخش خودکار) -->
   @if(isset($similarCompanies) && $similarCompanies->count())
-    <section class="similar-companies-section" style="margin-top:40px;padding-top:28px;border-top:1.5px dashed #e2e8f0">
+    <section class="similar-companies-section" style="margin-top:0;padding-top:20px;border-top:1.5px dashed #e2e8f0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
         <div>
           <h2 style="margin:0;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
