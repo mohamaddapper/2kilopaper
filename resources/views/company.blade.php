@@ -892,6 +892,25 @@
     </div>
   </div>
 
+  <!-- بخش شرکت‌های وابسته و هم‌گروه -->
+  @if(isset($affiliateCompanies) && $affiliateCompanies->count())
+    <section class="affiliate-companies-section" style="margin-top:0;padding-top:20px;margin-bottom:24px;border-top:1.5px dashed #e2e8f0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <h2 style="margin:0;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
+          <span>{!! svg_icon('building', 16) !!}</span>
+          <span>شرکت‌های وابسته</span>
+        </h2>
+        <span class="badge" style="background:#eef3f9;color:var(--primary);font-weight:700">{{ $affiliateCompanies->count() }} مجموعه مرتبط</span>
+      </div>
+
+      <div class="directory-grid">
+        @foreach($affiliateCompanies as $affiliate)
+          @include('partials.card', ['company' => $affiliate])
+        @endforeach
+      </div>
+    </section>
+  @endif
+
   <!-- بخش شرکت‌های مشابه (اسلایدر ۶ تایی با چرخش خودکار) -->
   @if(isset($similarCompanies) && $similarCompanies->count())
     <section class="similar-companies-section" style="margin-top:0;padding-top:20px;border-top:1.5px dashed #e2e8f0">

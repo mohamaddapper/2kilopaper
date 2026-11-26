@@ -225,7 +225,15 @@ class SiteController extends Controller
             $similarCompanies = $similarCompanies->concat($extraCompanies);
         }
 
-        return view('company', compact('company', 'similarCompanies'));
+        $affiliateCompanies = \Illuminate\Support\Facades\Schema::hasTable('company_affiliates')
+            ? $company->affiliates()
+                ->approved()
+                ->ranked()
+                ->with(['city', 'category', 'province', 'categories', 'bookmarks'])
+                ->get()
+            : collect();
+
+        return view('company', compact('company', 'similarCompanies', 'affiliateCompanies'));
     }
 
     public function legacyCompany(Company $company)

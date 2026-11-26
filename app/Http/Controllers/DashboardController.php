@@ -225,6 +225,10 @@ class DashboardController extends Controller
         }
         $c->categories()->sync($syncData);
 
+        if ($r->user()->isAdmin() && $r->has('affiliate_ids_present')) {
+            $c->syncAffiliates((array) $r->input('affiliate_ids', []), $r->boolean('affiliate_group_sync', true));
+        }
+
         $selectedPlan = $r->input('selected_plan');
         if (in_array($selectedPlan, ['3m', '6m', '12m'], true)) {
             $planLabels = ['3m' => 'اشتراک ۳ ماهه', '6m' => 'اشتراک ۶ ماهه', '12m' => 'اشتراک ۱ ساله'];
@@ -325,6 +329,10 @@ class DashboardController extends Controller
             $syncData[$data['category_id']] = ['is_primary' => true];
         }
         $company->categories()->sync($syncData);
+
+        if ($r->user()->isAdmin() && $r->has('affiliate_ids_present')) {
+            $company->syncAffiliates((array) $r->input('affiliate_ids', []), $r->boolean('affiliate_group_sync', true));
+        }
 
         $returnTo = (string) ($r->input('return_to') ?: $r->input('redirect_to', ''));
         if ($returnTo !== '') {
@@ -536,6 +544,38 @@ class DashboardController extends Controller
                 ->values();
         }
 
+        $affiliateCompaniesList = collect();
+        $selectedAffiliates = collect();
+        if (auth()->check() && auth()->user()->isAdmin() && \Illuminate\Support\Facades\Schema::hasTable('company_affiliates')) {
+            $affiliateCompaniesList = Company::with('city:id,name')
+                ->when($company->exists, fn($q) => $q->where('id', '!=', $company->id))
+                ->orderBy('name')
+                ->get(['id', 'name', 'city_id'])
+                ->map(fn($item) => [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'city' => $item->city?->name ?? '',
+                ])
+                ->values();
+
+            $oldAffIds = old('affiliate_ids');
+            if (is_array($oldAffIds)) {
+                $affIds = array_values(array_unique(array_filter(array_map('intval', $oldAffIds))));
+                $selectedAffiliates = $affiliateCompaniesList->whereIn('id', $affIds)->values();
+            } elseif ($company->exists) {
+                $selectedAffiliates = $company->affiliates()
+                    ->with('city:id,name')
+                    ->orderBy('name')
+                    ->get(['companies.id', 'companies.name', 'companies.city_id'])
+                    ->map(fn($item) => [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'city' => $item->city?->name ?? '',
+                    ])
+                    ->values();
+            }
+        }
+
         return [
             'company' => $company,
             'provinces' => $provinces,
@@ -546,6 +586,8 @@ class DashboardController extends Controller
             'categoriesFlat' => $categoriesFlat,
             'selectedCategories' => $selectedCategories,
             'initialPillarId' => $initialPillarId,
+            'affiliateCompaniesList' => $affiliateCompaniesList,
+            'selectedAffiliates' => $selectedAffiliates,
         ];
     }
 

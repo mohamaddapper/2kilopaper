@@ -67,6 +67,65 @@ class Company extends Model
     public function city() { return $this->belongsTo(City::class); }
     public function jobPostings() { return $this->hasMany(JobPosting::class); }
     public function bookmarks() { return $this->hasMany(CompanyBookmark::class); }
+    public function affiliates() { return $this->belongsToMany(Company::class, 'company_affiliates', 'company_id', 'affiliate_id'); }
+
+    /**
+     * همگام‌سازی دوطرفه (و در صورت نیاز گروهی) شرکت‌های وابسته
+     */
+    public function syncAffiliates(array $affiliateIds, bool $groupSync = true): void
+    {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('company_affiliates')) {
+            return;
+        }
+
+        $targetIds = array_values(array_unique(array_filter(array_map('intval', $affiliateIds), fn($id) => $id > 0 && $id !== $this->id)));
+
+        $existingIds = \Illuminate\Support\Facades\DB::table('company_affiliates')
+            ->where('company_id', $this->id)
+            ->pluck('affiliate_id')
+            ->map(fn($v) => (int) $v)
+            ->all();
+
+        $removedIds = array_diff($existingIds, $targetIds);
+        if (!empty($removedIds)) {
+            \Illuminate\Support\Facades\DB::table('company_affiliates')
+                ->where('company_id', $this->id)
+                ->whereIn('affiliate_id', $removedIds)
+                ->delete();
+            \Illuminate\Support\Facades\DB::table('company_affiliates')
+                ->whereIn('company_id', $removedIds)
+                ->where('affiliate_id', $this->id)
+                ->delete();
+        }
+
+        if (empty($targetIds)) {
+            return;
+        }
+
+        $now = now();
+        $pairs = [];
+        $group = $groupSync ? array_values(array_unique(array_merge([$this->id], $targetIds))) : null;
+
+        if ($group !== null) {
+            foreach ($group as $a) {
+                foreach ($group as $b) {
+                    if ($a === $b) {
+                        continue;
+                    }
+                    $pairs[] = ['company_id' => $a, 'affiliate_id' => $b, 'created_at' => $now, 'updated_at' => $now];
+                }
+            }
+        } else {
+            foreach ($targetIds as $tid) {
+                $pairs[] = ['company_id' => $this->id, 'affiliate_id' => $tid, 'created_at' => $now, 'updated_at' => $now];
+                $pairs[] = ['company_id' => $tid, 'affiliate_id' => $this->id, 'created_at' => $now, 'updated_at' => $now];
+            }
+        }
+
+        foreach (array_chunk($pairs, 200) as $chunk) {
+            \Illuminate\Support\Facades\DB::table('company_affiliates')->insertOrIgnore($chunk);
+        }
+    }
 
     public function isBookmarkedBy(?User $user): bool
     {

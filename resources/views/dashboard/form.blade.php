@@ -368,6 +368,109 @@
             <span style="display:block;font-size:11.5px;color:#64748b;margin-top:3px">برای واگذاری یا انتقال شرکت به اکانت کاربری مشخص</span>
           </div>
         </div>
+
+        <!-- مدیریت شرکت‌های وابسته (هلدینگ / زیرمجموعه) -->
+        <div style="margin-top:18px;padding-top:16px;border-top:1px dashed #7dd3fc">
+          <input type="hidden" name="affiliate_ids_present" value="1">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+            <label for="affiliate_search_input" style="font-weight:800;font-size:13.5px;color:#0369a1;margin:0;display:flex;align-items:center;gap:6px">
+              {!! svg_icon('link', 15) !!} شرکت‌های وابسته و هم‌گروه (هلدینگ / زیرمجموعه‌ها)
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#0f172a;font-weight:600;cursor:pointer;margin:0">
+              <input type="checkbox" name="affiliate_group_sync" value="1" checked>
+              <span>همگام‌سازی گروهی (همه اعضای انتخاب‌شده دوطرفه به هم وصل شوند)</span>
+            </label>
+          </div>
+          <p style="margin:0 0 8px;font-size:12px;color:#475569">
+            نام شرکت‌های مرتبط را جستجو و انتخاب کنید تا در بخش «شرکت‌های وابسته» پایین صفحهٔ یکدیگر نمایش داده شوند.
+          </p>
+
+          <div style="position:relative">
+            <input type="text" id="affiliate_search_input" placeholder="جستجوی نام شرکت..." autocomplete="off" style="width:100%;padding:9px 12px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-family:inherit;font-size:13.5px">
+            <div id="affiliate_search_dropdown" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:60;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 25px rgba(15,23,42,0.12);max-height:240px;overflow-y:auto;margin-top:4px"></div>
+          </div>
+
+          <div id="affiliate_tags_wrap" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+          <div id="affiliate_hidden_inputs"></div>
+        </div>
+
+        <script>
+          (function() {
+            const allAffCompanies = @json($affiliateCompaniesList ?? []);
+            let selectedAffs = @json($selectedAffiliates ?? []);
+            const inputEl = document.getElementById('affiliate_search_input');
+            const ddEl = document.getElementById('affiliate_search_dropdown');
+            const tagsEl = document.getElementById('affiliate_tags_wrap');
+            const hiddenEl = document.getElementById('affiliate_hidden_inputs');
+
+            function renderAffiliates() {
+              if (!tagsEl || !hiddenEl) return;
+              tagsEl.innerHTML = '';
+              hiddenEl.innerHTML = '';
+              selectedAffs.forEach(item => {
+                const tag = document.createElement('span');
+                tag.style.cssText = 'display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #38bdf8;color:#0369a1;padding:4px 10px;border-radius:99px;font-size:12.5px;font-weight:700';
+                tag.innerHTML = `<span>${item.name}${item.city ? ' (' + item.city + ')' : ''}</span><button type="button" style="border:0;background:transparent;color:#dc2626;cursor:pointer;font-size:15px;line-height:1;padding:0 2px" aria-label="حذف">×</button>`;
+                tag.querySelector('button').addEventListener('click', () => {
+                  selectedAffs = selectedAffs.filter(x => x.id !== item.id);
+                  renderAffiliates();
+                });
+                tagsEl.appendChild(tag);
+
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'affiliate_ids[]';
+                inp.value = item.id;
+                hiddenEl.appendChild(inp);
+              });
+            }
+
+            function showDropdown(q) {
+              if (!ddEl) return;
+              const term = (q || '').trim().toLowerCase();
+              if (!term) {
+                ddEl.style.display = 'none';
+                return;
+              }
+              const selectedIds = new Set(selectedAffs.map(x => x.id));
+              const matches = allAffCompanies
+                .filter(c => !selectedIds.has(c.id) && (c.name || '').toLowerCase().includes(term))
+                .slice(0, 20);
+
+              if (!matches.length) {
+                ddEl.innerHTML = '<div style="padding:10px 12px;font-size:12.5px;color:#64748b">شرکتی با این نام پیدا نشد.</div>';
+              } else {
+                ddEl.innerHTML = '';
+                matches.forEach(c => {
+                  const row = document.createElement('div');
+                  row.style.cssText = 'padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center';
+                  row.innerHTML = `<b>${c.name}</b><span style="font-size:11.5px;color:#64748b">${c.city || ''}</span>`;
+                  row.addEventListener('mouseenter', () => { row.style.background = '#f0f9ff'; });
+                  row.addEventListener('mouseleave', () => { row.style.background = '#fff'; });
+                  row.addEventListener('click', () => {
+                    selectedAffs.push(c);
+                    renderAffiliates();
+                    inputEl.value = '';
+                    ddEl.style.display = 'none';
+                  });
+                  ddEl.appendChild(row);
+                });
+              }
+              ddEl.style.display = 'block';
+            }
+
+            if (inputEl) {
+              inputEl.addEventListener('input', e => showDropdown(e.target.value));
+              document.addEventListener('click', e => {
+                if (ddEl && !ddEl.contains(e.target) && e.target !== inputEl) {
+                  ddEl.style.display = 'none';
+                }
+              });
+            }
+
+            renderAffiliates();
+          })();
+        </script>
       </div>
     @endif
 
