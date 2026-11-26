@@ -894,8 +894,8 @@
 
   <!-- بخش شرکت‌های وابسته و هم‌گروه -->
   @if(isset($affiliateCompanies) && $affiliateCompanies->count())
-    <section class="affiliate-companies-section" style="margin-top:0;padding-top:20px;margin-bottom:24px;border-top:1.5px dashed #e2e8f0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <section class="affiliate-companies-section" style="margin-top:0;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
         <h2 style="margin:0;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
           <span>{!! svg_icon('building', 16) !!}</span>
           <span>شرکت‌های وابسته</span>
@@ -903,18 +903,32 @@
         <span class="badge" style="background:#eef3f9;color:var(--primary);font-weight:700">{{ $affiliateCompanies->count() }} مجموعه مرتبط</span>
       </div>
 
-      <div class="directory-grid">
-        @foreach($affiliateCompanies as $affiliate)
-          @include('partials.card', ['company' => $affiliate])
-        @endforeach
+      <div class="company-carousel-wrap" data-carousel="affiliates">
+        <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCarouselRow('carousel-affiliates', -1)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+
+        <div class="company-carousel-viewport" id="carousel-affiliates">
+          <div class="company-carousel-track">
+            @foreach($affiliateCompanies as $affiliate)
+              <div class="company-carousel-slide">
+                @include('partials.card', ['company' => $affiliate])
+              </div>
+            @endforeach
+          </div>
+        </div>
+
+        <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCarouselRow('carousel-affiliates', 1)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
       </div>
     </section>
   @endif
 
   <!-- بخش شرکت‌های مشابه (اسلایدر ۶ تایی با چرخش خودکار) -->
   @if(isset($similarCompanies) && $similarCompanies->count())
-    <section class="similar-companies-section" style="margin-top:0;padding-top:20px;border-top:1.5px dashed #e2e8f0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <section class="similar-companies-section" style="margin-top:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
         <div>
           <h2 style="margin:0;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
             <span>{!! svg_icon('factory', 15) !!}</span>
@@ -930,7 +944,7 @@
       </div>
 
       <div class="company-carousel-wrap" data-carousel="similar">
-        <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideSimilarRow(-1)">
+        <button type="button" class="company-carousel-nav-btn prev-btn" aria-label="قبلی" onclick="slideCarouselRow('carousel-similar', -1)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
 
@@ -944,12 +958,14 @@
           </div>
         </div>
 
-        <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideSimilarRow(1)">
+        <button type="button" class="company-carousel-nav-btn next-btn" aria-label="بعدی" onclick="slideCarouselRow('carousel-similar', 1)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
       </div>
     </section>
+  @endif
 
+  @if((isset($affiliateCompanies) && $affiliateCompanies->count()) || (isset($similarCompanies) && $similarCompanies->count()))
     <style>
     /* استایل‌های کاروسل ۶ تایی شرکت‌های مشابه */
     .company-carousel-wrap {
@@ -1054,8 +1070,8 @@
   @endif
 
   <script>
- function slideSimilarRow(dir) {
- const vp = document.getElementById('carousel-similar');
+ function slideCarouselRow(carouselId, dir) {
+ const vp = document.getElementById(carouselId);
  if (!vp) return;
  const slide = vp.querySelector('.company-carousel-slide');
  const step = slide ? (slide.offsetWidth + 14) : 200;
@@ -1083,16 +1099,22 @@
  }
  }
 
- // راه‌اندازی چرخش خودکار اسلایدر شرکت‌های مشابه
+ // راه‌اندازی چرخش خودکار اسلایدرها (در صورت نیاز به اسکرول)
  document.addEventListener('DOMContentLoaded', function () {
- const wrap = document.querySelector('.company-carousel-wrap[data-carousel="similar"]');
- if (!wrap) return;
+ document.querySelectorAll('.company-carousel-wrap[data-carousel]').forEach(wrap => {
+ const vp = wrap.querySelector('.company-carousel-viewport');
+ if (!vp) return;
+ const isScrollable = (vp.scrollWidth - vp.clientWidth) > 5;
+ if (!isScrollable) {
+ wrap.querySelectorAll('.company-carousel-nav-btn').forEach(b => { b.style.display = 'none'; });
+ return;
+ }
 
  let timer = null;
  function startAutoScroll() {
  if (timer) clearInterval(timer);
  timer = setInterval(() => {
- slideSimilarRow(1);
+ slideCarouselRow(vp.id, 1);
  }, 3500);
  }
 
@@ -1111,6 +1133,7 @@
  }, { passive: true });
 
  startAutoScroll();
+ });
  });
  function copyShortLink() {
  const input = document.getElementById('short_link_input');
