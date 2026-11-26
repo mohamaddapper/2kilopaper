@@ -27,6 +27,14 @@
 
   @php
  $isBookmarked = auth()->check() && $company->isBookmarkedBy(auth()->user());
+ $bookmarksCount = $company->bookmarks()->count();
+ $tier = $company->activeTier();
+ $headBorderStyle = match($tier) {
+ 'gold' => 'border:1.5px solid #f59e0b;box-shadow:0 4px 16px rgba(245, 158, 11, 0.12);',
+ 'silver' => 'border:1.5px solid #94a3b8;box-shadow:0 4px 16px rgba(100, 116, 139, 0.1);',
+ 'bronze' => 'border:1.5px solid #d97706;box-shadow:0 4px 16px rgba(217, 119, 6, 0.1);',
+ default => 'border:1px solid var(--border);',
+ };
  try {
  $activeJobs = \Illuminate\Support\Facades\Schema::hasTable('job_postings')
  ? $company->jobPostings()->active()->latest()->get()
@@ -72,14 +80,16 @@
   <style>
     @media (max-width: 640px) {
       .company-header-logo {
-        width: 130px !important;
-        height: 130px !important;
+        width: 50% !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1;
+        margin: 0 auto;
       }
     }
   </style>
 
   <!-- هدر پروفایل شرکت -->
-  <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px">
+  <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:24px">
     <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
       @if($company->logo)
         <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:8px">
@@ -118,6 +128,7 @@
           <span>{!! svg_icon('calendar', 15) !!} <b>تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
         @endif
         <span>{!! svg_icon('eye', 15) !!} <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.18em;flex-shrink:0"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> <b>ذخیره:</b> <span id="header-bookmarks-count">{{ number_format($bookmarksCount) }}</span></span>
       </div>
 
       <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت به تفکیک نقش -->
@@ -198,7 +209,8 @@
     <div>
       <!-- برچسب‌های خدمات و محصولات تخصصی (در ستون راست) -->
       @if($company->services && count($company->services) > 0)
-        <div class="card" style="margin-bottom:20px;padding:14px 18px">
+        <div class="card" style="margin-bottom:20px">
+          <h3 style="margin-top:0;font-size:17px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px">{!! svg_icon('box', 16) !!} خدمات و محصولات تخصصی</h3>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             @foreach($company->services as $srv)
               <span class="badge" style="background:#eef3f9;color:#1e3a8a;font-size:13px;padding:5px 12px;border:1px solid #dbeafe">{{ $srv }}</span>
@@ -709,38 +721,47 @@
 
             @if(data_get($company->contacts, 'ceo_name'))
               <li style="padding:9px 0;border-bottom:1px dashed var(--border)">
-                <div style="color:var(--muted);font-size:13.5px;margin-bottom:2px">مدیرعامل:</div>
-                <b style="font-size:15.5px">{{ data_get($company->contacts, 'ceo_name') }}</b>
-                @if(data_get($company->contacts, 'ceo_phone'))
-                  <div style="margin-top:3px"><a href="tel:{{ data_get($company->contacts, 'ceo_phone') }}" style="font-size:14.5px;font-weight:700">{{ data_get($company->contacts, 'ceo_phone') }}</a></div>
-                @endif
+                <div style="color:var(--muted);font-size:13.5px;margin-bottom:4px">مدیرعامل:</div>
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:15.5px;font-weight:700">
+                  <span>{{ data_get($company->contacts, 'ceo_name') }}</span>
+                  @if(data_get($company->contacts, 'ceo_phone'))
+                    <span style="color:#cbd5e1;font-size:14px">●</span>
+                    <a href="tel:{{ data_get($company->contacts, 'ceo_phone') }}" dir="ltr" style="font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'ceo_phone') }}</span></a>
+                  @endif
+                </div>
               </li>
             @endif
 
             @if(data_get($company->contacts, 'sales_name'))
               <li style="padding:9px 0;border-bottom:1px dashed var(--border)">
-                <div style="color:var(--muted);font-size:13.5px;margin-bottom:2px">مدیر فروش:</div>
-                <b style="font-size:15.5px">{{ data_get($company->contacts, 'sales_name') }}</b>
-                @if(data_get($company->contacts, 'sales_phone'))
-                  <div style="margin-top:3px"><a href="tel:{{ data_get($company->contacts, 'sales_phone') }}" style="color:#059669;font-weight:700;font-size:14.5px">{!! svg_icon('phone', 15) !!} {{ data_get($company->contacts, 'sales_phone') }}</a></div>
-                @endif
+                <div style="color:var(--muted);font-size:13.5px;margin-bottom:4px">مدیر فروش:</div>
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:15.5px;font-weight:700">
+                  <span>{{ data_get($company->contacts, 'sales_name') }}</span>
+                  @if(data_get($company->contacts, 'sales_phone'))
+                    <span style="color:#cbd5e1;font-size:14px">●</span>
+                    <a href="tel:{{ data_get($company->contacts, 'sales_phone') }}" dir="ltr" style="color:#059669;font-weight:700;font-size:15.5px;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'sales_phone') }}</span></a>
+                  @endif
+                </div>
               </li>
             @endif
 
             @if(data_get($company->contacts, 'purchase_name'))
               <li style="padding:9px 0;border-bottom:1px dashed var(--border)">
-                <div style="color:var(--muted);font-size:13.5px;margin-bottom:2px">مسئول خرید / تدارکات:</div>
-                <b style="font-size:15.5px">{{ data_get($company->contacts, 'purchase_name') }}</b>
-                @if(data_get($company->contacts, 'purchase_phone'))
-                  <div style="margin-top:3px"><a href="tel:{{ data_get($company->contacts, 'purchase_phone') }}" style="font-size:14.5px;font-weight:700">{{ data_get($company->contacts, 'purchase_phone') }}</a></div>
-                @endif
+                <div style="color:var(--muted);font-size:13.5px;margin-bottom:4px">مسئول خرید / تدارکات:</div>
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:15.5px;font-weight:700">
+                  <span>{{ data_get($company->contacts, 'purchase_name') }}</span>
+                  @if(data_get($company->contacts, 'purchase_phone'))
+                    <span style="color:#cbd5e1;font-size:14px">●</span>
+                    <a href="tel:{{ data_get($company->contacts, 'purchase_phone') }}" dir="ltr" style="font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'purchase_phone') }}</span></a>
+                  @endif
+                </div>
               </li>
             @endif
 
             @if(data_get($company->contacts, 'support_mobile'))
               <li style="padding:9px 0">
-                <div style="color:var(--muted);font-size:13.5px;margin-bottom:2px">همراه پشتیبانی:</div>
-                <a href="tel:{{ data_get($company->contacts, 'support_mobile') }}" style="font-size:14.5px;font-weight:700">{{ data_get($company->contacts, 'support_mobile') }}</a>
+                <div style="color:var(--muted);font-size:13.5px;margin-bottom:4px">همراه پشتیبانی:</div>
+                <a href="tel:{{ data_get($company->contacts, 'support_mobile') }}" dir="ltr" style="font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'support_mobile') }}</span></a>
               </li>
             @endif
           </ul>
@@ -855,10 +876,10 @@
           </div>
 
           <div style="display:flex;align-items:center;gap:6px">
-            <label for="short_link_input" style="font-size:13.5px;font-weight:700;color:#334155;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;margin:0">
-              {!! svg_icon('link', 14) !!} لینک کوتاه:
+            <label for="short_link_input" style="font-size:14px;font-weight:700;color:#334155;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;margin:0">
+              {!! svg_icon('link', 14) !!} لینک کوتاه
             </label>
-            <input type="text" id="short_link_input" value="{{ $shortDisplayUrl }}" data-copy-url="{{ $shortCopyUrl }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 8px;border-radius:6px;font-size:12.5px;flex:1;min-width:0;color:#1e293b;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;box-sizing:border-box">
+            <input type="text" id="short_link_input" value="{{ $shortDisplayUrl }}" data-copy-url="{{ $shortCopyUrl }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:7px 9px;border-radius:6px;font-size:14px;flex:1;min-width:0;color:#1e293b;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;box-sizing:border-box">
             <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" title="کپی لینک کوتاه" aria-label="کپی لینک کوتاه" style="background:#0284c7;color:#fff;padding:7px 10px;cursor:pointer;flex-shrink:0;border-radius:6px;display:inline-flex;align-items:center;justify-content:center">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
@@ -1149,6 +1170,11 @@
  })
  .then(data => {
  if (!data) return;
+ const countEl = document.getElementById('header-bookmarks-count');
+ if (countEl) {
+ const cur = parseInt((countEl.textContent || '0').replace(/[^\d]/g, ''), 10) || 0;
+ countEl.textContent = (data.saved ? cur + 1 : Math.max(0, cur - 1)).toLocaleString('en-US');
+ }
  if (data.saved) {
  if (headBtn) {
  headBtn.style.background = '#f0fdf4';
