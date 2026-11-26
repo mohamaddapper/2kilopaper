@@ -83,130 +83,130 @@
         width: 50% !important;
         height: auto !important;
         aspect-ratio: 1 / 1;
-        margin: 0 auto;
+        margin: 0;
+        align-self: flex-start;
       }
     }
   </style>
-
-  <!-- هدر پروفایل شرکت -->
-  <div class="company-head" style="margin-bottom:20px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:24px">
-    <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
-      @if($company->logo)
-        <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:8px">
-      @else
-        <span style="font-size:52px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
-      @endif
-    </div>
-
-    <div style="flex:1;min-width:220px">
-      <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
-
-      @if($company->activeTier() || $activeJobs->count() > 0)
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
-          @if($company->activeTier() === 'gold')
-            <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} طلایی</span>
-          @elseif($company->activeTier() === 'silver')
-            <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} نقره‌ای</span>
-          @elseif($company->activeTier() === 'bronze')
-            <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} برنزی</span>
-          @endif
-          @if($activeJobs->count() > 0)
-            <a href="#company-jobs-section" class="badge" style="background:#dcfce7;color:#15803d;border:1px solid #86efac;font-size:13px;padding:3px 12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px">
-              {!! svg_icon('briefcase', 14) !!} در حال استخدام
-            </a>
-          @endif
-        </div>
-      @endif
-
-      @if($company->slogan)
-        <p style="margin:6px 0;font-size:15px;color:var(--primary);font-weight:600">{{ $company->slogan }}</p>
-      @endif
-
-      <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:8px;flex-wrap:wrap;align-items:center">
-        <span>{!! svg_icon('map-pin', 15) !!} {{ $company->city->name }}</span>
-        @if(data_get($company->tech_specs, 'established_year'))
-          <span>{!! svg_icon('calendar', 15) !!} <b>تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
-        @endif
-        <span>{!! svg_icon('eye', 15) !!} <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
-        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.18em;flex-shrink:0"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> <b>ذخیره:</b> <span id="header-bookmarks-count">{{ number_format($bookmarksCount) }}</span></span>
-      </div>
-
-      <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت به تفکیک نقش -->
-      @php $roleGroups = $company->groupedCategories(); @endphp
-      @if(!empty($roleGroups))
-        <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
-          @foreach($roleGroups as $group)
-            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <span class="badge" style="background:{{ $group['bg'] }};color:{{ $group['color'] }};border:1px solid {{ $group['border'] }};font-weight:800;font-size:12px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px">
-                <span style="display:inline-flex;align-items:center">{!! $group['icon'] !!}</span>
-                <span>{{ $group['label'] }}</span>
-              </span>
-              @foreach($group['items'] as $catItem)
-                <a href="{{ $catItem['url'] ?? route('directory', ['cat' => $catItem['id']]) }}"
-                   class="badge"
-                   style="@if($catItem['is_primary']) background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd; @else background:#f8fafc;color:#334155;border:1px solid #e2e8f0; @endif text-decoration:none;font-size:12px;padding:3px 10px">
-                  {{ $catItem['name'] }}
-                </a>
-              @endforeach
-            </div>
-          @endforeach
-        </div>
-      @endif
-    </div>
-  </div>
-
-  <!-- نوار دکمه‌های اقدام (راست‌چین: ذخیره، ثبت نظر و در انتها آیکن‌های ویرایش/حذف) -->
-  @php $canManage = auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()); @endphp
-  <div style="display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:18px">
-    <button type="button"
-            onclick="toggleBookmark()"
-            id="bookmark-btn-head"
-            class="btn ghost small"
-            title="{{ $isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'ذخیره شرکت' }}"
-            style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.2s ease;{{ $isBookmarked ? 'background:#f0fdf4;color:#166534;border:1.5px solid #86efac' : 'background:#fff;color:#475569;border:1.5px solid #cbd5e1' }}">
-      <svg id="bookmark-icon-head" width="15" height="15" viewBox="0 0 24 24" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:{{ $isBookmarked ? '#16a34a' : '#64748b' }}"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-      <span id="bookmark-text-head">{{ $isBookmarked ? 'ذخیره شده' : 'ذخیره' }}</span>
-    </button>
-
-    <button type="button"
-            onclick="openCommentNotice()"
-            class="btn ghost small"
-            style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#fff;color:#475569;border:1.5px solid #cbd5e1">
-      {!! svg_icon('message', 15) !!}
-      <span>ثبت نظر</span>
-    </button>
-
-    @if($canManage)
-      <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}"
-         class="btn small"
-         title="ویرایش اطلاعات این شرکت"
-         aria-label="ویرایش اطلاعات این شرکت"
-         style="background:#0284c7;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center">
-        {!! svg_icon('edit', 16) !!}
-      </a>
-      <form method="POST" action="{{ route('companies.destroy', $company) }}" style="display:inline;margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($company->name) }}» اطمینان دارید؟ این عملیات قابل بازگشت نیست.')">
-        @csrf
-        @method('DELETE')
-        <input type="hidden" name="redirect_to" value="directory">
-        <button type="submit"
-                class="btn small"
-                title="حذف شرکت"
-                aria-label="حذف شرکت"
-                style="background:#dc2626;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer">
-          {!! svg_icon('trash', 16) !!}
-        </button>
-      </form>
-    @endif
-  </div>
-  <div id="comment-notice-box" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:13px;font-weight:600">
-    بخش ثبت نظرات و امتیازدهی کاربران به‌زودی در این صفحه فعال می‌شود.
-  </div>
 
   <!-- چیدمان دو ستونه محتوا -->
   <div class="company-content-grid">
     
     <!-- ستون اصلی (راست) -->
     <div>
+      <!-- هدر پروفایل شرکت -->
+      <div class="company-head" style="margin-bottom:16px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:22px">
+        <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
+          @if($company->logo)
+            <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:8px">
+          @else
+            <span style="font-size:52px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
+          @endif
+        </div>
+
+        <div style="flex:1;min-width:220px">
+          <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
+
+          @if($company->activeTier() || $activeJobs->count() > 0)
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
+              @if($company->activeTier() === 'gold')
+                <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} طلایی</span>
+              @elseif($company->activeTier() === 'silver')
+                <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} نقره‌ای</span>
+              @elseif($company->activeTier() === 'bronze')
+                <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} برنزی</span>
+              @endif
+              @if($activeJobs->count() > 0)
+                <a href="#company-jobs-section" class="badge" style="background:#dcfce7;color:#15803d;border:1px solid #86efac;font-size:13px;padding:3px 12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px">
+                  {!! svg_icon('briefcase', 14) !!} در حال استخدام
+                </a>
+              @endif
+            </div>
+          @endif
+
+          @if($company->slogan)
+            <p style="margin:6px 0;font-size:15px;color:var(--primary);font-weight:600">{{ $company->slogan }}</p>
+          @endif
+
+          <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:8px;flex-wrap:wrap;align-items:center">
+            <span>{!! svg_icon('map-pin', 15) !!} {{ $company->city->name }}</span>
+            @if(data_get($company->tech_specs, 'established_year'))
+              <span>{!! svg_icon('calendar', 15) !!} <b>تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
+            @endif
+            <span>{!! svg_icon('eye', 15) !!} <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
+            <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.18em;flex-shrink:0"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> <b>ذخیره:</b> <span id="header-bookmarks-count">{{ number_format($bookmarksCount) }}</span></span>
+          </div>
+
+          <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت به تفکیک نقش -->
+          @php $roleGroups = $company->groupedCategories(); @endphp
+          @if(!empty($roleGroups))
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
+              @foreach($roleGroups as $group)
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                  <span class="badge" style="background:{{ $group['bg'] }};color:{{ $group['color'] }};border:1px solid {{ $group['border'] }};font-weight:800;font-size:12px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px">
+                    <span style="display:inline-flex;align-items:center">{!! $group['icon'] !!}</span>
+                    <span>{{ $group['label'] }}</span>
+                  </span>
+                  @foreach($group['items'] as $catItem)
+                    <a href="{{ $catItem['url'] ?? route('directory', ['cat' => $catItem['id']]) }}"
+                       class="badge"
+                       style="@if($catItem['is_primary']) background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd; @else background:#f8fafc;color:#334155;border:1px solid #e2e8f0; @endif text-decoration:none;font-size:12px;padding:3px 10px">
+                      {{ $catItem['name'] }}
+                    </a>
+                  @endforeach
+                </div>
+              @endforeach
+            </div>
+          @endif
+        </div>
+      </div>
+
+      <!-- نوار دکمه‌های اقدام (راست‌چین: ذخیره، ثبت نظر و در انتها آیکن‌های ویرایش/حذف) -->
+      @php $canManage = auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()); @endphp
+      <div style="display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+        <button type="button"
+                onclick="toggleBookmark()"
+                id="bookmark-btn-head"
+                class="btn ghost small"
+                title="{{ $isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'ذخیره شرکت' }}"
+                style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.2s ease;{{ $isBookmarked ? 'background:#f0fdf4;color:#166534;border:1.5px solid #86efac' : 'background:#fff;color:#475569;border:1.5px solid #cbd5e1' }}">
+          <svg id="bookmark-icon-head" width="15" height="15" viewBox="0 0 24 24" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:{{ $isBookmarked ? '#16a34a' : '#64748b' }}"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+          <span id="bookmark-text-head">{{ $isBookmarked ? 'ذخیره شده' : 'ذخیره' }}</span>
+        </button>
+
+        <button type="button"
+                onclick="openCommentNotice()"
+                class="btn ghost small"
+                style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#fff;color:#475569;border:1.5px solid #cbd5e1">
+          {!! svg_icon('message', 15) !!}
+          <span>ثبت نظر</span>
+        </button>
+
+        @if($canManage)
+          <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}"
+             class="btn small"
+             title="ویرایش اطلاعات این شرکت"
+             aria-label="ویرایش اطلاعات این شرکت"
+             style="background:#0284c7;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center">
+            {!! svg_icon('edit', 16) !!}
+          </a>
+          <form method="POST" action="{{ route('companies.destroy', $company) }}" style="display:inline;margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($company->name) }}» اطمینان دارید؟ این عملیات قابل بازگشت نیست.')">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="redirect_to" value="directory">
+            <button type="submit"
+                    class="btn small"
+                    title="حذف شرکت"
+                    aria-label="حذف شرکت"
+                    style="background:#dc2626;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer">
+              {!! svg_icon('trash', 16) !!}
+            </button>
+          </form>
+        @endif
+      </div>
+      <div id="comment-notice-box" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:13px;font-weight:600">
+        بخش ثبت نظرات و امتیازدهی کاربران به‌زودی در این صفحه فعال می‌شود.
+      </div>
       <!-- برچسب‌های خدمات و محصولات تخصصی (در ستون راست) -->
       @if($company->services && count($company->services) > 0)
         <div class="card" style="margin-bottom:20px">
@@ -627,12 +627,12 @@
                 @if(!empty($loc['phone']) || !empty($loc['phone2']))
                   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
                     @if(!empty($loc['phone']))
-                      <a href="tel:{{ $loc['phone'] }}" dir="ltr" class="btn ghost small" style="font-size:13px;padding:5px 12px;font-weight:700;display:inline-flex;align-items:center;gap:6px">
+                      <a href="tel:{{ $loc['phone'] }}" dir="ltr" class="btn ghost small" style="font-size:15px;padding:6px 12px;font-weight:700;display:inline-flex;align-items:center;gap:6px">
                         {!! svg_icon('phone', 15) !!} <span>{{ $loc['phone'] }}</span>
                       </a>
                     @endif
                     @if(!empty($loc['phone2']))
-                      <a href="tel:{{ $loc['phone2'] }}" dir="ltr" class="btn ghost small" style="font-size:13px;padding:5px 12px;font-weight:700;display:inline-flex;align-items:center;gap:6px">
+                      <a href="tel:{{ $loc['phone2'] }}" dir="ltr" class="btn ghost small" style="font-size:15px;padding:6px 12px;font-weight:700;display:inline-flex;align-items:center;gap:6px">
                         {!! svg_icon('phone', 15) !!} <span>{{ $loc['phone2'] }}</span>
                       </a>
                     @endif
@@ -684,8 +684,8 @@
         <div class="card" style="margin-bottom:20px;padding:16px">
           <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
             @foreach($phones as $pNum)
-              <a href="tel:{{ $pNum }}" dir="ltr" class="btn" style="text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 8px;font-size:12.5px;background:#0284c7;color:#fff;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-                {!! svg_icon('phone', 14) !!} <span>{{ $pNum }}</span>
+              <a href="tel:{{ $pNum }}" dir="ltr" class="btn" style="text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 8px;font-size:15px;background:#0284c7;color:#fff;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                {!! svg_icon('phone', 15) !!} <span>{{ $pNum }}</span>
               </a>
             @endforeach
             @if($company->email)
@@ -726,7 +726,7 @@
                   <span>{{ data_get($company->contacts, 'ceo_name') }}</span>
                   @if(data_get($company->contacts, 'ceo_phone'))
                     <span style="color:#cbd5e1;font-size:14px">●</span>
-                    <a href="tel:{{ data_get($company->contacts, 'ceo_phone') }}" dir="ltr" style="font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'ceo_phone') }}</span></a>
+                    <a href="tel:{{ data_get($company->contacts, 'ceo_phone') }}" dir="ltr" style="font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'ceo_phone') }}</span></a>
                   @endif
                 </div>
               </li>
@@ -739,7 +739,7 @@
                   <span>{{ data_get($company->contacts, 'sales_name') }}</span>
                   @if(data_get($company->contacts, 'sales_phone'))
                     <span style="color:#cbd5e1;font-size:14px">●</span>
-                    <a href="tel:{{ data_get($company->contacts, 'sales_phone') }}" dir="ltr" style="color:#059669;font-weight:700;font-size:15.5px;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'sales_phone') }}</span></a>
+                    <a href="tel:{{ data_get($company->contacts, 'sales_phone') }}" dir="ltr" style="color:#059669;font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'sales_phone') }}</span></a>
                   @endif
                 </div>
               </li>
@@ -752,7 +752,7 @@
                   <span>{{ data_get($company->contacts, 'purchase_name') }}</span>
                   @if(data_get($company->contacts, 'purchase_phone'))
                     <span style="color:#cbd5e1;font-size:14px">●</span>
-                    <a href="tel:{{ data_get($company->contacts, 'purchase_phone') }}" dir="ltr" style="font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'purchase_phone') }}</span></a>
+                    <a href="tel:{{ data_get($company->contacts, 'purchase_phone') }}" dir="ltr" style="font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'purchase_phone') }}</span></a>
                   @endif
                 </div>
               </li>
@@ -761,7 +761,7 @@
             @if(data_get($company->contacts, 'support_mobile'))
               <li style="padding:9px 0">
                 <div style="color:var(--muted);font-size:13.5px;margin-bottom:4px">همراه پشتیبانی:</div>
-                <a href="tel:{{ data_get($company->contacts, 'support_mobile') }}" dir="ltr" style="font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'support_mobile') }}</span></a>
+                <a href="tel:{{ data_get($company->contacts, 'support_mobile') }}" dir="ltr" style="font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:5px">{!! svg_icon('phone', 15) !!} <span>{{ data_get($company->contacts, 'support_mobile') }}</span></a>
               </li>
             @endif
           </ul>
@@ -846,16 +846,16 @@
                     $waUrl = 'https://wa.me/' . $waDigits;
                 }
               @endphp
-              <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="btn ghost small" style="text-align:center;border-color:#86efac;color:#15803d;background:#f0fdf4;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px">{!! svg_icon('message', 15) !!} <span>واتساپ</span></a>
+              <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="btn ghost small" style="text-align:center;border-color:#25D366;color:#15803d;background:#ecfdf5;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;font-weight:700">{!! svg_icon('message', 15) !!} <span>واتساپ</span></a>
             @endif
             @if(data_get($company->socials, 'instagram'))
-              <a href="https://instagram.com/{{ ltrim(data_get($company->socials, 'instagram'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px">{!! svg_icon('camera', 15) !!} <span>اینستاگرام</span></a>
+              <a href="https://instagram.com/{{ ltrim(data_get($company->socials, 'instagram'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center;border-color:#e1306c;color:#be185d;background:#fdf2f8;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;font-weight:700">{!! svg_icon('camera', 15) !!} <span>اینستاگرام</span></a>
             @endif
             @if(data_get($company->socials, 'telegram'))
-              <a href="https://t.me/{{ ltrim(data_get($company->socials, 'telegram'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px">{!! svg_icon('send', 15) !!} <span>تلگرام</span></a>
+              <a href="https://t.me/{{ ltrim(data_get($company->socials, 'telegram'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center;border-color:#0088cc;color:#0369a1;background:#f0f9ff;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;font-weight:700">{!! svg_icon('send', 15) !!} <span>تلگرام</span></a>
             @endif
             @if(data_get($company->socials, 'bale'))
-              <a href="{{ str_starts_with(data_get($company->socials, 'bale'), 'http') ? data_get($company->socials, 'bale') : 'https://ble.ir/' . ltrim(data_get($company->socials, 'bale'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px">{!! svg_icon('message', 15) !!} <span>بله / ایتا</span></a>
+              <a href="{{ str_starts_with(data_get($company->socials, 'bale'), 'http') ? data_get($company->socials, 'bale') : 'https://ble.ir/' . ltrim(data_get($company->socials, 'bale'), '@') }}" target="_blank" class="btn ghost small" style="text-align:center;border-color:#f97316;color:#c2410c;background:#fff7ed;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;font-weight:700">{!! svg_icon('message', 15) !!} <span>بله / ایتا</span></a>
             @endif
           </div>
         </div>
