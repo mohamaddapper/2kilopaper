@@ -27,6 +27,13 @@
 
   @php
  $isBookmarked = auth()->check() && $company->isBookmarkedBy(auth()->user());
+ try {
+ $activeJobs = \Illuminate\Support\Facades\Schema::hasTable('job_postings')
+ ? $company->jobPostings()->active()->latest()->get()
+ : collect();
+ } catch (\Throwable $e) {
+ $activeJobs = collect();
+ }
  @endphp
 
   <!-- بنرهای تبلیغاتی بالای صفحه (تنها برای شرکت‌های عادی / بدون اشتراک فعال نمایش داده می‌شود) -->
@@ -82,19 +89,24 @@
     </div>
 
     <div style="flex:1;min-width:220px">
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
-        @if($company->activeTier() === 'gold')
-          <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} ویژه طلایی</span>
-        @elseif($company->activeTier() === 'silver')
-          <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} ویژه نقره‌ای</span>
-        @elseif($company->activeTier() === 'bronze')
-          <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 15) !!} ویژه برنزی</span>
-        @endif
-        @if($company->activeSubscription())
-          <span class="badge ok" style="font-size:12.5px;padding:3px 11px">{!! svg_icon('check', 14) !!} {{ $company->subscriptionLabel() }}</span>
-        @endif
-      </div>
+      <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
+
+      @if($company->activeTier() || $activeJobs->count() > 0)
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
+          @if($company->activeTier() === 'gold')
+            <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} طلایی</span>
+          @elseif($company->activeTier() === 'silver')
+            <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} نقره‌ای</span>
+          @elseif($company->activeTier() === 'bronze')
+            <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} برنزی</span>
+          @endif
+          @if($activeJobs->count() > 0)
+            <a href="#company-jobs-section" class="badge" style="background:#dcfce7;color:#15803d;border:1px solid #86efac;font-size:13px;padding:3px 12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px">
+              {!! svg_icon('briefcase', 14) !!} در حال استخدام
+            </a>
+          @endif
+        </div>
+      @endif
 
       @if($company->slogan)
         <p style="margin:6px 0;font-size:15px;color:var(--primary);font-weight:600">{{ $company->slogan }}</p>
@@ -154,11 +166,6 @@
     </button>
 
     @if($canManage)
-      @if(auth()->user()->isAdmin())
-        <a href="{{ route('admin.companies') }}" class="btn ghost small" title="لیست همه شرکت‌ها" style="padding:7px 12px;font-size:12.5px;border-color:#0284c7;color:#0284c7;font-weight:700;display:inline-flex;align-items:center;gap:5px;border-radius:8px">
-          {!! svg_icon('building', 15) !!} <span>مدیریت شرکت‌ها</span>
-        </a>
-      @endif
       <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}"
          class="btn small"
          title="ویرایش اطلاعات این شرکت"
@@ -531,17 +538,8 @@
       </div>
 
       <!-- ۴. فرصت‌های شغلی فعال شرکت -->
-      @php
- try {
- $activeJobs = \Illuminate\Support\Facades\Schema::hasTable('job_postings')
- ? $company->jobPostings()->active()->latest()->get()
- : collect();
- } catch (\Throwable $e) {
- $activeJobs = collect();
- }
- @endphp
       @if($activeJobs->count() > 0)
-        <div class="card" style="margin-bottom:20px;border:1px solid #bae6fd;background:#f0f9ff">
+        <div id="company-jobs-section" class="card" style="margin-bottom:20px;border:1px solid #bae6fd;background:#f0f9ff">
           <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e0f2fe;padding-bottom:10px;margin-bottom:12px">
             <h3 style="margin:0;font-size:17px;color:#0369a1;display:flex;align-items:center;gap:6px">
               <span>{!! svg_icon('briefcase', 15) !!} فرصت‌های شغلی و استخدام فعال</span>
@@ -843,25 +841,27 @@
       @endif
 
       <!-- اطلاعات صفحه (تاریخ ایجاد و به‌روزرسانی در یک خط) -->
+      @php
+        $shortCopyUrl = rtrim(url('/'), '/') . '/?p=' . $company->id;
+        $shortDisplayUrl = preg_replace('~^https?://~', '', $shortCopyUrl);
+      @endphp
       <div class="card" style="margin-bottom:20px;padding:16px">
-        <h3 style="margin-top:0;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:8px">{!! svg_icon('info', 15) !!} اطلاعات صفحه</h3>
+        <h3 style="margin-top:0;font-size:16px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:8px">{!! svg_icon('info', 16) !!} اطلاعات صفحه</h3>
         
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:#475569;margin-top:10px">
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:14px;color:#475569;margin-top:10px">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px dashed var(--border)">
-            <span style="display:inline-flex;align-items:center;gap:4px">{!! svg_icon('calendar', 14) !!} ایجاد: <b style="color:var(--text)">{{ jalali_date($company->created_at) }}</b></span>
-            <span style="display:inline-flex;align-items:center;gap:4px">{!! svg_icon('clock', 14) !!} به‌روزرسانی: <b style="color:var(--text)">{{ jalali_date($company->updated_at) }}</b></span>
+            <span style="display:inline-flex;align-items:center;gap:4px">{!! svg_icon('calendar', 15) !!} ایجاد: <b style="color:var(--text)">{{ jalali_date($company->created_at) }}</b></span>
+            <span style="display:inline-flex;align-items:center;gap:4px">{!! svg_icon('clock', 15) !!} به‌روزرسانی: <b style="color:var(--text)">{{ jalali_date($company->updated_at) }}</b></span>
           </div>
 
-          <div style="margin-top:2px">
-            <label for="short_link_input" style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px">
-              {!! svg_icon('link', 15) !!} لینک کوتاه صفحه:
+          <div style="display:flex;align-items:center;gap:6px">
+            <label for="short_link_input" style="font-size:13.5px;font-weight:700;color:#334155;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;margin:0">
+              {!! svg_icon('link', 14) !!} لینک کوتاه:
             </label>
-            <div style="display:flex;gap:6px;align-items:center">
-              <input type="text" id="short_link_input" value="{{ url('/?p=' . $company->id) }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:7px 10px;border-radius:6px;font-size:12px;flex:1;min-width:0;color:#1e293b;font-family:inherit;box-sizing:border-box">
-              <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" title="کپی لینک کوتاه" aria-label="کپی لینک کوتاه" style="background:#0284c7;color:#fff;padding:7px 10px;cursor:pointer;flex-shrink:0;border-radius:6px;display:inline-flex;align-items:center;justify-content:center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              </button>
-            </div>
+            <input type="text" id="short_link_input" value="{{ $shortDisplayUrl }}" data-copy-url="{{ $shortCopyUrl }}" readonly style="direction:ltr;text-align:left;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 8px;border-radius:6px;font-size:12.5px;flex:1;min-width:0;color:#1e293b;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;box-sizing:border-box">
+            <button type="button" id="copy_short_link_btn" onclick="copyShortLink()" class="btn" title="کپی لینک کوتاه" aria-label="کپی لینک کوتاه" style="background:#0284c7;color:#fff;padding:7px 10px;cursor:pointer;flex-shrink:0;border-radius:6px;display:inline-flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -1075,11 +1075,10 @@
  const btn = document.getElementById('copy_short_link_btn');
  if (!input) return;
 
- input.select();
- input.setSelectionRange(0, 99999);
+ const fullUrl = input.getAttribute('data-copy-url') || input.value;
 
  if (navigator.clipboard && window.isSecureContext) {
- navigator.clipboard.writeText(input.value).then(() => {
+ navigator.clipboard.writeText(fullUrl).then(() => {
  onCopied();
  }).catch(() => {
  fallbackCopy();
@@ -1090,7 +1089,14 @@
 
  function fallbackCopy() {
  try {
+ const tmp = document.createElement('textarea');
+ tmp.value = fullUrl;
+ tmp.style.position = 'fixed';
+ tmp.style.opacity = '0';
+ document.body.appendChild(tmp);
+ tmp.select();
  document.execCommand('copy');
+ document.body.removeChild(tmp);
  onCopied();
  } catch (err) {
  alert('خطا در کپی خودکار لینک. لطفاً متن داخل کادر را به صورت دستی کپی نمایید.');
