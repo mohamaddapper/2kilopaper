@@ -78,6 +78,11 @@
   @endif
 
   <style>
+    @media (max-width: 860px) {
+      .company-content-grid {
+        row-gap: 0 !important;
+      }
+    }
     @media (max-width: 640px) {
       .company-head {
         flex-direction: column !important;
@@ -96,7 +101,7 @@
 
   <!-- هدر پروفایل شرکت -->
   <div class="company-head" style="margin-bottom:18px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:24px">
-    <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
+    <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
       @if($company->logo)
         <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block">
       @else
