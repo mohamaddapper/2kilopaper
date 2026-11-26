@@ -1099,28 +1099,23 @@
  }
  }
 
- // راه‌اندازی چرخش خودکار اسلایدرها
+ // راه‌اندازی چرخش خودکار اسلایدرها (فقط زمانی که بیشتر از یک ردیف باشند)
  document.addEventListener('DOMContentLoaded', function () {
  document.querySelectorAll('.company-carousel-wrap[data-carousel]').forEach(wrap => {
  const vp = wrap.querySelector('.company-carousel-viewport');
- const track = wrap.querySelector('.company-carousel-track');
- if (!vp || !track) return;
+ if (!vp) return;
 
  const isScrollable = (vp.scrollWidth - vp.clientWidth) > 5;
  if (!isScrollable) {
  wrap.querySelectorAll('.company-carousel-nav-btn').forEach(b => { b.style.display = 'none'; });
- if (track.children.length <= 1) return;
+ return;
  }
 
  let timer = null;
  function startAutoScroll() {
  if (timer) clearInterval(timer);
  timer = setInterval(() => {
- if ((vp.scrollWidth - vp.clientWidth) > 5) {
  slideCarouselRow(vp.id, 1);
- } else if (track.children.length > 1) {
- track.appendChild(track.firstElementChild);
- }
  }, 3500);
  }
 
