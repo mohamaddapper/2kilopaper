@@ -79,134 +79,140 @@
 
   <style>
     @media (max-width: 640px) {
+      .company-head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        text-align: right !important;
+      }
       .company-header-logo {
         width: 50% !important;
         height: auto !important;
         aspect-ratio: 1 / 1;
-        margin: 0;
-        align-self: flex-start;
+        margin: 0 !important;
+        align-self: flex-start !important;
       }
     }
   </style>
+
+  <!-- هدر پروفایل شرکت -->
+  <div class="company-head" style="margin-bottom:18px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:24px">
+    <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
+      @if($company->logo)
+        <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:8px">
+      @else
+        <span style="font-size:52px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
+      @endif
+    </div>
+
+    <div style="flex:1;min-width:220px">
+      <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
+
+      @if($company->activeTier() || $activeJobs->count() > 0)
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
+          @if($company->activeTier() === 'gold')
+            <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} طلایی</span>
+          @elseif($company->activeTier() === 'silver')
+            <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} نقره‌ای</span>
+          @elseif($company->activeTier() === 'bronze')
+            <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} برنزی</span>
+          @endif
+          @if($activeJobs->count() > 0)
+            <a href="#company-jobs-section" class="badge" style="background:#dcfce7;color:#15803d;border:1px solid #86efac;font-size:13px;padding:3px 12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px">
+              {!! svg_icon('briefcase', 14) !!} در حال استخدام
+            </a>
+          @endif
+        </div>
+      @endif
+
+      @if($company->slogan)
+        <p style="margin:6px 0;font-size:15px;color:var(--primary);font-weight:600">{{ $company->slogan }}</p>
+      @endif
+
+      <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:8px;flex-wrap:wrap;align-items:center">
+        <span>{!! svg_icon('map-pin', 15) !!} {{ $company->city->name }}</span>
+        @if(data_get($company->tech_specs, 'established_year'))
+          <span>{!! svg_icon('calendar', 15) !!} <b>تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
+        @endif
+        <span>{!! svg_icon('eye', 15) !!} <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.18em;flex-shrink:0"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> <b>ذخیره:</b> <span id="header-bookmarks-count">{{ number_format($bookmarksCount) }}</span></span>
+      </div>
+
+      <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت به تفکیک نقش -->
+      @php $roleGroups = $company->groupedCategories(); @endphp
+      @if(!empty($roleGroups))
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
+          @foreach($roleGroups as $group)
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="badge" style="background:{{ $group['bg'] }};color:{{ $group['color'] }};border:1px solid {{ $group['border'] }};font-weight:800;font-size:12px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px">
+                <span style="display:inline-flex;align-items:center">{!! $group['icon'] !!}</span>
+                <span>{{ $group['label'] }}</span>
+              </span>
+              @foreach($group['items'] as $catItem)
+                <a href="{{ $catItem['url'] ?? route('directory', ['cat' => $catItem['id']]) }}"
+                   class="badge"
+                   style="@if($catItem['is_primary']) background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd; @else background:#f8fafc;color:#334155;border:1px solid #e2e8f0; @endif text-decoration:none;font-size:12px;padding:3px 10px">
+                  {{ $catItem['name'] }}
+                </a>
+              @endforeach
+            </div>
+          @endforeach
+        </div>
+      @endif
+    </div>
+  </div>
+
+  <!-- نوار دکمه‌های اقدام (راست‌چین: ذخیره، ثبت نظر و در انتها آیکن‌های ویرایش/حذف) -->
+  @php $canManage = auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()); @endphp
+  <div style="display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+    <button type="button"
+            onclick="toggleBookmark()"
+            id="bookmark-btn-head"
+            class="btn ghost small"
+            title="{{ $isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'ذخیره شرکت' }}"
+            style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.2s ease;{{ $isBookmarked ? 'background:#f0fdf4;color:#166534;border:1.5px solid #86efac' : 'background:#fff;color:#475569;border:1.5px solid #cbd5e1' }}">
+      <svg id="bookmark-icon-head" width="15" height="15" viewBox="0 0 24 24" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:{{ $isBookmarked ? '#16a34a' : '#64748b' }}"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      <span id="bookmark-text-head">{{ $isBookmarked ? 'ذخیره شده' : 'ذخیره' }}</span>
+    </button>
+
+    <button type="button"
+            onclick="openCommentNotice()"
+            class="btn ghost small"
+            style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#fff;color:#475569;border:1.5px solid #cbd5e1">
+      {!! svg_icon('message', 15) !!}
+      <span>ثبت نظر</span>
+    </button>
+
+    @if($canManage)
+      <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}"
+         class="btn small"
+         title="ویرایش اطلاعات این شرکت"
+         aria-label="ویرایش اطلاعات این شرکت"
+         style="background:#0284c7;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center">
+        {!! svg_icon('edit', 16) !!}
+      </a>
+      <form method="POST" action="{{ route('companies.destroy', $company) }}" style="display:inline;margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($company->name) }}» اطمینان دارید؟ این عملیات قابل بازگشت نیست.')">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="redirect_to" value="directory">
+        <button type="submit"
+                class="btn small"
+                title="حذف شرکت"
+                aria-label="حذف شرکت"
+                style="background:#dc2626;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer">
+          {!! svg_icon('trash', 16) !!}
+        </button>
+      </form>
+    @endif
+  </div>
+  <div id="comment-notice-box" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:13px;font-weight:600">
+    بخش ثبت نظرات و امتیازدهی کاربران به‌زودی در این صفحه فعال می‌شود.
+  </div>
 
   <!-- چیدمان دو ستونه محتوا -->
   <div class="company-content-grid">
     
     <!-- ستون اصلی (راست) -->
     <div>
-      <!-- هدر پروفایل شرکت -->
-      <div class="company-head" style="margin-bottom:16px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:22px">
-        <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
-          @if($company->logo)
-            <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:8px">
-          @else
-            <span style="font-size:52px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
-          @endif
-        </div>
-
-        <div style="flex:1;min-width:220px">
-          <h1 style="margin:0;font-size:24px;color:var(--text)">{{ $company->name }}</h1>
-
-          @if($company->activeTier() || $activeJobs->count() > 0)
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
-              @if($company->activeTier() === 'gold')
-                <span class="badge gold" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} طلایی</span>
-              @elseif($company->activeTier() === 'silver')
-                <span class="badge silver" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} نقره‌ای</span>
-              @elseif($company->activeTier() === 'bronze')
-                <span class="badge bronze" style="font-size:13px;padding:3px 12px">{!! svg_icon('star-filled', 14) !!} برنزی</span>
-              @endif
-              @if($activeJobs->count() > 0)
-                <a href="#company-jobs-section" class="badge" style="background:#dcfce7;color:#15803d;border:1px solid #86efac;font-size:13px;padding:3px 12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:5px">
-                  {!! svg_icon('briefcase', 14) !!} در حال استخدام
-                </a>
-              @endif
-            </div>
-          @endif
-
-          @if($company->slogan)
-            <p style="margin:6px 0;font-size:15px;color:var(--primary);font-weight:600">{{ $company->slogan }}</p>
-          @endif
-
-          <div style="display:flex;gap:12px;color:var(--muted);font-size:13.5px;margin-top:8px;flex-wrap:wrap;align-items:center">
-            <span>{!! svg_icon('map-pin', 15) !!} {{ $company->city->name }}</span>
-            @if(data_get($company->tech_specs, 'established_year'))
-              <span>{!! svg_icon('calendar', 15) !!} <b>تأسیس:</b> {{ data_get($company->tech_specs, 'established_year') }}</span>
-            @endif
-            <span>{!! svg_icon('eye', 15) !!} <b>بازدید:</b> {{ number_format($company->views_count ?? 0) }}</span>
-            <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.18em;flex-shrink:0"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> <b>ذخیره:</b> <span id="header-bookmarks-count">{{ number_format($bookmarksCount) }}</span></span>
-          </div>
-
-          <!-- برچسب‌های دسته‌بندی و زمینه‌های فعالیت به تفکیک نقش -->
-          @php $roleGroups = $company->groupedCategories(); @endphp
-          @if(!empty($roleGroups))
-            <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
-              @foreach($roleGroups as $group)
-                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                  <span class="badge" style="background:{{ $group['bg'] }};color:{{ $group['color'] }};border:1px solid {{ $group['border'] }};font-weight:800;font-size:12px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px">
-                    <span style="display:inline-flex;align-items:center">{!! $group['icon'] !!}</span>
-                    <span>{{ $group['label'] }}</span>
-                  </span>
-                  @foreach($group['items'] as $catItem)
-                    <a href="{{ $catItem['url'] ?? route('directory', ['cat' => $catItem['id']]) }}"
-                       class="badge"
-                       style="@if($catItem['is_primary']) background:#e0f2fe;color:#0369a1;font-weight:700;border:1px solid #bae6fd; @else background:#f8fafc;color:#334155;border:1px solid #e2e8f0; @endif text-decoration:none;font-size:12px;padding:3px 10px">
-                      {{ $catItem['name'] }}
-                    </a>
-                  @endforeach
-                </div>
-              @endforeach
-            </div>
-          @endif
-        </div>
-      </div>
-
-      <!-- نوار دکمه‌های اقدام (راست‌چین: ذخیره، ثبت نظر و در انتها آیکن‌های ویرایش/حذف) -->
-      @php $canManage = auth()->check() && (auth()->id() === $company->user_id || auth()->user()->isAdmin()); @endphp
-      <div style="display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:18px">
-        <button type="button"
-                onclick="toggleBookmark()"
-                id="bookmark-btn-head"
-                class="btn ghost small"
-                title="{{ $isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'ذخیره شرکت' }}"
-                style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.2s ease;{{ $isBookmarked ? 'background:#f0fdf4;color:#166534;border:1.5px solid #86efac' : 'background:#fff;color:#475569;border:1.5px solid #cbd5e1' }}">
-          <svg id="bookmark-icon-head" width="15" height="15" viewBox="0 0 24 24" fill="{{ $isBookmarked ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:{{ $isBookmarked ? '#16a34a' : '#64748b' }}"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-          <span id="bookmark-text-head">{{ $isBookmarked ? 'ذخیره شده' : 'ذخیره' }}</span>
-        </button>
-
-        <button type="button"
-                onclick="openCommentNotice()"
-                class="btn ghost small"
-                style="padding:7px 14px;font-size:13px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:#fff;color:#475569;border:1.5px solid #cbd5e1">
-          {!! svg_icon('message', 15) !!}
-          <span>ثبت نظر</span>
-        </button>
-
-        @if($canManage)
-          <a href="{{ route('companies.edit', ['company' => $company, 'return_to' => $company->url]) }}"
-             class="btn small"
-             title="ویرایش اطلاعات این شرکت"
-             aria-label="ویرایش اطلاعات این شرکت"
-             style="background:#0284c7;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center">
-            {!! svg_icon('edit', 16) !!}
-          </a>
-          <form method="POST" action="{{ route('companies.destroy', $company) }}" style="display:inline;margin:0" onsubmit="return confirm('آیا از حذف کامل شرکت «{{ addslashes($company->name) }}» اطمینان دارید؟ این عملیات قابل بازگشت نیست.')">
-            @csrf
-            @method('DELETE')
-            <input type="hidden" name="redirect_to" value="directory">
-            <button type="submit"
-                    class="btn small"
-                    title="حذف شرکت"
-                    aria-label="حذف شرکت"
-                    style="background:#dc2626;color:#fff;padding:8px 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer">
-              {!! svg_icon('trash', 16) !!}
-            </button>
-          </form>
-        @endif
-      </div>
-      <div id="comment-notice-box" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:13px;font-weight:600">
-        بخش ثبت نظرات و امتیازدهی کاربران به‌زودی در این صفحه فعال می‌شود.
-      </div>
       <!-- برچسب‌های خدمات و محصولات تخصصی (در ستون راست) -->
       @if($company->services && count($company->services) > 0)
         <div class="card" style="margin-bottom:20px">
@@ -307,10 +313,6 @@
             margin-top: 14px;
           }
           @media (max-width: 640px) {
-            .company-header-logo {
-              width: 130px !important;
-              height: 130px !important;
-            }
             .company-gallery-grid {
               grid-template-columns: repeat(2, minmax(0, 1fr));
               gap: 10px;
