@@ -23,7 +23,7 @@
 @endpush
 
 @section('content')
-<div class="page-wrapper" style="margin:16px 0 40px">
+<div class="page-wrapper" style="margin:-8px 0 40px">
 
   @php
  $isBookmarked = auth()->check() && $company->isBookmarkedBy(auth()->user());
