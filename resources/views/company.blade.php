@@ -98,7 +98,7 @@
   <div class="company-head" style="margin-bottom:18px;position:relative;background:#fff;{{ $headBorderStyle }}border-radius:12px;padding:24px">
     <div class="logo-box company-header-logo" style="width:200px;height:200px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;flex-shrink:0">
       @if($company->logo)
-        <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;padding:8px">
+        <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block">
       @else
         <span style="font-size:52px;font-weight:800;color:var(--primary)">{{ mb_substr($company->name, 0, 1) }}</span>
       @endif
@@ -894,7 +894,7 @@
 
   <!-- بخش شرکت‌های وابسته و هم‌گروه -->
   @if(isset($affiliateCompanies) && $affiliateCompanies->count())
-    <section class="affiliate-companies-section" style="margin-top:0;margin-bottom:20px">
+    <section class="affiliate-companies-section" style="margin-top:14px;margin-bottom:20px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
         <h2 style="margin:0;font-size:20px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:8px">
           <span>{!! svg_icon('building', 16) !!}</span>
@@ -1099,22 +1099,28 @@
  }
  }
 
- // راه‌اندازی چرخش خودکار اسلایدرها (در صورت نیاز به اسکرول)
+ // راه‌اندازی چرخش خودکار اسلایدرها
  document.addEventListener('DOMContentLoaded', function () {
  document.querySelectorAll('.company-carousel-wrap[data-carousel]').forEach(wrap => {
  const vp = wrap.querySelector('.company-carousel-viewport');
- if (!vp) return;
+ const track = wrap.querySelector('.company-carousel-track');
+ if (!vp || !track) return;
+
  const isScrollable = (vp.scrollWidth - vp.clientWidth) > 5;
  if (!isScrollable) {
  wrap.querySelectorAll('.company-carousel-nav-btn').forEach(b => { b.style.display = 'none'; });
- return;
+ if (track.children.length <= 1) return;
  }
 
  let timer = null;
  function startAutoScroll() {
  if (timer) clearInterval(timer);
  timer = setInterval(() => {
+ if ((vp.scrollWidth - vp.clientWidth) > 5) {
  slideCarouselRow(vp.id, 1);
+ } else if (track.children.length > 1) {
+ track.appendChild(track.firstElementChild);
+ }
  }, 3500);
  }
 
