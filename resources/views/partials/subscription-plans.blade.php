@@ -91,7 +91,7 @@
         <span style="font-size:13px;color:var(--muted);font-weight:600;display:block">دوره کوتاه‌مدت</span>
         <h2 style="margin:6px 0 12px;font-size:20px;color:var(--text)">اشتراک ۳ ماهه</h2>
         <div style="font-size:24px;font-weight:800;color:var(--primary);margin-bottom:14px">
-          ۳/۰۰۰/۰۰۰ <span style="font-size:13px;font-weight:500;color:var(--muted)">تومان</span>
+          ۵/۰۰۰/۰۰۰ <span style="font-size:13px;font-weight:500;color:var(--muted)">تومان</span>
         </div>
         <p style="font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:16px">
           مدت زمان: ۹۰ روز · شروع پرقدرت با هزینه مناسب
@@ -121,10 +121,10 @@
         <span style="font-size:13px;color:var(--muted);font-weight:600;display:block">مدت بیشتر با تخفیف</span>
         <h2 style="margin:6px 0 12px;font-size:20px;color:var(--text)">اشتراک ۶ ماهه</h2>
         <div style="font-size:24px;font-weight:800;color:var(--primary);margin-bottom:14px">
-          ۴/۰۰۰/۰۰۰ <span style="font-size:13px;font-weight:500;color:var(--muted)">تومان</span>
+          ۷/۰۰۰/۰۰۰ <span style="font-size:13px;font-weight:500;color:var(--muted)">تومان</span>
         </div>
         <p style="font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:16px">
-          مدت زمان: ۱۸۰ روز · فقط ۱ م.ت بیشتر برای دو برابر مدت
+          مدت زمان: ۱۸۰ روز · فقط ۲ م.ت بیشتر برای دو برابر مدت
         </p>
 
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">
@@ -155,10 +155,10 @@
         <span style="font-size:13px;color:#854d0e;font-weight:700;display:block">کامل‌ترین پکیج سالانه</span>
         <h2 style="margin:6px 0 12px;font-size:20px;color:#713f12">اشتراک ۱ ساله</h2>
         <div style="font-size:24px;font-weight:800;color:#854d0e;margin-bottom:14px">
-          ۵/۰۰۰/۰۰۰ <span style="font-size:13px;font-weight:500;color:#a16207">تومان</span>
+          ۱۰/۰۰۰/۰۰۰ <span style="font-size:13px;font-weight:500;color:#a16207">تومان</span>
         </div>
         <p style="font-size:12.5px;color:#854d0e;border-bottom:1px solid #fef08a;padding-bottom:14px;margin-bottom:16px">
-          مدت: ۳۶۵ روز · معادل ماهانه فقط ۴۱۷ هزار تومان!
+          مدت: ۳۶۵ روز · معادل ماهانه حدود ۸۳۳ هزار تومان!
         </p>
 
         <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:2">

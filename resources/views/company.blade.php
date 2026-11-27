@@ -713,7 +713,7 @@
             @endif
             @if($company->website)
               <a href="{{ $company->website }}" target="_blank" rel="nofollow noopener" class="btn ghost" style="text-align:center;font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 8px;text-decoration:none;white-space:nowrap">
-                {!! svg_icon('globe', 14) !!} <span>وب‌سایت رسمی</span>
+                {!! svg_icon('globe', 14) !!} <span>وب‌سایت</span>
               </a>
             @endif
           </div>
