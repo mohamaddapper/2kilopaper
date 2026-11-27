@@ -11,17 +11,12 @@
           {{ mb_substr($dashUser->name ?: $dashUser->phone, 0, 1) }}
         </div>
         <div style="min-width:0;flex:1">
-          <div style="font-size:13.5px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          <div style="font-size:15.5px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
             {{ $dashUser->name ?: 'کاربر گرامی' }}
           </div>
-          <div style="font-size:11.5px;color:var(--muted);direction:ltr;text-align:right">{{ $dashUser->phone }}</div>
+          <div style="font-size:14px;color:var(--muted);direction:ltr;text-align:right;margin-top:2px">{{ $dashUser->phone }}</div>
         </div>
       </div>
-      @if($dashUser->isAdmin())
-        <div style="margin-top:8px">
-          <span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fef3c7;color:#92400e">{{ $dashUser->roleLabel() }}</span>
-        </div>
-      @endif
       <div style="margin-top:8px">
         <button type="button" onclick="const f=document.getElementById('dashProfileForm');f.style.display=f.style.display==='none'?'block':'none';" style="background:none;border:none;padding:0;font-size:11.5px;color:var(--primary);cursor:pointer;font-family:inherit;font-weight:600">
           {!! svg_icon('edit', 12) !!} {{ $dashUser->name ? 'ویرایش نام' : 'ثبت نام و نام خانوادگی' }}

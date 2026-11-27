@@ -71,20 +71,17 @@
             {!! svg_icon('chevron-down', 13) !!}
           </button>
           <div class="header-dropdown-menu">
-            <div style="padding:8px 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
-              <div style="font-size:13px;font-weight:700;color:var(--text)">{{ $authUser->name ?: 'کاربر گرامی' }}</div>
-              <div style="font-size:11.5px;color:var(--muted);direction:ltr;text-align:right">{{ $authUser->phone }}</div>
-              @if($authUser->isAdmin())
-                <span style="display:inline-block;margin-top:4px;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:#fef3c7;color:#92400e">{{ $authUser->roleLabel() }}</span>
-              @endif
+            <div style="padding:10px 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
+              <div style="font-size:15px;font-weight:700;color:var(--text)">{{ $authUser->name ?: 'کاربر گرامی' }}</div>
+              <div style="font-size:15px;color:var(--muted);direction:ltr;text-align:right;margin-top:2px">{{ $authUser->phone }}</div>
             </div>
-            <a href="{{ route('dashboard') }}">{!! svg_icon('user', 15) !!} میز کار من</a>
+            <a href="{{ route('dashboard') }}" style="font-size:15px">{!! svg_icon('user', 16) !!} میز کار من</a>
             @if($authUser->isAdmin())
-              <a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-weight:700">{!! svg_icon('star-filled', 15) !!} پنل مدیریت</a>
+              <a href="{{ route('admin.dashboard') }}" style="color:#d97706;font-weight:700;font-size:15px">{!! svg_icon('star-filled', 16) !!} پنل مدیریت</a>
             @endif
             <form method="post" action="{{ route('logout') }}" style="margin:0">
               @csrf
-              <button type="submit" class="header-logout-item">{!! svg_icon('x-circle', 15) !!} خروج از حساب</button>
+              <button type="submit" class="header-logout-item" style="font-size:15px">{!! svg_icon('x-circle', 16) !!} خروج از حساب</button>
             </form>
           </div>
         </div>
