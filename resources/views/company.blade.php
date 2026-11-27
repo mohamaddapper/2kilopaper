@@ -78,6 +78,12 @@
   @endif
 
   <style>
+    @if(in_array($tier, ['gold', 'silver', 'bronze'], true))
+      .company-content-grid .card {
+        border: 1.5px solid {{ match($tier) { 'gold' => '#f59e0b', 'silver' => '#94a3b8', 'bronze' => '#d97706' } }} !important;
+        box-shadow: {{ match($tier) { 'gold' => '0 4px 16px rgba(245, 158, 11, 0.12)', 'silver' => '0 4px 16px rgba(100, 116, 139, 0.1)', 'bronze' => '0 4px 16px rgba(217, 119, 6, 0.1)' } }};
+      }
+    @endif
     @media (max-width: 860px) {
       .company-content-grid {
         row-gap: 0 !important;
